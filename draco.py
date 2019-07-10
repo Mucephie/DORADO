@@ -134,4 +134,10 @@ def sky_est(im):
 
 # function to set negative values of counts to zero
 
+# function to remove cosmic rays on import 
+# optionally import astroscrappy
+
+# convert to RGB image utilizing (http://docs.astropy.org/en/stable/visualization/rgb.html)
+# maybe even .Gif images this way (using Magneto code)
+
 ## End of functions ##

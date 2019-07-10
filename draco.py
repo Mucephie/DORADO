@@ -127,6 +127,11 @@ def series_write(series, im_prefix, im_count):
         file_nom = im_prefix + str(i) + '.fits'
         fits.writeto(file_nom, series[:,:,i])
 
+def sky_est(im):
+    sky = np.mean(im)
+
+    return sky
+
 # function to set negative values of counts to zero
 
 ## End of functions ##

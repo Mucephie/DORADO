@@ -12,10 +12,10 @@ The `draco.py` file is DRACO's core and holds the main functionality needed to m
 
 in the header of your reduction script. Next you will most likely need to import a few other tools that DRACO is founded upon.
 
-> `from astropy.io import fits`  
-`import numpy as np`  
-`import matplotlib.pyplot as plt`  
-`from astropy.table import Table`  
+> `from astropy.io import fits  
+> import numpy as np  
+> import matplotlib.pyplot as plt  
+> from astropy.table import Table`  
 
 DRACO uses `astropy.io.fits` and `astropy.table` to handle alot of the heavy lifting when it comes to opening, reading, writing, and exporting of common astronomical datatypes such as `.fits` files and `.csv` files. Apart from [astropy](https://www.astropy.org/index.html)'s offerings; DRACO also uses [numpy](http://www.numpy.org/) to store and operate on large series of datasets at the same time and to write the bulk of DRACO's logic.
 

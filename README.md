@@ -1,21 +1,27 @@
 # DRACO
 
-Data Reduction at the Allan I. Carswell Observatory (DRACO) is a python based expansion of Astropy(and affiliated packages) that aims to be a simple and common framework for data reduction tailored for life at the Allan I. Carswell Observatory at York university, Toronto, Ontario, Canada
+Data Reduction at the Allan I. Carswell Observatory (DRACO) is a python based expansion of astropy(and affiliated packages) that aims to be a simple and common framework for data reduction tailored for life at the Allan I. Carswell Observatory at York university, Toronto, Ontario, Canada
 
 ## draco
 
-The `draco.py` file is DRACO's core and holds the main functionality needed to make a reduction script. To make a reduction script first write:  
+The `draco.py` file is DRACO's core and holds the main functionality needed to make a reduction script. Currently to install DRACO, you will need to download the `draco.py` file into your project folder/path. In the future DRACO will be released as a PIP or conda installable package.
 
-> `import draco`
+To make a reduction script first write:  
 
-in the header of your reduction script. Next you will most likely need to import a few other tools that DRACO is founded upon.
+```python
+import draco
+```
 
-> `from astropy.io import fits`  
-> `import numpy as np`  
-> `import matplotlib.pyplot as plt`  
-> `from astropy.table import Table`
+into the header/imports of your reduction script. Next you will most likely need to import a few other tools that DRACO is founded upon.
 
-DRACO uses `astropy.io.fits` and `astropy.table` to handle alot of the heavy lifting when it comes to opening, reading, writing, and exporting of common astronomical datatypes such as `.fits` files and `.csv` files. Apart from [astropy](https://www.astropy.org/index.html)'s offerings; DRACO also uses [numpy](http://www.numpy.org/) to store and operate on large series of datasets at the same time and to write the bulk of DRACO's logic.
+```python
+ from astropy.io import fits  
+ import numpy as np  
+ import matplotlib.pyplot as plt  
+ from astropy.table import Table
+```
+
+DRACO uses `astropy.io.fits` and `astropy.table` to handle a lot of the heavy lifting when it comes to opening, reading, writing, and exporting of common astronomical data types such as `.fits` files and `.csv` files. Apart from [astropy](https://www.astropy.org/index.html)'s offerings; DRACO also uses [numpy](http://www.numpy.org/) to store and operate on large series of data sets at the same time and to write the bulk of DRACO's logic.
 
 The import of [matplotlib](https://matplotlib.org/) may be optional for some users if they wish to use DRACO's built in plots (which utilize matplotlib). For users who wish to create their own specialized plots in their reduction scripts, importing of matplotlib is required.
 
@@ -46,3 +52,13 @@ The file `im_reduc.py` is an example of how simple it is to make a tailored redu
 > _DRACO/im_reduc example output using DRACO/matplotlib display and test data taken at the Allan I. Carswell observatory on the 60cm telescope in December 2018 of comet 46P 'Wirtanen'_  
 
 `im_reduc.py` also has the capability to export the reduced frames(and master images) as individual `.fits` files to the directory of choice. These exported `.fits` files can then be opened by other astronomical data systems such as the depreciated [IRAF](https://iraf-community.github.io/) or digital graphics software such as [GIMP](https://www.gimp.org/).
+
+## Contact
+
+If you have any questions or would like to contribute to DRACO, please contact [@mucephie](https://github.com/Mucephie) at <mucephie@my.yorku.ca>. If you are interested in the Allan I. Carswell observatory at York university, you can find more information at our [website](http://observatory.info.yorku.ca/).  
+
+---
+
+<p align="justify">
+🔥🌈🎇✨🔭💻💾💽📷📡📺📓📚🔎📀🚀🛰🛸🌌🪐🌎🏳‍🌈🌒☄💫🕳💬☢🔥 
+</p>

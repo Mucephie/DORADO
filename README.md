@@ -4,8 +4,6 @@ Data Reduction at the Allan I. Carswell Observatory (DRACO) is a python based ex
 
 ## draco
 
----
-
 The `draco.py` file is DRACO's core and holds the main functionality needed to make a reduction script. To make a reduction script first write:  
 
 > `import draco`
@@ -25,8 +23,6 @@ Internally, DRACO uses [astroscappy](https://github.com/astropy/astroscrappy), a
 
 ## Dependencies
 
----
-
 Draco aims to be as lightweight as possible and utilize as little dependencies as it can. In the future DRACO will be updated so that some dependencies, such as astroscrappy, are optional and only needed for the functions in which they are utilized.
 
 Currently DRACO relies on:  
@@ -40,3 +36,13 @@ Future planned updates to DRACO may include dependencies such as:
 1. [Ginga](https://ejeschke.github.io/ginga/)
 1. [imexam](https://imexam.readthedocs.io/en/latest/index.html)
 1. [Photutils](https://photutils.readthedocs.io/en/stable/index.html)
+
+## im_reduc
+
+The file `im_reduc.py` is an example of how simple it is to make a tailored reduction script for any task. `im_reduc.py` utilizes a very basic image reduction procedure to remove cosmic rays, bias, sky bias, and flat fields from series taken in multiple filter bands to produce series of fully reduced astronomical images. These images can then be opened in [DS9](http://ds9.si.edu/site/Home.html), [Ginga](https://ejeschke.github.io/ginga/), or plotted through DRACO/[matplotlib](https://matplotlib.org/) (see example below).  
+
+![Draco image plot example; Comet 46P Wirtanen.](/assets/images/im_reduc_example.png)
+
+> _DRACO/im_reduc example output using DRACO/matplotlib display and test data taken at the Allan I. Carswell observatory on the 60cm telescope in December 2018 of comet 46P 'Wirtanen'_  
+
+`im_reduc.py` also has the capability to export the reduced frames(and master images) as individual `.fits` files to the directory of choice. These exported `.fits` files can then be opened by other astronomical data systems such as the depreciated [IRAF](https://iraf-community.github.io/) or digital graphics software such as [GIMP](https://www.gimp.org/).

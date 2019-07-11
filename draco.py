@@ -44,7 +44,7 @@ def get_im(file_path, file_name):
 
     return image_header, image_data
 
-def mast_reduc(file_path, im_prefix, im_suffix, im_count):
+def mast_reduc(file_path, im_prefix, im_suffix, im_count, cosmics):
     file_string = file_path + im_prefix+ str(1) + im_suffix + '.fits'
     temp = fits.getdata(file_string)
     temp_size = temp.shape
@@ -55,7 +55,10 @@ def mast_reduc(file_path, im_prefix, im_suffix, im_count):
     for i in range(1, im_count):
         file_string = file_path + im_prefix+ str(i) + im_suffix + '.fits'
         #print(file_string)
-        reduc_file[:, :, i] = detect_cosmics(fits.getdata(file_string))[1]
+        if (cosmics):
+            reduc_file[:, :, i] = detect_cosmics(fits.getdata(file_string))[1]
+        else:
+            reduc_file[:, :, i] = fits.getdata(file_string)
 
     # Take average of reduc_file :
 
@@ -94,7 +97,7 @@ def norm_flat(flat):
 
     return normFlat
 
-def get_series(file_path, im_prefix, im_suffix, im_count):
+def get_series(file_path, im_prefix, im_suffix, im_count, cosmics):
     file_string = file_path + im_prefix+ str(1) + im_suffix + '.fits'
     temp = fits.getdata(file_string)
     temp_size = temp.shape
@@ -105,7 +108,12 @@ def get_series(file_path, im_prefix, im_suffix, im_count):
     for i in range(1, im_count):
         file_string = file_path + im_prefix+ str(i) + im_suffix + '.fits'
         #print(file_string)
-        reduc_file[:, :, i] = detect_cosmics(fits.getdata(file_string))[1]
+        if (cosmics):
+            reduc_file[:, :, i] = detect_cosmics(fits.getdata(file_string))[1]
+        else:
+            reduc_file[:, :, i] = fits.getdata(file_string)
+
+        #reduc_file[:, :, i] = detect_cosmics(fits.getdata(file_string))[1]
 
     return reduc_file
 
@@ -139,5 +147,7 @@ def sky_est(im):
 
 # convert to RGB image utilizing (http://docs.astropy.org/en/stable/visualization/rgb.html)
 # maybe even .Gif images this way (using Magneto code)
+
+#
 
 ## End of functions ##

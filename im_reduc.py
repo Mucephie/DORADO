@@ -40,12 +40,13 @@ for n in  range(len(reduc_filters)):
 
 draco.plt_fits(series_n[:, :, 3, 3])
 
+## Data reduction checklist:
 
+# produce master bias
 
+# produce master flats
 
-
-
-# remove bias from images
+# remove bias from images/lights
 
 # remove bias from flats
 
@@ -53,9 +54,9 @@ draco.plt_fits(series_n[:, :, 3, 3])
 
 # divide bias corrected lights by normalized flats
 
-# align fully corrected images
+# align fully corrected images/lights
 
-# combine aligned images
+# combine aligned images/lights
 
 # estimate and remove sky values
 

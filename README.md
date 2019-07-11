@@ -2,6 +2,14 @@
 
 Data Reduction at the Allan I. Carswell Observatory (DRACO) is a python based expansion of astropy(and affiliated packages) that aims to be a simple and common framework for data reduction tailored for life at the Allan I. Carswell Observatory at York university, Toronto, Ontario, Canada
 
+## ☣⚠ Note: DRACO is in alpha phase ⚠☣
+
+DRACO is in alpha phase and as such is highly experimental and still a work in progress. While still in active development DRACO may still be used and experimented with; but a stable channel will not be created till DRACO enters a beta phase in the future.
+
+Use of DRACO in the alpha phase will not result in any risk to your computer or hardware, but may affect stability of software that are written with DRACO or the quality of data that is produced using DRACO.
+
+During the alpha phase, documentation and code commenting may be subpar as many things will being changing regularly with new code being written and rewritten and in-line testing appearing temporarily.
+
 ## draco
 
 The `draco.py` file is DRACO's core and holds the main functionality needed to make a reduction script. Currently to install DRACO, you will need to download the `draco.py` file into your project folder/path. In the future DRACO will be released as a PIP or conda installable package.

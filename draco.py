@@ -7,6 +7,10 @@ from astropy.visualization import astropy_mpl_style
 from astropy.utils.data import get_pkg_data_filename
 from matplotlib.colors import LogNorm
 from astroscrappy import detect_cosmics
+from astropy.nddata import CCDData
+from ccdproc import Combiner
+import astropy.units as u
+from astropy.utils.misc import isiterable
 
 
 file_path = 'C:/Users/mucep/Offline/Draco-test/'
@@ -48,23 +52,29 @@ def mast_reduc(file_path, im_prefix, im_suffix, im_count, cosmics):
     file_string = file_path + im_prefix+ str(1) + im_suffix + '.fits'
     temp = fits.getdata(file_string)
     temp_size = temp.shape
-    print(temp_size)
+    #print(temp_size)
 
-    reduc_file = np.zeros((temp_size[0], temp_size[1], im_count))
-
+    #reduc_file = np.zeros((temp_size[0], temp_size[1], im_count))
+    #reduc_file = np.zeros((im_count))
+    # file_string = file_path + im_prefix+ str(1) + im_suffix + '.fits'
+    # reduc_file = np.array(CCDData(fits.getdata(file_string), unit=u.adu))
+    reduc_file = []
     for i in range(1, im_count):
         file_string = file_path + im_prefix+ str(i) + im_suffix + '.fits'
         #print(file_string)
-        if (cosmics):
-            reduc_file[:, :, i] = detect_cosmics(fits.getdata(file_string))[1]
-        else:
-            reduc_file[:, :, i] = fits.getdata(file_string)
+
+        reduc_file.append(CCDData(fits.getdata(file_string), unit=u.adu))
+        # if (cosmics):
+        #     reduc_file[:, :, i] = detect_cosmics(fits.getdata(file_string))[1]
+        # else:
+        #     reduc_file[:, :, i] = fits.getdata(file_string)
 
     # Take average of reduc_file :
 
     # mean values have cosmic ray influence
-    reduc = np.mean(reduc_file, axis=2)
-
+    reduc_combine = Combiner(reduc_file)
+    #reduc = np.median(reduc_file, axis=2)
+    reduc = reduc_combine.average_combine()
     # median to remove influence of cosmic rays
     #reduc = np.median(reduc_file, axis=2)
     
@@ -78,6 +88,10 @@ def stack_im(im_list):
     return im
 
 def imarith(operand_1, operator, operand_2):
+    if (isiterable(operand_1)):
+        operand_1 = np.array(operand_1)
+    if (isiterable(operand_2)):
+        operand_2 = np.array(operand_2)
     if (operator == '+'):
         im = operand_1 + operand_2
     elif (operator == '-'):
@@ -101,7 +115,7 @@ def get_series(file_path, im_prefix, im_suffix, im_count, cosmics):
     file_string = file_path + im_prefix+ str(1) + im_suffix + '.fits'
     temp = fits.getdata(file_string)
     temp_size = temp.shape
-    print(temp_size)
+    #print(temp_size)
 
     reduc_file = np.zeros((temp_size[0], temp_size[1], im_count))
 

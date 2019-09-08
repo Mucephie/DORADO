@@ -103,23 +103,20 @@ def mast_reduc(file_path, im_prefix, im_suffix, im_count, cosmics):
 def mast_flat(file_path, im_prefix, im_suffix, im_count, cosmics, master_bias):
     file_string = file_path + im_prefix+ str(1) + im_suffix + '.fits'
     temp = fits.getdata(file_string)
-    # temp_size = temp.shape
+
 
     reduc_file = []
     for i in range(1, im_count):
-        print('filter: ', im_prefix, ', flat: ', i)
+        #print('filter: ', im_prefix, ', flat: ', i)
         file_string = file_path + im_prefix+ str(i) + im_suffix + '.fits'
         data = fits.getdata(file_string)
         data = imarith(data, '-', master_bias)
-        data = ndimage.median_filter(data, size=5) # , size=15
-        # reduc_file.append(data)
-        #plt_flat(data, 'viridis')
+        data = ndimage.median_filter(data, size=10) # , size=15
         reduc_file.append(CCDData(data, unit=u.adu))
 
-    # reduc = reduc / mean
+
     reduc_combine = Combiner(reduc_file)
-    reduc_nocr = ccdproc.combine(reduc_file, method='median') # , sigma_clip=True
-    # reduc = ccdproc.cosmicray_lacosmic(reduc_nocr)
+    reduc_nocr = ccdproc.combine(reduc_file, method='average', sigma_clip=True) # , sigma_clip=True
     reduc = reduc_nocr
     print('reduced: ', im_prefix)
     plt_flat(np.array((reduc.data)), 'viridis')
@@ -152,12 +149,9 @@ def imarith(operand_1, operator, operand_2):
     return im
 
 def norm_flat(flat):
-    norm_factor = mode(flat)[0]
-    norm_factor = mode(norm_factor, 0)[0]
+    norm_factor = mode(flat, axis = None)[0]
+    print("norm_factor: ", norm_factor)
     normFlat = imarith(flat, '/', norm_factor)
-    # normFlat = CCDData(normFlat, unit = u.adu)
-    # normFlat = ccdproc.cosmicray_lacosmic(normFlat)
-    # normFlat = np.asarray(normFlat)
 
     return normFlat
 

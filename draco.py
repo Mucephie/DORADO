@@ -18,6 +18,15 @@ from astropy.utils.misc import isiterable
 from scipy.stats import mode
 from scipy import ndimage
 
+import skimage.io
+
+import os
+import sys
+import argparse
+import skimage.morphology as morph
+import skimage.exposure as skie
+from scipy.ndimage import median_filter
+
 
 file_path = 'C:/Users/mucep/Offline/Draco-test/'
 im_prefix = 'Draco-'
@@ -59,7 +68,7 @@ def get_im(file_path, file_name):
     image_file = fits.open(file_string)
     # print(image_file)
 
-    fits.info(file_string)
+    #fits.info(file_string)
 
     image_data = fits.getdata(file_string)
 
@@ -67,7 +76,18 @@ def get_im(file_path, file_name):
 
     return image_header, image_data
 
-def mast_reduc(file_path, im_prefix, im_suffix, im_count, cosmics):
+def mast_reduc(images):
+    print(images.shape)
+    reduc_file = []
+    for i in range(images.shape[2]):
+        reduc_file.append(CCDData(images[:, :, i], unit=u.adu))
+    reduc_combine = Combiner(reduc_file)
+    reduc_nocr = reduc_combine.average_combine()
+    reduc = ccdproc.cosmicray_lacosmic(reduc_nocr)
+    
+    return reduc
+
+def mast_reduc_old(file_path, im_prefix, im_suffix, im_count, cosmics):
     file_string = file_path + im_prefix+ str(1) + im_suffix + '.fits'
     temp = fits.getdata(file_string)
     temp_size = temp.shape
@@ -100,7 +120,7 @@ def mast_reduc(file_path, im_prefix, im_suffix, im_count, cosmics):
     
     return reduc
 
-def mast_flat(file_path, im_prefix, im_suffix, im_count, cosmics, master_bias):
+def mast_flat_old(file_path, im_prefix, im_suffix, im_count, cosmics, master_bias):
     file_string = file_path + im_prefix+ str(1) + im_suffix + '.fits'
     temp = fits.getdata(file_string)
 
@@ -120,6 +140,22 @@ def mast_flat(file_path, im_prefix, im_suffix, im_count, cosmics, master_bias):
     reduc = reduc_nocr
     print('reduced: ', im_prefix)
     plt_flat(np.array((reduc.data)), 'viridis')
+    return reduc
+
+def mast_flat(flats, master_bias):
+    print(flats.shape)
+    reduc_file = []
+    for i in range(flats.shape[2]):
+        data = flats[:, :, i]
+        data = imarith(data, '-', master_bias)
+        data = ndimage.median_filter(data, size = 5)
+        reduc_file.append(CCDData(data, unit=u.adu))
+
+    reduc_combine = Combiner(reduc_file)
+    reduc = ccdproc.combine(reduc_file, method='average', sigma_clip=True)
+    print((reduc.data).shape)
+    print('reduced flat: ')
+    plt_flat(reduc.data, 'viridis')
     return reduc
 
 def stack_im(im_list):
@@ -155,7 +191,7 @@ def norm_flat(flat):
 
     return normFlat
 
-def get_series(file_path, im_prefix, im_suffix, im_count, cosmics):
+def get_series_old(file_path, im_prefix, im_suffix, im_count, cosmics):
     file_string = file_path + im_prefix+ str(1) + im_suffix + '.fits'
     temp = fits.getdata(file_string)
     temp_size = temp.shape
@@ -197,6 +233,62 @@ def sky_est(im):
     sky = np.median(im)
 
     return sky
+
+def checkdir(directory):
+    dirlist = os.listdir(directory)
+    bias = [s for s in dirlist if 'BIAS.FIT' in s]
+    flats = [s for s in dirlist if 'FLAT.FIT' in s]
+    lights = [s for s in dirlist if (np.invert('FLAT.FIT' in s)) and (np.invert('BIAS.FIT' in s)) and ('.FIT' in s) ]
+    print('\ndirlist: ', len(dirlist))
+    print('\nbias\': ', len(bias))
+    print('\nflats: ', len(flats))
+    print('\nlights: ', len(lights))
+    print('\ntotal: ', len(lights) + len(flats) + len(bias))
+
+    return bias, flats, lights
+
+def get_series(directory, imlist):
+    os.chdir(directory)
+    file_string = imlist[0]
+    temp = fits.getdata(file_string)
+    temp_size = temp.shape
+    # print(temp_size)
+
+    reduc_file = np.zeros((temp_size[0], temp_size[1], len(imlist)))
+
+    for i in range(1, len(imlist)):
+        file_string = imlist[i]
+        reduc_file[:, :, i] = fits.getdata(file_string)
+
+    return reduc_file
+
+def starSeeker(data, lim):
+    # mf = median_filter(data, size=10)
+    # data = draco.imarith(data, '-', mf)
+    limg = np.arcsinh(data)
+    limg = limg / limg.max()
+    low = np.percentile(limg, 10)
+    high = np.percentile(limg, 99.5)
+    opt_img  = skie.exposure.rescale_intensity(limg, in_range=(low,high))
+    lm = morph.local_maxima(opt_img)
+    x1, y1 = np.where(lm.T == True)
+    v = limg[(y1,x1)]
+    x2, y2 = x1[v > lim], y1[v > lim]
+
+    return x2, y2, opt_img
+
+def plt_stars(data, x, y):
+    plt.style.use(astropy_mpl_style)
+    plt.figure()
+    plt.imshow(data, cmap='viridis', vmin=0)
+    plt.colorbar()
+    plt.grid(False)
+    
+    for i in range(len(x)):
+        circlei=plt.Circle((x[i],y[i]), 5, alpha = 0.5, edgecolor='r')
+        plt.gcf().gca().add_artist(circlei)
+
+    plt.show()
 
 # function to set negative values of counts to zero
 

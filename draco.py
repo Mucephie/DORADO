@@ -27,6 +27,9 @@ import skimage.morphology as morph
 import skimage.exposure as skie
 from scipy.ndimage import median_filter
 
+from skimage.feature import blob_dog, blob_log
+# from scipy.stats import mode
+
 
 file_path = 'C:/Users/mucep/Offline/Draco-test/'
 im_prefix = 'Draco-'
@@ -237,8 +240,14 @@ def sky_est(im):
 def checkdir(directory):
     dirlist = os.listdir(directory)
     bias = [s for s in dirlist if 'BIAS.FIT' in s]
+    if len(bias)==0:
+        bias = [s for s in dirlist if 'Bias.fit' in s]
     flats = [s for s in dirlist if 'FLAT.FIT' in s]
+    if len(flats)==0:
+        flats = [s for s in dirlist if 'FlatField.fit' in s]
     lights = [s for s in dirlist if (np.invert('FLAT.FIT' in s)) and (np.invert('BIAS.FIT' in s)) and ('.FIT' in s) ]
+    if len(lights)==0:
+        lights = [s for s in dirlist if (np.invert('FlatField.fit' in s)) and (np.invert('Bias.fit' in s)) and ('.fit' in s) ]
     print('\ndirlist: ', len(dirlist))
     print('\nbias\': ', len(bias))
     print('\nflats: ', len(flats))
@@ -262,9 +271,12 @@ def get_series(directory, imlist):
 
     return reduc_file
 
-def starSeeker(data, lim):
+def starSeeker_old(data, lim):
     # mf = median_filter(data, size=10)
     # data = draco.imarith(data, '-', mf)
+    ## added
+    data = ndimage.maximum_filter(data, size=5)
+    ##
     limg = np.arcsinh(data)
     limg = limg / limg.max()
     low = np.percentile(limg, 10)
@@ -277,7 +289,27 @@ def starSeeker(data, lim):
 
     return x2, y2, opt_img
 
-def plt_stars(data, x, y):
+def starSeeker(data):
+    print('\nScaling data')
+    limg = np.arcsinh(data)
+    limg = limg / limg.max()
+    print('\nComputing low and high percentile for rescaling')
+    low = np.percentile(limg, 1)
+    high = np.percentile(limg, 99)
+    print('\nRescaling intensity')
+    opt_img  = skie.exposure.rescale_intensity(limg, in_range=(low,high))
+    print('\nLooking for stars')
+    #stars =  blob_log(opt_img, max_sigma=150, min_sigma=4, num_sigma=10, threshold=.25)
+    stars =  blob_dog(opt_img, max_sigma=40, min_sigma = 2, threshold=.45)
+    # Compute radii in the 3rd column.
+    print('\nComputing radii')
+    stars[:, 2] = stars[:, 2] * np.sqrt(2)
+    print('\nSplitting arrays')
+    y2, x2, r = stars[:, 0], stars[:, 1], stars[:, 2]
+    print('\nReturning values')
+    return x2, y2, r, opt_img
+
+def plt_stars(data, x, y, r):
     plt.style.use(astropy_mpl_style)
     plt.figure()
     plt.imshow(data, cmap='viridis', vmin=0)
@@ -285,10 +317,36 @@ def plt_stars(data, x, y):
     plt.grid(False)
     
     for i in range(len(x)):
-        circlei=plt.Circle((x[i],y[i]), 5, alpha = 0.5, edgecolor='r')
+        circlei=plt.Circle((x[i],y[i]), r[i], edgecolor='r', alpha = 0.75, linewidth = 1)
         plt.gcf().gca().add_artist(circlei)
 
     plt.show()
+
+
+def starSeeker2(data):
+    mf = median_filter(data, size= 15)
+    datamf = data - mf
+    limg = np.arcsinh(datamf)
+    limg = limg / limg.max()
+    low = np.percentile(limg, 1)
+    high = np.percentile(limg, 99.5)
+    opt_img  = skie.exposure.rescale_intensity(limg, in_range=(low,high))
+
+
+    stars =  blob_log(opt_img, max_sigma=25, min_sigma = 5, num_sigma=10, threshold=.2)
+    # stars =  blob_dog(opt_img, max_sigma=30, threshold=.2)
+    # Compute radii in the 3rd column.
+    stars[:, 2] = stars[:, 2] * np.sqrt(2)
+
+    y2, x2, r = stars[:, 0], stars[:, 1], stars[:, 2]
+
+    limg = np.arcsinh(data)
+    limg = limg / limg.max()
+    low = np.percentile(limg, 0.1)
+    high = np.percentile(limg, 99.5)
+    opt_img  = skie.exposure.rescale_intensity(limg, in_range=(low,high))
+
+    return x2, y2, r, opt_img
 
 # function to set negative values of counts to zero
 

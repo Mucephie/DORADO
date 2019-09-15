@@ -120,7 +120,9 @@ def plt_stars(data, x, y, r):
     plt.style.use(astropy_mpl_style)
     plt.figure()
     plt.imshow(data, cmap='viridis', vmin=0)
-    plt.colorbar()
+    up, down = plt_eye(data)
+    cbar = plt.colorbar()
+    cbar.set_clim(down, up)
     plt.grid(False)
     
     for i in range(len(x)):
@@ -128,6 +130,15 @@ def plt_stars(data, x, y, r):
         plt.gcf().gca().add_artist(circlei)
 
     plt.show()
+
+def plt_eye(data):
+    mean = np.mean(data)
+    std = np.std(data)
+    mean_up = mean + 1.5 * std
+    mean_down = mean - 1.5 * std
+
+    return mean_up, mean_down
+
 
 
 bias_list, flats_list, lights_list = checkdir(directory)

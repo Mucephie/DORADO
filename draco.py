@@ -1,6 +1,7 @@
 from astropy.io import fits
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 from astropy.table import Table
 from matplotlib import cm
 from astropy.visualization import astropy_mpl_style
@@ -46,8 +47,15 @@ def plt_fits(image_data, cmap_str):
     plt.figure()
     #plt.imshow(np.transpose(np.fliplr(image_data)), cmap='viridis')
     #plt.imshow(image_data, cmap='viridis', norm=LogNorm())
-    plt.imshow(image_data, cmap=cmap_str, vmin=0)
-    plt.colorbar()
+    # plt.imshow(image_data, cmap=cmap_str, vmin=0)
+    # edited
+    up, down = plt_eye(image_data)
+    plt.imshow(image_data, cmap=cmap_str, vmin=down, vmax=up)
+    cbar = plt.colorbar() #.ColorbarBase(ax, cmap=cmap_str,norm=mpl.colors.Normalize(vmin=down, vmax=up))
+    #cbar.set_clim(down, up)
+
+    # .ColorbarBase(ax, cmap=cm,norm=mpl.colors.Normalize(vmin=-0.5, vmax=1.5))
+    #
     plt.grid(False)
 
     plt.show()
@@ -65,7 +73,19 @@ def plt_flat(image_data, cmap_str):
 
     plt.show()
     
-def get_im(file_path, file_name):
+def plt_bias(image_data, cmap_str):
+    plt.style.use(astropy_mpl_style)
+    #print(image_data.shape)
+
+    plt.figure()
+    #plt.imshow(np.transpose(np.fliplr(image_data)), cmap='viridis')
+    #plt.imshow(image_data, cmap='viridis', norm=LogNorm())
+    plt.imshow(image_data, cmap=cmap_str, vmin=0)
+    plt.colorbar()
+    plt.grid(False)
+
+    plt.show()
+def get_im_old(file_path, file_name):
     file_string = file_path + file_name + '.fits'
     # print(file_string)
     image_file = fits.open(file_string)
@@ -78,6 +98,14 @@ def get_im(file_path, file_name):
     image_header = fits.getheader(file_string, ext=0)
 
     return image_header, image_data
+
+def get_im(directory, imname):
+    os.chdir(directory)
+    file_string = imname
+    reduc_data = fits.getdata(file_string)
+    reduc_header = fits.getheader(file_string)
+
+    return reduc_data, reduc_header
 
 def mast_reduc(images):
     print(images.shape)
@@ -228,6 +256,7 @@ def series_arith(series, operator, operand, im_count):
     return series
         
 def series_write(series, im_prefix, im_count):
+    # needs to write the header too.
     for i in range(1, im_count):
         file_nom = im_prefix + str(i) + '.fits'
         fits.writeto(file_nom, series[:,:,i])
@@ -242,6 +271,7 @@ def checkdir(directory):
     bias = [s for s in dirlist if 'BIAS.FIT' in s]
     if len(bias)==0:
         bias = [s for s in dirlist if 'Bias.fit' in s]
+
     flats = [s for s in dirlist if 'FLAT.FIT' in s]
     if len(flats)==0:
         flats = [s for s in dirlist if 'FlatField.fit' in s]
@@ -261,15 +291,19 @@ def get_series(directory, imlist):
     file_string = imlist[0]
     temp = fits.getdata(file_string)
     temp_size = temp.shape
+    
     # print(temp_size)
 
-    reduc_file = np.zeros((temp_size[0], temp_size[1], len(imlist)))
+    reduc_data = np.zeros((temp_size[0], temp_size[1], len(imlist)))
+    reduc_header = []
 
     for i in range(1, len(imlist)):
         file_string = imlist[i]
-        reduc_file[:, :, i] = fits.getdata(file_string)
+        reduc_data[:, :, i] = fits.getdata(file_string)
+        # might need to add ', ext = 0'
+        reduc_header.append(fits.getheader(file_string))
 
-    return reduc_file
+    return reduc_data, reduc_header
 
 def starSeeker_old(data, lim):
     # mf = median_filter(data, size=10)
@@ -312,8 +346,10 @@ def starSeeker(data):
 def plt_stars(data, x, y, r):
     plt.style.use(astropy_mpl_style)
     plt.figure()
-    plt.imshow(data, cmap='viridis', vmin=0)
-    plt.colorbar()
+    # plt.imshow(data, cmap='viridis', vmin=0)
+    up, down = plt_eye(data)
+    plt.imshow(data, cmap='jet', vmin=down, vmax=up)
+    cbar = plt.colorbar()
     plt.grid(False)
     
     for i in range(len(x)):
@@ -347,6 +383,14 @@ def starSeeker2(data):
     opt_img  = skie.exposure.rescale_intensity(limg, in_range=(low,high))
 
     return x2, y2, r, opt_img
+
+def plt_eye(data):
+    mean = np.mean(data)
+    std = np.std(data)
+    mean_up = mean + 2 * std
+    mean_down = mean - 2 * std
+
+    return mean_up, mean_down
 
 # function to set negative values of counts to zero
 

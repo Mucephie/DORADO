@@ -53,7 +53,7 @@ import draco
 # 2019-08-14+15
 # 2019-08-23+24
 # 2019-01-04+05
-directory = 'D:/draco_data/2018-12-04+05'
+directory = 'E:/draco_data/2018-12-04+05'
 # star = 'BL-Cam'
 star = 'YZBoo'
 # star = 'DYPEG'

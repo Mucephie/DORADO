@@ -85,6 +85,7 @@ def plt_bias(image_data, cmap_str):
     plt.grid(False)
 
     plt.show()
+
 def get_im_old(file_path, file_name):
     file_string = file_path + file_name + '.fits'
     # print(file_string)

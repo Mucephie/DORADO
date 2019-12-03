@@ -12,16 +12,17 @@ from astropy.coordinates import SkyCoord, Angle
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
-star = eleanor.Source(tic=236445129) #, sector=15) # TIC: 236445129 234503282
-##
+star = eleanor.Source(gaia = 1864885215233116032) # TIC: 236445129 234503282 tic = 236445129, sector = 15, 
+
+#
 # Full target list for orbit 37, sector 15
 # Created Wed Aug 14 21:54:32 EDT 2019 
 # Concatenation of GI astero exo bright DDT ppas lists
 #
-# TICID	      Camera   CCD	Tmag	   RA		  Dec
-# 236444701	1	3	10.98	314.2858	 31.5229
+# TICID Camera CCD Tmag RA Dec
+# 236444701 1 3 10.98 314.2858 31.5229
 
-print('TIC ID: ',star.tic)
+print('TIC ID: ', star.tic)
 print('Coordinates: ', star.coords)
 print('Camera, Chip Location: ', star.camera, ',', star.chip)
 print('TESS mag: ', star.tess_mag)

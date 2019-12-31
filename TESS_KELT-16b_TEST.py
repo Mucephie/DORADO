@@ -103,7 +103,7 @@ for s in range(calibrated_fluxes.shape[0]):
  
 
 
-lc_june = lk.LightCurve(time = tess_bjds, flux = aperature_sums,  flux_err = None, flux_unit = None, time_format=None, time_scale=None, targetid = tid, label = 'KELT-16b', meta=None)
+lc_june = lk.LightCurve(time = tess_bjds, flux = aperature_sums, flux_err = None, flux_unit = None, time_format=None, time_scale=None, targetid = tid, label = 'KELT-16b', meta=None)
 lc_june.scatter()
 # lc_june.to_fits( path = "tess2019226182529-s0015-0000000236445129-0151-s_june_lc.fits", overwrite=False, flux_column_name='FLUX')
 

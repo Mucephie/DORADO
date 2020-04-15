@@ -3,8 +3,8 @@ import numpy as np
 def fournax(x, y, terms):
     # Fournax is an abbreviation of Fourier numerical astronomy extension, its name is a backronym styled to match the constellation 'fornax'.
     
-    # Fourier series domain
-    tau = (np.max(x) - np.min(x))
+#     # Fourier series domain
+#     tau = (np.max(x) - np.min(x))
     # Compute real valued Fourier transform
     f = np.fft.rfft(y)
     # Null or zero coefficients above ammount of series "terms"

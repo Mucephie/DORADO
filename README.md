@@ -12,12 +12,12 @@ During the alpha phase, documentation and code commenting may be subpar as many 
 
 ## draco
 
-The `draco.py` file is DRACO's core and holds the main functionality needed to make a reduction script. Currently to install DRACO, you will need to download the `draco.py` file into your project folder/path. In the future DRACO will be released as a PIP or conda installable package.
+The `dracoOP2.py` file is DRACO's core and holds the main functionality needed to make a reduction script. Currently to install DRACO, you will need to download the `dracoOP2.py` file into your project folder/path. In the future DRACO will be released as a PIP or conda installable package.
 
 To make a reduction script first write:  
 
 ```python
-import draco
+import dracoOP2 as draco
 ```
 
 into the header/imports of your reduction script. Next you will most likely need to import a few other tools that DRACO is founded upon.
@@ -33,7 +33,6 @@ DRACO uses `astropy.io.fits` and `astropy.table` to handle a lot of the heavy li
 
 The import of [matplotlib](https://matplotlib.org/) may be optional for some users if they wish to use DRACO's built in plots (which utilize matplotlib). For users who wish to create their own specialized plots in their reduction scripts, importing of matplotlib is required.
 
-Internally, DRACO uses [astroscappy](https://github.com/astropy/astroscrappy), an astropy affiliated package, for the removal of cosmic rays when opening a `.fits` image. Future versions of DRACO aim to make this feature optional and to reduce the time it takes to search for and remove cosmic rays from large series of data.
 
 ## Dependencies
 
@@ -43,23 +42,21 @@ Currently DRACO relies on:
 1. [numpy](http://www.numpy.org/)
 1. [matplotlib](https://matplotlib.org/)
 1. [astropy](https://www.astropy.org/index.html)
-1. [astroscappy](https://github.com/astropy/astroscrappy)
+1. [CCDPROC](https://ccdproc.readthedocs.io/en/latest/index.html#)
+1. [scipy](https://www.scipy.org/)
+1. [scikit-image](https://scikit-image.org/)
 
 Future planned updates to DRACO may include dependencies such as:  
-1. [CCDPROC](https://ccdproc.readthedocs.io/en/latest/index.html#)
+
 1. [Ginga](https://ejeschke.github.io/ginga/)
 1. [imexam](https://imexam.readthedocs.io/en/latest/index.html)
 1. [Photutils](https://photutils.readthedocs.io/en/stable/index.html)
 
-## im_reduc
+## Variable star research and Timeseries analysis
 
-The file `im_reduc.py` is an example of how simple it is to make a tailored reduction script for any task. `im_reduc.py` utilizes a very basic image reduction procedure to remove cosmic rays, bias, sky bias, and flat fields from series taken in multiple filter bands to produce series of fully reduced astronomical images. These images can then be opened in [DS9](http://ds9.si.edu/site/Home.html), [Ginga](https://ejeschke.github.io/ginga/), or plotted through DRACO/[matplotlib](https://matplotlib.org/) (see example below).  
+DRACO's current focus is the reduction of a raw observing session into an organized timeseries data object which can be further configured and analyzed by DRACO to produce lightcurves and power spectral density (PSD) plots for Fourier based frequency analysis. DRACO has the ability to process target pixel files (TPF's) of variable stars from the [transiting exoplanet survey satellite](https://tess.mit.edu/) (TESS) and construct and 'Fourier fit' lightcurves from the TPF produced timeseries. 
 
-![Draco image plot example; Comet 46P Wirtanen.](/assets/images/im_reduc_example.png)
-
-> _DRACO/im_reduc example output using DRACO/matplotlib display and test data taken at the Allan I. Carswell observatory on the 60cm telescope in December 2018 of comet 46P 'Wirtanen'_  
-
-`im_reduc.py` also has the capability to export the reduced frames(and master images) as individual `.fits` files to the directory of choice. These exported `.fits` files can then be opened by other astronomical data systems such as the depreciated [IRAF](https://iraf-community.github.io/) or digital graphics software such as [GIMP](https://www.gimp.org/).
+This capability is currently only meant for internal use as it is very naorrow and experimental by nature; and not yet ready for scientific use.
 
 ## Contact
 

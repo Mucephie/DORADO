@@ -30,13 +30,13 @@ Dependencies
 Draco aims to be as lightweight as possible and utilize as little dependencies as it can. 
 
 Currently DRACO relies on:  
-1. `numpy <http://www.numpy.org/>`_
-2. `matplotlib <https://matplotlib.org/>`_
-3. `astropy <https://www.astropy.org/index.html>`_
-4. `CCDPROC <https://ccdproc.readthedocs.io/en/latest/index.html#>`_
-5. `scipy <https://www.scipy.org/>`_
-6. `scikit-image <https://scikit-image.org/>`_
-7. `astroquery <https://astroquery.readthedocs.io/en/latest/#>`_
+1.  `numpy <http://www.numpy.org/>`_
+2.  `matplotlib <https://matplotlib.org/>`_
+3.  `astropy <https://www.astropy.org/index.html>`_
+4.  `CCDPROC <https://ccdproc.readthedocs.io/en/latest/index.html#>`_
+5.  `scipy <https://www.scipy.org/>`_
+6.  `scikit-image <https://scikit-image.org/>`_
+7.  `astroquery <https://astroquery.readthedocs.io/en/latest/#>`_
 
 
 License

@@ -8,10 +8,10 @@ from ._astropy_init import *   # noqa
 
 __all__ = []
 # from .example_mod import *   # noqa
-from fournax import *
-from graf import *
-from rchive import *
-from phanal import *
+from .fournax import *
+from .graf import *
+from .rchive import *
+from .phanal import *
 
 __all__ += fournax.__all__
 __all__ += graf.__all__

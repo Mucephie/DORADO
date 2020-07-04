@@ -72,6 +72,9 @@ Note: This disclaimer was originally written by
 `PyCon talk <https://www.youtube.com/watch?v=6Uj746j9Heo>`_, and was adapted by draco based on its use in the README file for the
 `MetPy project <https://github.com/Unidata/MetPy>`_.
 
+- Issue Tracker: 'github.com/mucephie/draco/issues <github.com/mucephie/draco/issues>'_
+- Source Code: 'github.com/mucephie/draco <github.com/mucephie/draco>'_
+
 Contact
 -------------
 

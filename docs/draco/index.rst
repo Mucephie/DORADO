@@ -18,25 +18,30 @@ DRACO
 
 Data Reduction at the Allan I. Carswell Observatory (DRACO) is a python based expansion of astropy (and affiliated packages) that aims to be a simple and common framework for data reduction tailored for life at the Allan I. Carswell Observatory at York university, Toronto, Ontario, Canada
 
-.. admonition:: ☣⚠ Note: DRACO is in beta ⚠☣
-        DRACO is in beta and as such is highly experimental and still a work in progress. While still in active development DRACO may still be used and experimented with; but a stable channel will not be created until DRACO enters a beta phase in the future.
-        Use of DRACO while in beta will not result in any risk to your computer or hardware, but may affect stability of software that are written with DRACO or the quality of data that is produced using DRACO.
-        During the beta, documentation and code commenting may be subpar as many things will being changing regularly with new code being written and rewritten and in-line testing appearing temporarily.
+        .. admonition:: ☣⚠ DRACO is in beta ⚠☣
+
+                DRACO is in beta and as such is highly experimental and still a work in progress. While still in active development DRACO may still be used and experimented with; but a stable channel will not be created until DRACO enters a beta phase in the future.
+
+                Use of DRACO while in beta will not result in any risk to your computer or hardware, but may affect stability of software that are written with DRACO or the quality of data that is produced using DRACO.
+
+                During the beta, documentation and code commenting may be subpar as many things will being changing regularly with new code being written and rewritten and in-line testing appearing temporarily.
 
 Getting started with draco:
 
-    `` import draco
+.. code:: python
 
-    # Do some stuff
+        import draco
 
-    # Get a fits file formated date string for the current observing night.
+        # Do some stuff
 
-    draco.get_night() ``
+        # Get a fits file formated date string for the current observing night.
+
+        draco.get_night() 
 
 Installation
 ------------
 
-Install draco by running: ``pip install draco ``
+Install draco by running: ``pip install draco``.
 
     .. note:: draco is not currently hosted on PyPi due to a package naming issue.
 

@@ -1,10 +1,13 @@
 import numpy as np
+'''
+Fournax is an abbreviation of Fourier numerical astronomy extension, its name is a backronym styled to match the constellation 'fornax'.
+'''
 
-__all__ = ['fournax', 'pour', 'var_ephem']
+__all__ = ['four_curve', 'pour', 'var_ephem']
 
-def fournax(y, terms):
+def four_curve(y, terms):
     """
-    Fournax is an abbreviation of Fourier numerical astronomy extension, its name is a backronym styled to match the constellation 'fornax'. Fournax takes a timeseries and 'smoothes' out higher order terms in frequency space and returns the smoothed values.
+    Four_curve takes a timeseries and 'smoothes' out higher order terms in frequency space and returns the smoothed values.
 
     Parameters
     ----------
@@ -17,8 +20,6 @@ def fournax(y, terms):
     Fcurve: list or array
             Fourier smoothed y values
     """
-    # Fournax is an abbreviation of Fourier numerical astronomy extension, its name is a backronym styled to match the constellation 'fornax'.
-    
     # Fourier series domain
     # Compute real valued Fourier transform
     f = np.fft.rfft(y)

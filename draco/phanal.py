@@ -4,7 +4,9 @@ from scipy.ndimage import median_filter
 from skimage.feature import blob_dog, blob_log
 import skimage.exposure as skie
 
-def starSeeker2(data):
+__all__ = ['starSeeker']
+
+def starSeeker(data):
         mf = median_filter(data, size= 15)
         datamf = data - mf
         limg = np.arcsinh(datamf) #datamf

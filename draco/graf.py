@@ -7,7 +7,23 @@ import matplotlib as mpl
 from matplotlib.colors import LogNorm
 from astropy.visualization import astropy_mpl_style
 
+__all__ = ['plt_eye', 'plt_stars', 'plt_fits', 'plt_flat', 'plt_bias']
+
 def plt_eye(data, num_sigma = 3):
+    """
+    plt_eye takes image data for plotting and computes the optimal colourbar range.
+
+    Parameters
+    ----------
+    data: image/array
+            image data in 2-dimensional array format.
+    num_sigma: float
+            Positive float value that defines how many standard deviations are to be considered when computing the range.
+    Returns
+    -------
+    mean_up, mean_down: float
+           Upper and lower colourbar limits for plotting.
+    """
     mean = np.mean(data)
     std = np.std(data)
     mean_up = mean + num_sigma * std

@@ -1,4 +1,4 @@
-Data Reduction at the Allen Carswell Observatory
+Data Reduction at the Allan Carswell Observatory
 =============
 
 .. image:: http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat

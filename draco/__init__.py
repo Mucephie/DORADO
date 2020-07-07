@@ -12,11 +12,13 @@ from .fournax import *
 from .graf import *
 from .rchive import *
 from .phanal import *
+from .teleanal import *
 
 __all__ += fournax.__all__
 __all__ += graf.__all__
 __all__ += rchive.__all__
 __all__ += phanal.__all__
+__all__ += teleanal.__all__
 # Then you can be explicit to control what ends up in the namespace,
 # __all__ += ['do_primes']   # noqa
 # or you can keep everything from the subpackage with the following instead

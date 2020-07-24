@@ -59,8 +59,8 @@ def  plate_solve(data, image_file_path, write_fits = False, write_name = ''):
                         if write_name != '':
                                 wcs_hdu.write(write_name + '.fits')
                         else:
-                                print('The name to write this file was not provided. File saved under \'draco_wcs.fits\'')
-                                wcs_hdu.write('draco_wcs.fits', overwrite = True)
+                                print('The name to write this file was not provided. File saved under \'dorado_wcs.fits\'')
+                                wcs_hdu.write('dorado_wcs.fits', overwrite = True)
                 return wcs_hdu
         else:
                 # Code to execute when solve fails

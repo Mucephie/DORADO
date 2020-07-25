@@ -5,8 +5,8 @@ Digitized Observatory Resources for Automated Data Operations
     :target: http://www.astropy.org
     :alt: Powered by Astropy Badge
 
-.. image:: https://readthedocs.org/projects/dorado/badge/?version=master
-    :target: https://dorado.readthedocs.io/en/master/?badge=master
+.. image:: https://readthedocs.org/projects/dorado/badge/?version=latest
+    :target: https://dorado.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
 DORADO

@@ -16,24 +16,23 @@ Digitized Observatory Resources for Automated Data Operations
     :target: https://github.com/Mucephie/DORADO/issues
     :alt: GitHub issues
 .. image:: https://img.shields.io/github/v/release/Mucephie/DORADO?include_prereleases
+    :target: https://github.com/Mucephie/DORADO
     :alt: GitHub release (latest by date including pre-releases)
-.. image:: https://img.shields.io/github/license/Mucephie/DORADO
-    :alt: GitHub
-.. image:: https://img.shields.io/github/repo-size/Mucephie/DORADO
-    :alt: GitHub repo size  
-.. image:: https://img.shields.io/github/languages/code-size/Mucephie/DORADO
-    :alt: GitHub code size in bytes
-.. image:: https://img.shields.io/github/languages/top/Mucephie/DORADO
-    :alt: GitHub top language
+
 .. image:: https://img.shields.io/pypi/status/dorado
+    :target: https://pypi.org/project/dorado/
     :alt: PyPI - Status
 .. image:: https://img.shields.io/pypi/v/dorado
+    :target: https://pypi.org/project/dorado/#history
     :alt: PyPI
-.. image:: https://img.shields.io/pypi/format/dorado   
+.. image:: https://img.shields.io/pypi/format/dorado  
+    :target: https://pypi.org/project/dorado/#files
     :alt: PyPI - Format
 .. image:: https://img.shields.io/pypi/l/dorado   
+    :target: https://pypi.org/project/dorado/
     :alt: PyPI - License
 .. image:: https://img.shields.io/pypi/dm/dorado   
+    :target: https://pypi.org/project/dorado/#files
     :alt: PyPI - Downloads
 
 

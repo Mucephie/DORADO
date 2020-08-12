@@ -1,31 +1,47 @@
 Digitized Observatory Resources for Automated Data Operations
 =============
-.. image:: https://img.shields.io/badge/Made%40-YorkObservatory-red :target: https://observatory.info.yorku.ca/ :alt: Made at YorkObservatory
-
+.. image:: https://img.shields.io/badge/Made%40-YorkObservatory-red 
+    :target: https://observatory.info.yorku.ca
+    :alt: Made at YorkObservatory
+ 
 .. image:: http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat
     :target: http://www.astropy.org
     :alt: Powered by Astropy Badge
-
+ 
 .. image:: https://readthedocs.org/projects/dorado/badge/?version=latest
     :target: https://dorado.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
-    
-.. image:: https://img.shields.io/github/last-commit/mucephie/dorado
+     
+.. image:: https://img.shields.io/github/last-commit/Mucephie/DORADO
     :target: https://github.com/Mucephie/DORADO
     :alt: Last Commit
     
-.. image:: https://img.shields.io/github/issues/mucephie/dorado   :alt: GitHub issues
-.. image:: https://img.shields.io/github/v/release/mucephie/dorado?include_prereleases   :alt: GitHub release (latest by date including pre-releases)
-.. image:: https://img.shields.io/github/license/mucephie/dorado   :alt: GitHub
-.. image:: https://img.shields.io/github/repo-size/mucephie/dorado   :alt: GitHub repo size
-.. image:: https://img.shields.io/github/languages/code-size/mucephie/dorado   :alt: GitHub code size in bytes
-.. image:: https://img.shields.io/github/languages/top/mucephie/dorado   :alt: GitHub top language
+.. image:: https://img.shields.io/github/issues/Mucephie/DORADO   
+    :alt: GitHub issues
 
-.. image:: https://img.shields.io/pypi/status/dorado   :alt: PyPI - Status
-.. image:: https://img.shields.io/pypi/v/dorado   :alt: PyPI
-.. image:: https://img.shields.io/pypi/format/dorado   :alt: PyPI - Format
-.. image:: https://img.shields.io/pypi/l/dorado   :alt: PyPI - License
-.. image:: https://img.shields.io/pypi/dm/dorado   :alt: PyPI - Downloads
+.. image:: https://img.shields.io/github/v/release/Mucephie/DORADO?include_prereleases   
+    :alt: GitHub release (latest by date including pre-releases)
+
+.. image:: https://img.shields.io/github/license/Mucephie/DORADO   
+    :alt: GitHub
+
+.. image:: https://img.shields.io/github/repo-size/Mucephie/DORADO   
+    :alt: GitHub repo size
+.. image:: https://img.shields.io/github/languages/code-size/Mucephie/DORADO   
+    :alt: GitHub code size in bytes
+.. image:: https://img.shields.io/github/languages/top/Mucephie/DORADO   
+    :alt: GitHub top language
+
+.. image:: https://img.shields.io/pypi/status/dorado   
+    :alt: PyPI - Status
+.. image:: https://img.shields.io/pypi/v/dorado   
+    :alt: PyPI
+.. image:: https://img.shields.io/pypi/format/dorado   
+    :alt: PyPI - Format
+.. image:: https://img.shields.io/pypi/l/dorado   
+    :alt: PyPI - License
+.. image:: https://img.shields.io/pypi/dm/dorado   
+    :alt: PyPI - Downloads
 
 
 

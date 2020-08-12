@@ -1,40 +1,33 @@
 Digitized Observatory Resources for Automated Data Operations
 =============
-.. image:: https://img.shields.io/badge/Made%40-YorkObservatory-red 
+.. image:: https://img.shields.io/badge/Made%40-YorkObservatory-red
     :target: https://observatory.info.yorku.ca
     :alt: Made at YorkObservatory
- 
 .. image:: http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat
     :target: http://www.astropy.org
     :alt: Powered by Astropy Badge
- 
 .. image:: https://readthedocs.org/projects/dorado/badge/?version=latest
     :target: https://dorado.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
-     
 .. image:: https://img.shields.io/github/last-commit/Mucephie/DORADO
     :target: https://github.com/Mucephie/DORADO
     :alt: Last Commit
-    
-.. image:: https://img.shields.io/github/issues/Mucephie/DORADO   
+.. image:: https://img.shields.io/github/issues/Mucephie/DORADO
+    :target: https://github.com/Mucephie/DORADO/issues
     :alt: GitHub issues
-
-.. image:: https://img.shields.io/github/v/release/Mucephie/DORADO?include_prereleases   
+.. image:: https://img.shields.io/github/v/release/Mucephie/DORADO?include_prereleases
     :alt: GitHub release (latest by date including pre-releases)
-
-.. image:: https://img.shields.io/github/license/Mucephie/DORADO   
+.. image:: https://img.shields.io/github/license/Mucephie/DORADO
     :alt: GitHub
-
-.. image:: https://img.shields.io/github/repo-size/Mucephie/DORADO   
-    :alt: GitHub repo size
-.. image:: https://img.shields.io/github/languages/code-size/Mucephie/DORADO   
+.. image:: https://img.shields.io/github/repo-size/Mucephie/DORADO
+    :alt: GitHub repo size  
+.. image:: https://img.shields.io/github/languages/code-size/Mucephie/DORADO
     :alt: GitHub code size in bytes
-.. image:: https://img.shields.io/github/languages/top/Mucephie/DORADO   
+.. image:: https://img.shields.io/github/languages/top/Mucephie/DORADO
     :alt: GitHub top language
-
-.. image:: https://img.shields.io/pypi/status/dorado   
+.. image:: https://img.shields.io/pypi/status/dorado
     :alt: PyPI - Status
-.. image:: https://img.shields.io/pypi/v/dorado   
+.. image:: https://img.shields.io/pypi/v/dorado
     :alt: PyPI
 .. image:: https://img.shields.io/pypi/format/dorado   
     :alt: PyPI - Format

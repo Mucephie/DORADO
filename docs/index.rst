@@ -6,9 +6,6 @@ This is the documentation for dorado.
 .. toctree::
   :maxdepth: 2
 
-  dorado/index.rst
+..  /dorado/index.rst
 
-.. note:: The layout of this directory is simply a suggestion.  To follow
-          traditional practice, do *not* edit this page, but instead place
-          all documentation for the package inside ``dorado/``.
-          You can follow this practice or choose your own layout.
+.. note:: Due to the nature of this project, these pages may change rapidly without notice. Effort is made to ensure these pages are up to date and effective.

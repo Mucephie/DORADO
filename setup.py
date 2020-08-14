@@ -12,6 +12,10 @@ from setuptools import setup
 # To check version before setup, run:
 # python setup.py --version
 
+# To push to PyPi:
+# python setup.py sdist bdist_wheel --universal
+# twine upload dist/*  
+
 # First provide helpful messages if contributors try and run legacy commands
 # for tests or docs.
 

@@ -19,6 +19,10 @@ __all__ += graf.__all__
 __all__ += rchive.__all__
 __all__ += phanal.__all__
 __all__ += teleanal.__all__
+__all__ += imreduc.__all__
+__all__ += lazyeye.__all__
+# __all__ += dorado.__all__
+
 # Then you can be explicit to control what ends up in the namespace,
 # __all__ += ['do_primes']   # noqa
 # or you can keep everything from the subpackage with the following instead

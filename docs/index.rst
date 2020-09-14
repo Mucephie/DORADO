@@ -48,15 +48,10 @@ This is the documentation hub  for dorado.
   :maxdepth: 2
 
   dorado
-  imreduc/imreduc
-  fournax/fournax
+
 
 
 ..  /dorado/imreduc/index.rst
-
-imreduc: 
-----------
-
-.. automodapi:: imreduc/imreduc
+/dorado/imreduc/index.rst
 
 .. note:: Due to the nature of this project, these pages may change rapidly without notice. Effort is made to ensure these pages are up to date and effective.

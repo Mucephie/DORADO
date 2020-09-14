@@ -45,17 +45,18 @@ Digitized Observatory Resources for Automated Data Operations
 This is the documentation hub  for dorado.
 
 .. toctree::
-  :maxdepth: 2
+  :maxdepth: 3
 
-  imreduc/imreduc
   dorado
+  imreduc/imreduc
+  fournax/fournax
 
 
 ..  /dorado/imreduc/index.rst
 
 imreduc: 
 ----------
-:mod:`imreduc/imreduc`
 
+.. automodapi:: imreduc/imreduc
 
 .. note:: Due to the nature of this project, these pages may change rapidly without notice. Effort is made to ensure these pages are up to date and effective.

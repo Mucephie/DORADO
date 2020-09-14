@@ -137,3 +137,9 @@ Reference/API
 =============
 
 .. automodapi:: dorado
+
+
+Examples
+--------
+
+In the near future examples, tutorials, and pre-made use scripts will be located here. The first release of Dorado should ship with an example pipeline and data formatting tutorial.

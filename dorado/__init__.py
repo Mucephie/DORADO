@@ -11,14 +11,14 @@ __all__ = []
 from .fournax import *
 from .graf import *
 from .rchive import *
-from .phanal import *
-from .teleanal import *
+from .waldo import *
+from .imreduc import *
+from .lazyeye import *
 
 __all__ += fournax.__all__
 __all__ += graf.__all__
 __all__ += rchive.__all__
-__all__ += phanal.__all__
-__all__ += teleanal.__all__
+__all__ += waldo.__all__
 __all__ += imreduc.__all__
 __all__ += lazyeye.__all__
 # __all__ += dorado.__all__

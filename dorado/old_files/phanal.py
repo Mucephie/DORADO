@@ -28,6 +28,7 @@ def starSeeker(data):
 
         return x2, y2, r, opt_img
 
+
 # def apphot
 # def diff_phot
 # def lc_clean

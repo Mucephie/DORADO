@@ -1,3 +1,38 @@
+0.1.2 (2020-09-14) ()
+=====================
+
+New Features
+------------
+
+-Organized functions into categorized subpackages.
+
+Other Changes and Additions
+---------------------------
+
+
+Bug Fixes
+---------
+
+0.1.1 (2020-08-21) ()
+=====================
+
+New Features
+------------
+
+-Split functions into categorized subpackages.
+
+Other Changes and Additions
+---------------------------
+
+-Added badges to documentation for status of project.
+
+-Added additional documentation.
+
+-Setup version control and packaging logic.
+
+Bug Fixes
+---------
+
 0.1.0 (2020-07-26) ()
 ================
 

@@ -2,11 +2,8 @@
 Dorado Documentation
 *******************
 
-Digitized Observatory Resources for Automated Data Operations
-=============
-
 imreduc
--------------
+=============
 
 imreduc is a set of tools to reduce/process FITS imagery for both photography and astronomical research purposes.
 

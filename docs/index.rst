@@ -45,10 +45,10 @@ Digitized Observatory Resources for Automated Data Operations
 This is the documentation hub  for dorado.
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 3
 
-    dorado
-    
+    dorado/index
+
     dorado/fournax/index
     dorado/imreduc/index
     dorado/lazyeye/index

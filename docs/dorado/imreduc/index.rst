@@ -1,8 +1,8 @@
 *******************
-Dorado Documentation
+imreduc
 *******************
 
-imreduc
+overview
 =============
 
 imreduc is a set of tools to reduce/process FITS imagery for both photography and astronomical research purposes.

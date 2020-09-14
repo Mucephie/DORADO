@@ -1,5 +1,5 @@
 *******************
-Dorado Documentation
+Dorado Documentation Overview
 *******************
 
 Digitized Observatory Resources for Automated Data Operations

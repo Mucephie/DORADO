@@ -15,4 +15,4 @@ imreduc supports border masking, removal of flats and bias', estimation of overa
 Reference/API
 =============
 
-.. automodapi:: imreduc
+.. automodapi:: imreduc/imreduc

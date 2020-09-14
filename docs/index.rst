@@ -45,10 +45,10 @@ Digitized Observatory Resources for Automated Data Operations
 This is the documentation hub  for dorado.
 
 .. toctree::
-  :maxdepth: 2
+    :maxdepth: 2
 
-  dorado
-
+    dorado
+    dorado/imreduc/index
 
 
 ..  /dorado/imreduc/index.rst

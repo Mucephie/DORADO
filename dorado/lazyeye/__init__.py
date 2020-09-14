@@ -7,4 +7,4 @@ __all__ = []
 
 from .lazyeye import *
 
-__all__ += lazyeye.__all__
+# __all__ += lazyeye.__all__

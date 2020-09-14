@@ -45,8 +45,10 @@ Digitized Observatory Resources for Automated Data Operations
 This is the documentation hub  for dorado.
 
 .. toctree::
-  :maxdepth: 3
+  :maxdepth: 2
 
 ..  /dorado/index.rst
+
+
 
 .. note:: Due to the nature of this project, these pages may change rapidly without notice. Effort is made to ensure these pages are up to date and effective.

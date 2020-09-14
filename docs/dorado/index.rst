@@ -61,12 +61,12 @@ Digitized Observatory Resources for Automated Data Operations (DORADO) is a pyth
 .. toctree::
     :maxdepth: 2
 
-    dorado/fournax/index
-    dorado/imreduc/index
-    dorado/lazyeye/index
-    dorado/rchive/index
-    dorado/vizual/index
-    dorado/waldo/index
+    fournax/index
+    imreduc/index
+    lazyeye/index
+    rchive/index
+    vizual/index
+    waldo/index
 
 
 
@@ -80,21 +80,28 @@ Getting started with dorado:
 
         # Get a fits file formated date string for the current observing night.
         night = dorado.get_night() 
+
         # Your data directory
         directory = 'C:/Data/'
+
         # You can name your target object
         target = 'dorado'
+
         # Create a working directory
         dorado.mkwrkdir(directory, night)
+
         # Catalogue input data from the data directory
         bias_list, flats_list, lights_list = dorado.checkdir(directory, night)
+
         # Read the data in
         data_series = dorado.get_series(directory, night, lights_list, unit = None)
         flats_series = dorado.get_series(directory, night, flats_list, unit = None)
         bias_series = dorado.get_series(directory, night, bias_list, unit = None)
+
         # Produce master reduction images
         bias = dorado.mastBias(directory, night, bias_list)
         flat = mastFlat(directory, night, flats_list, bias)
+
         # Calibrate data series
         series = dorado.reduce_series(directory, night, lights_list, flat, bias, target)
 

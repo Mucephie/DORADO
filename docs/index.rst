@@ -48,6 +48,7 @@ This is the documentation hub  for dorado.
     :maxdepth: 2
 
     dorado
+    
     dorado/fournax/index
     dorado/imreduc/index
     dorado/lazyeye/index

@@ -47,12 +47,15 @@ This is the documentation hub  for dorado.
 .. toctree::
   :maxdepth: 2
 
+  imreduc/imreduc
+  dorado
+
 
 ..  /dorado/imreduc/index.rst
 
 imreduc: 
 ----------
-:mod:`imreduc`
+:mod:`imreduc/imreduc`
 
 
 .. note:: Due to the nature of this project, these pages may change rapidly without notice. Effort is made to ensure these pages are up to date and effective.

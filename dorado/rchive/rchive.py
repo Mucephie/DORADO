@@ -83,7 +83,7 @@ def write_series(directory, night, series, vstar):
         caldir = directory + night + '/wrk/calibrated'
         os.chdir(caldir)
         for i in range(len(series)):
-                series[i].write(vstar + str(i) + '.calibrated.fit')
+                series[i].write(vstar + '_' + str(i) + '.calibrated.fit')
 
 
         os.chdir(stardir)

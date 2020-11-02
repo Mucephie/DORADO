@@ -2,8 +2,8 @@
 Dorado Documentation Overview
 *******************
 
-Digitized Observatory Resources for Automated Data Operations
--------------
+(Digitized Observatory Resources for Automated Data Operations)
+
 
 Overview
 =============
@@ -59,7 +59,7 @@ Digitized Observatory Resources for Automated Data Operations (DORADO) is a pyth
                 During the beta, documentation and code commenting may be subpar as many things will being changing regularly with new code being written and rewritten and in-line testing appearing temporarily.
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     fournax/index
     imreduc/index
@@ -71,6 +71,8 @@ Digitized Observatory Resources for Automated Data Operations (DORADO) is a pyth
 
 
 Getting started with dorado:
+--------------
+
 
 .. code:: python
 
@@ -136,6 +138,17 @@ Currently DORADO relies on:
 
 7.  `astroquery <https://astroquery.readthedocs.io/en/latest/#>`_
 
+Reference/API
+=============
+
+.. automodapi:: dorado
+
+
+Examples
+--------
+
+In the near future examples, tutorials, and pre-made use scripts will be located here. The first release of Dorado should ship with an example pipeline and data formatting tutorial.
+
 
 
 Contribute
@@ -174,15 +187,3 @@ the terms of the BSD 3-Clause license. This package is based upon
 the `Astropy package template <https://github.com/astropy/package-template>`_
 which is licensed under the BSD 3-clause license. See the licenses folder for more information.
 
-Reference/API
-=============
-
-.. automodapi:: dorado
-
-
-Examples
---------
-
-In the near future examples, tutorials, and pre-made use scripts will be located here. The first release of Dorado should ship with an example pipeline and data formatting tutorial.
-
-.. automodapi:: imreduc/imreduc

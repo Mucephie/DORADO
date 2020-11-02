@@ -45,7 +45,7 @@ Digitized Observatory Resources for Automated Data Operations
 This is the documentation hub  for dorado.
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 2
 
     dorado/index
 

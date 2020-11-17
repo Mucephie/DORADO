@@ -48,14 +48,14 @@ def get_night():
         night: string
                 Timestring for the most recent night.
         """
-      # currently does not support first/last of the month
-      date = datetime.date.today()
-      year = date.year
-      month = date.month
-      date2 = date.day
-      date1 = date2 - 1
-      night = str(year) + '-' + str(month) + '-' + str(date1) + '+' + str(date2)
-      return night
+        # currently does not support first/last of the month
+        date = datetime.date.today()
+        year = date.year
+        month = date.month
+        date2 = date.day
+        date1 = date2 - 1
+        night = str(year) + '-' + str(month) + '-' + str(date1) + '+' + str(date2)
+        return night
 
 def checkdir(directory):
         """

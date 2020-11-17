@@ -10,6 +10,7 @@ __all__ = ['mkwrkdir', 'get_night', 'checkdir', 'get_series', 'write_series', 'g
 def mkwrkdir(datadir):
         """
         mkwrkdir creates standard data processing working directories.
+        
         Parameters
         ----------
         datadir: string
@@ -39,6 +40,7 @@ def mkwrkdir(datadir):
 def get_night():
         """
         get_night obtains a timestring for the most recent(previous) night.
+
         Parameters
         ----------
         None
@@ -60,6 +62,7 @@ def get_night():
 def checkdir(directory):
         """
         checkdir returns lists
+
         Parameters
         ----------
         directory: string
@@ -135,6 +138,7 @@ def write_series(directory, series, target):
         """
         write_series intakes a series of CCD images, a target name for filestring 
         creation and a data directory path and writes the series to the directory.
+        
         Parameters
         ----------
         directory: filestring

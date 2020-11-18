@@ -18,10 +18,40 @@ from astropy import units as u
 
 __all__ = ['reduce_series', 'mastFlat', 'mastBias', 'theMask', 'sky_est', 'series_arith', 'norm_flat', 'stack_im']
 
-def reduce_series(directory, night, imlist, flat, bias, vstar, expath = '', resize = ''):
+def reduce_series(imdir, imlist, flat, bias, target, resize = '', caldir = ''):
+        # directory, night, imlist, flat, bias, vstar, expath = '', resize = ''
+        """
+        plate_solve takes fits image file data and the corresponding file string to the data and calls nova.astrometry.net to obtain and then integrate WCS into the HDU.
+
+        Parameters
+        ----------
+        imdir: filestring
+                Path to the image data directory.
+        caldir: filestring
+                Path to store the calibrated image data.
+        imlist: array[string]
+                array of filestrings of data to reduce.
+        flat: CCDdata
+                CCDdata of the flatfield.
+        bias: CCDdata
+                CCDdata of the bias.
+        target: string
+                Name of target to use in file output name.
+        resize: float
+                scale factor to resize image data. default is None
+        caldir: filestring
+                Path to store the calibrated image data.
+            
+        Returns
+        -------
+        series: array[CCDdata]
+                The CCDdata array containing the reduced images.
+        """
         stardir = os.getcwd()
-        imdir = directory + '/' + night + '/' + expath
-        caldir = directory + night + '/wrk/calibrated/'
+        # imdir = directory + '/' + night + '/' + expath
+        # caldir = directory + night + '/wrk/calibrated/'
+        if caldir == '':
+                caldir = imdir + '/wrk/calibrated/'
         os.chdir(caldir)
         series = []
         for i in range(len(imlist)):
@@ -33,22 +63,47 @@ def reduce_series(directory, night, imlist, flat, bias, vstar, expath = '', resi
                 hdu.header['flat corrected'] = True
                 hdu.header['cosmicray corrected'] = True
                 hdu.header['calibrated'] = True
+                # may want to move this to before reduction step
                 if (resize != ''):
                                 hdu.header['Resized'] = True
                                 hdu.data = zoom(hdu.data, (resize, resize), order=0)
                 os.chdir(caldir)
-                hdu.write(vstar + expath + '-' + str(i) + '-calibrated.fit')
+                # mod to use imlist imlist[i]
+                hdu.write(target + '-' + str(i) + '_c.fit')
                 series.append(hdu)
         # print(len(series))
         os.chdir(stardir)
 
         return series
 
-def mastFlat(directory, night, flats, bias):
+def mastFlat(directory, flats, bias, caldir = ''):
+        """
+        mastFlat takes a datadirectory string, a list of flats and a master bias image to construct 
+        a master flatfield image.
+
+        Parameters
+        ----------
+        directory: filestring
+                Path to the image data directory.
+        flats: array[CCDdata]
+                array of raw flatfields.
+        bias: CCDdata
+                CCDdata of the bias.
+        caldir: filestring
+                Path to store the calibrated image data.
+
+        Returns
+        -------
+        master_flat: CCDdata
+                The combined master flatfield image.
+        """
+        # give option to median stack
+        # give option to specify a filter for output.
+        # directory, night, flats, bias
         # Allow resizing
         stardir = os.getcwd()
 
-        path = directory + '/' + night + '/'
+        path = directory # + '/' + night + '/'
         os.chdir(path)
 
         master_flat = ccdproc.combine(flats, method='average',
@@ -56,8 +111,8 @@ def mastFlat(directory, night, flats, bias):
                              sigma_clip_func=np.ma.median, sigma_clip_dev_func=mad_std, unit=u.adu)
         master_flat.header['stacked'] = True
 
-
-        caldir = directory + night + '/wrk/flats/'
+        if caldir == '':
+                caldir = directory + '/wrk/flats/'
         os.chdir(caldir)
         master_flat.write('master_flat.fit')
 
@@ -65,7 +120,8 @@ def mastFlat(directory, night, flats, bias):
 
         return master_flat
 
-def mastBias(directory, night, bias):
+def mastBias(directory, bias):
+        # directory, night, bias
         # Allow resizing
         stardir = os.getcwd()
 
@@ -76,7 +132,7 @@ def mastBias(directory, night, bias):
         master_bias.meta['stacked'] = True
 
 
-        caldir = directory + night + '/wrk/bias/'
+        caldir = directory +  '/wrk/bias/'
         os.chdir(caldir)
         master_bias.write('master_bias.fit')
 

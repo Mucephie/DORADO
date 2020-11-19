@@ -5,6 +5,6 @@ is just an example sub-package, so it doesn't actually do anything.
 """
 # __all__ = []
 
-from .rchive import *
+from .file_high import * # noqa
 
 # __all__ += rchive.__all__

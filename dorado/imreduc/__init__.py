@@ -5,6 +5,6 @@ is just an example sub-package, so it doesn't actually do anything.
 """
 # __all__ = []
 
-from .imreduc import *
+from .red import * # noqa
 
 # __all__ += imreduc.__all__

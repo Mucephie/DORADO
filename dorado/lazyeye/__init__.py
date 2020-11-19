@@ -5,6 +5,6 @@ is just an example sub-package, so it doesn't actually do anything.
 """
 # __all__ = []
 
-from .lazyeye import *
+from .eyeon import * # noqa
 
 # __all__ += lazyeye.__all__

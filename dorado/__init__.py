@@ -8,12 +8,12 @@ from ._astropy_init import *   # noqa
 
 # __all__ = []
 # from .example_mod import *   # noqa
-from .fournax import *
-from .vizual import *
-from .rchive import *
-from .waldo import *
-from .imreduc import *
-from .lazyeye import *
+from .fournax import * # noqa
+from .vizual import * # noqa
+from .rchive import * # noqa
+from .waldo import * # noqa
+from .imreduc import * # noqa
+from .lazyeye import * # noqa
 
 # __all__ += fournax.__all__
 # __all__ += vizual.__all__

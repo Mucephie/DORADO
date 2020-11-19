@@ -5,5 +5,5 @@ is just an example sub-package, so it doesn't actually do anything.
 """
 # __all__ = []
 
-from .fournax import *
+from .fit import * # noqa
 # __all__ += fournax.__all__

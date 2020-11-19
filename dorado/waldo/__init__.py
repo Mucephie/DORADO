@@ -5,6 +5,6 @@ is just an example sub-package, so it doesn't actually do anything.
 """
 # __all__ = []
 
-from .waldo import *
+from .where import * # noqa
 
 # __all__ += waldo.__all__

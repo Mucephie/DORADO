@@ -6,7 +6,7 @@
 from ._astropy_init import *   # noqa
 # ----------------------------------------------------------------------------
 
-__all__ = []
+# __all__ = []
 # from .example_mod import *   # noqa
 from .fournax import *
 from .vizual import *
@@ -15,12 +15,12 @@ from .waldo import *
 from .imreduc import *
 from .lazyeye import *
 
-__all__ += fournax.__all__
-__all__ += vizual.__all__
-__all__ += rchive.__all__
-__all__ += waldo.__all__
-__all__ += imreduc.__all__
-__all__ += lazyeye.__all__
+# __all__ += fournax.__all__
+# __all__ += vizual.__all__
+# __all__ += rchive.__all__
+# __all__ += waldo.__all__
+# __all__ += imreduc.__all__
+# __all__ += lazyeye.__all__
 # __all__ += dorado.__all__
 
 # Then you can be explicit to control what ends up in the namespace,

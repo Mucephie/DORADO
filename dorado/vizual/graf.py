@@ -99,3 +99,4 @@ def plt_bias(image_data, cmap_str = 'viridis'):
 
 
 # def canyon (curve analysis @ York )
+# remove uneeded functions

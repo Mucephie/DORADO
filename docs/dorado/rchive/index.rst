@@ -14,4 +14,4 @@ rchive will soon allow for more robust saving of data series.
 Reference/API
 =============
 
-.. automodapi:: rchive/rchive
+.. automodapi:: dorado.rchive

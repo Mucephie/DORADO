@@ -5,7 +5,7 @@ Fournax is an abbreviation of Fourier numerical astronomy extension, its name is
 A major future update will bring a more powerful curve fitting function to this sub-package.
 '''
 
-__all__ = ['four_curve', 'pour', 'var_ephem']
+# __all__ = ['four_curve', 'pour', 'var_ephem']
 class Fournax():
 
         def four_curve(y, terms):

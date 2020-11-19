@@ -12,4 +12,4 @@ A major future update will bring a more powerful curve fitting function to this 
 Reference/API
 =============
 
-.. automodapi:: fournax/fournax
+.. automodapi:: dorado.fournax

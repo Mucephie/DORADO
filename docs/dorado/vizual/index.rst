@@ -10,4 +10,4 @@ vizual is Dorado's tool for creating visual resources for data capture, reductio
 Reference/API
 =============
 
-.. automodapi:: imreduc/imreduc
+.. automodapi:: dorado.imreduc

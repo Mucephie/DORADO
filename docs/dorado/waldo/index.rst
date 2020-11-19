@@ -11,4 +11,4 @@ waldo is Dorado's tool for various search tasks. waldo has the ability to plate-
 Reference/API
 =============
 
-.. automodapi:: waldo/waldo
+.. automodapi:: dorado.waldo

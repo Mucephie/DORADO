@@ -1,3 +1,6 @@
+import warnings
+warnings.filterwarnings('ignore')
+
 import os
 import datetime
 from astropy.nddata import CCDData
@@ -20,6 +23,7 @@ def mkwrkdir(datadir):
         -------
         None
         """
+        # Allow for directories to already exist
         # night, expath = ''
         stardir = os.getcwd()
 
@@ -134,7 +138,7 @@ def get_series(directory, imlist, unit = u.adu):
 
         return series
 
-def write_series(directory, series, target):
+def write_series(directory, series, target, expath = ''):
         """
         write_series intakes a series of CCD images, a target name for filestring 
         creation and a data directory path and writes the series to the directory.
@@ -147,6 +151,9 @@ def write_series(directory, series, target):
                 Data series to write.
         target: String
                 Target name to use in the file name prefix.
+        expath: String
+                Suffix to use in file saving. For example '_c' for calibrated
+                or '_a' for aligned.
 
         Returns
         -------
@@ -158,7 +165,7 @@ def write_series(directory, series, target):
         # caldir = directory + night + '/wrk/calibrated'
         os.chdir(directory)
         for i in range(len(series)):
-                series[i].write(target + '_' + str(i) + '.calibrated.fit')
+                series[i].write(target + '_' + str(i) + expath + '.fit')
 
 
         os.chdir(stardir)

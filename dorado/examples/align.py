@@ -27,7 +27,7 @@ series = dorado.get_series(directory + '/wrk/calibrated/', lights_list[0:200], u
 
 CAL_END_DATE_TIME = datetime.datetime.now()
 print('\nFinished time: ', CAL_END_DATE_TIME)
-print("Time elapsed for sheet: ", (CAL_END_DATE_TIME - START_DATE_TIME))
+print("Time elapsed for Calibration: ", (CAL_END_DATE_TIME - START_DATE_TIME))
 print('\n\n\n\n')
 
 ## Plate solve your data series
@@ -38,10 +38,10 @@ expath = '/wrk/calibrated/'
 im = target +  '-0_c.fit'
 image_file_path = dorado.file_string(directory + expath, im)
 # Pass the data and file string to dorado
-solved = dorado.plate_solve(psimg, image_file_path, write_fits = True, write_name = target + '_solved')
+solved = dorado.plate_solve(psimg, image_file_path, write_fits = True, write_path = directory + '/wrk/', write_name = target + '_solved')
 PLATE_END_DATE_TIME = datetime.datetime.now()
 print('\nFinished time: ', PLATE_END_DATE_TIME)
-print("Time elapsed for sheet: ", (PLATE_END_DATE_TIME - CAL_END_DATE_TIME))
+print("Time elapsed for Plate solving: ", (PLATE_END_DATE_TIME - CAL_END_DATE_TIME))
 print("Time elapsed so far: ", (PLATE_END_DATE_TIME - START_DATE_TIME))
 print('\n\n\n\n')
 
@@ -59,6 +59,6 @@ dorado.write_series(directory + '/wrk/aligned/', aa_series, target, '_a')
 # You now have a fully calibrated and aligned data set with WCS data
 AL_END_DATE_TIME = datetime.datetime.now()
 print('\nFinished time: ', AL_END_DATE_TIME)
-print("Time elapsed for sheet: ", (AL_END_DATE_TIME - PLATE_END_DATE_TIME))
+print("Time elapsed for Aligning: ", (AL_END_DATE_TIME - PLATE_END_DATE_TIME))
 print("Time elapsed so far: ", (AL_END_DATE_TIME - START_DATE_TIME))
 print('\n\n\n\n')

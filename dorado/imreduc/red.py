@@ -47,6 +47,7 @@ def reduce_series(imdir, imlist, flat, bias, target, resize = '', caldir = ''):
         series: array[CCDdata]
                 The CCDdata array containing the reduced images.
         """
+        # add ability to use series already loaded into memory.
         stardir = os.getcwd()
         # imdir = directory + '/' + night + '/' + expath
         # caldir = directory + night + '/wrk/calibrated/'
@@ -69,7 +70,7 @@ def reduce_series(imdir, imlist, flat, bias, target, resize = '', caldir = ''):
                                 hdu.data = zoom(hdu.data, (resize, resize), order=0)
                 os.chdir(caldir)
                 # mod to use imlist imlist[i]
-                hdu.write(target + '-' + str(i) + '_c.fit')
+                hdu.write(target + '-' + str(i) + '_c.fit', overwrite = True)
                 series.append(hdu)
         # print(len(series))
         os.chdir(stardir)
@@ -114,7 +115,7 @@ def mastFlat(directory, flats, bias, caldir = ''):
         if caldir == '':
                 caldir = directory + '/wrk/flats/'
         os.chdir(caldir)
-        master_flat.write('master_flat.fit')
+        master_flat.write('master_flat.fit', overwrite = True)
 
         os.chdir(stardir)
 
@@ -153,7 +154,7 @@ def mastBias(directory, bias, caldir = ''):
         if caldir == '':
                 caldir = directory +  '/wrk/bias/'
         os.chdir(caldir)
-        master_bias.write('master_bias.fit')
+        master_bias.write('master_bias.fit', overwrite = True)
 
         os.chdir(stardir)
 

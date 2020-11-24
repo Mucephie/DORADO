@@ -11,7 +11,7 @@ ast.api_key = 'jefjaaeekvrszphp'
 
 __all__ = ['plate_solve', 'starSeeker']
 
-def  plate_solve(data, image_file_path, write_fits = False, write_name = ''):
+def  plate_solve(data, image_file_path, write_fits = False, write_path = '', write_name = ''):
 
         """
         plate_solve takes fits image file data and the corresponding file string to the data and calls nova.astrometry.net to obtain and then integrate WCS into the HDU.
@@ -24,6 +24,8 @@ def  plate_solve(data, image_file_path, write_fits = False, write_name = ''):
                 Path to the image to be solved.
         write_fits: Boolean
                 Whether to save the resulting data.
+        write_path: string
+                File path to save the resulting data under. Default is current directory.
         write_name: string
                 File name to save the resulting data under.
         Returns
@@ -56,15 +58,15 @@ def  plate_solve(data, image_file_path, write_fits = False, write_name = ''):
         if wcs_header:
                 # Code to execute when solve succeeds
                 print('Solve succeeded! :)')
-                print(wcs_header.tostring( sep='\n', endcard=True, padding=True))  # items, keys, values
+                # print(wcs_header.tostring( sep='\n', endcard=True, padding=True))  # items, keys, values
                 wcs_hdu = data
                 wcs_hdu.header = wcs_header
                 if write_fits:
                         if write_name != '':
-                                wcs_hdu.write(write_name + '.fits')
+                                wcs_hdu.write(write_path + write_name + '.fits', overwrite = True)
                         else:
                                 print('The name to write this file was not provided. File saved under \'dorado_wcs.fits\'')
-                                wcs_hdu.write('dorado_wcs.fits', overwrite = True)
+                                wcs_hdu.write(write_path + 'dorado_wcs.fits', overwrite = True)
                 return wcs_hdu
         else:
                 # Code to execute when solve fails

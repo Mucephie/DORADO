@@ -14,7 +14,7 @@ from setuptools import setup
 
 # To push to PyPi:
 # python3 setup.py sdist bdist_wheel --universal
-# twine upload dist/*  
+# python3 -m twine upload dist/*  
 
 # First provide helpful messages if contributors try and run legacy commands
 # for tests or docs.

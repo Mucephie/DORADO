@@ -46,7 +46,7 @@ dorado.write_series(directory, series, target)
 
 ## Plate solve your data series
 # Pick image to solve and store its data
-data = series[0].data
+data = series[0]
 # Set up a file string for dorado to locate image
 expath = '/wrk/calibrated/' 
 im = target +  '-0_c.fit'

@@ -27,7 +27,7 @@ dorado.mkwrkdir(directory)
 
 
 # Catalogue input data from the data directory
-bias_list, flats_list, lights_list = dorado.checkdir(directory)
+bias_list, flats_list, darks_lst, lights_list = dorado.checkdir(directory)
 
 
 

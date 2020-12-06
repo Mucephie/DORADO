@@ -23,21 +23,22 @@ def mkwrkdir(datadir):
         -------
         None
         """
-        # Allow for directories to already exist
+        # Allow for directories to already exist: This should be working, yet to test.
         # night, expath = ''
         stardir = os.getcwd()
 
         path = datadir # + night + '/' + expath # + '/'
         os.chdir(path)
-        os.mkdir(path + '/wrk')
+        os.makedirs(path + '/wrk', exist_ok = True)
         path = path + '/wrk'
-        os.mkdir(path + '/bias')
-        os.mkdir(path + '/flats')
-        os.mkdir(path + '/lights')
-        os.mkdir(path + '/calibrated')
-        os.mkdir(path + '/aligned')
+        os.makedirs(path + '/bias', exist_ok = True)
+        os.makedirs(path + '/flats', exist_ok = True)
+        os.makedirs(path + '/darks', exist_ok = True)
+        os.makedirs(path + '/lights', exist_ok = True)
+        os.makedirs(path + '/calibrated', exist_ok = True)
+        os.makedirs(path + '/aligned', exist_ok = True)
         # os.mkdir(path + '/stars')
-        # os.mkdir(path + '/results')
+        # os.makedirs(path + '/results', exist_ok = True)
 
         os.chdir(stardir)
 
@@ -74,34 +75,52 @@ def checkdir(directory):
 
         Returns
         -------
-        bias, flats, lights: arrays
+        bias, flats, darks, lights: arrays
                 Arrays containing the filestrings for the bias, flats, and lights.
         """ 
+
+        # modify to set bias, flat, dark, and light naming conventions
+
         path = directory # + '/' + night + '/' + expath
         print(path)
         dirlist = os.listdir(path)
+
         bias = [s for s in dirlist if 'BIAS' in s]
         if len(bias)==0:
                 bias = [s for s in dirlist if 'Bias' in s]
         if len(bias)==0:
-                bias = [s for s in dirlist if 'Bias' in s]
+                bias = [s for s in dirlist if 'bias' in s]
+
+        
         flats = [s for s in dirlist if 'FLAT' in s]
         if len(flats)==0:
                 flats = [s for s in dirlist if 'FlatField' in s]
-        lights = [s for s in dirlist if (np.invert('FLAT' in s)) and (np.invert('Flat' in s)) and (np.invert('BIAS' in s)) and (np.invert('Bias' in s)) and ('.FIT' in s) ]
+        if len(flats)==0:
+                flats = [s for s in dirlist if 'flat' in s] # add this to lights catch
+
+
+        darks = [s for s in dirlist if 'DARK' in s]
+        if len(darks)==0:
+                darks = [s for s in dirlist if 'Dark' in s]
+        if len(darks)==0:
+                darks = [s for s in dirlist if 'dark' in s] # add this to lights catch
+
+        lights = [s for s in dirlist if (np.invert('FLAT' in s)) and (np.invert('Flat' in s)) and (np.invert('BIAS' in s)) and (np.invert('Bias' in s)) and (np.invert('DARK' in s)) and (np.invert('Dark' in s)) and ('.FIT' in s) ]
         if len(lights)==0:
-                lights = [s for s in dirlist if (np.invert('FLAT' in s)) and (np.invert('Flat' in s)) and (np.invert('BIAS' in s)) and (np.invert('Bias' in s)) and ('.fit' in s) ]
+                lights = [s for s in dirlist if (np.invert('FLAT' in s)) and (np.invert('Flat' in s)) and (np.invert('BIAS' in s)) and (np.invert('Bias' in s)) and (np.invert('DARK' in s)) and (np.invert('Dark' in s)) and ('.fit' in s) ]
         if len(lights)==0:
-                lights = [s for s in dirlist if (np.invert('FLAT' in s)) and (np.invert('Flat' in s)) and (np.invert('BIAS' in s)) and (np.invert('Bias' in s)) and ('.fits' in s) ]
+                lights = [s for s in dirlist if (np.invert('FLAT' in s)) and (np.invert('Flat' in s)) and (np.invert('BIAS' in s)) and (np.invert('Bias' in s)) and (np.invert('DARK' in s)) and (np.invert('Dark' in s)) and ('.fits' in s) ]
         if len(lights)==0:
-                lights = [s for s in dirlist if (np.invert('FLAT' in s)) and (np.invert('Flat' in s)) and (np.invert('BIAS' in s)) and (np.invert('Bias' in s)) and ('.FITS' in s) ]
+                lights = [s for s in dirlist if (np.invert('FLAT' in s)) and (np.invert('Flat' in s)) and (np.invert('BIAS' in s)) and (np.invert('Bias' in s)) and (np.invert('DARK' in s)) and (np.invert('Dark' in s)) and ('.FITS' in s) ]
+
         print('\ndirlist: ', len(dirlist))
         print('\nbias\': ', len(bias))
         print('\nflats: ', len(flats))
+        print('\ndarks: ', len(darks))
         print('\nlights: ', len(lights))
         print('\ntotal: ', len(lights) + len(flats) + len(bias))
 
-        return bias, flats, lights
+        return bias, flats, darks, lights
 
 def get_series(directory, imlist, unit = u.adu):
         """
@@ -159,6 +178,7 @@ def write_series(directory, series, target, expath = ''):
         -------
         None
         """
+        # add ability to specify file labels.
 
         #directory, night, series, target
         stardir = os.getcwd()
@@ -189,6 +209,7 @@ def get_im(directory, imname):
         hdu_header: hdu.data
                 The fits image data.
         """
+        # unify with get_series
         os.chdir(directory)
         file_string = imname
         hdu_data = fits.getdata(file_string)

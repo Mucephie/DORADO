@@ -6,12 +6,13 @@ import os
 from astropy.io import fits 
 from astropy.nddata import CCDData
 from astropy.table import Table
-from astropy.stats import mad_std
+from astropy.stats import mad_std, SigmaClip
 
 ## Processing imports
 import numpy as np
 import ccdproc
 from scipy.ndimage import zoom
+from photutils import Background2D, MedianBackground, make_source_mask
 
 ## photometry imports
 from astropy import units as u
@@ -185,6 +186,24 @@ def theMask(data, lx, hx, ly, hy):
         mask[lx:hx, ly:hy] = True
         return mask
 
+def source_nomore(img):
+        """
+        source_nomore takes an image to mask the stellar sources out of. 
+
+        Parameters
+        ----------
+        data: CCDdata
+                CCDdata of the image to be masked.
+        Returns
+        -------
+        mask: array[Boolean]
+                The masked array for application to the data image in further functions.
+                
+        """
+        mask = make_source_mask(img, nsigma=2, npixels=5, dilate_size=11) 
+
+        return mask  
+             
 def sky_est(im):
         """
         sky_est makes a crude estimate of an images sky value based on a median
@@ -205,6 +224,28 @@ def sky_est(im):
         sky = np.median(im)
 
         return sky
+
+def sky_2d(img):
+        """
+        sky_2d is an expanded background modelling function built for starfeilds where 
+        extended sources are not the target of reduction.
+
+        Parameters
+        ----------
+        img: CCDdata
+                CCDdata of the image to be solved.
+
+        Returns
+        -------
+        bkg: CCDdata
+                sky background image.
+        """
+        # mask = make_source_mask(img, nsigma=2, npixels=5, dilate_size=11)
+        sigma_clip = SigmaClip(sigma=3.)
+        bkg_estimator = MedianBackground()
+        bkg = Background2D(img, (50, 50), filter_size = (3, 3), sigma_clip = sigma_clip, bkg_estimator = bkg_estimator)
+
+        return bkg
 
 def series_arith(series, operator, operand):
         """

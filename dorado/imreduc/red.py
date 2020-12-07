@@ -49,6 +49,7 @@ def reduce_series(imdir, imlist, flat, bias, target, resize = '', caldir = ''):
                 The CCDdata array containing the reduced images.
         """
         # add ability to use series already loaded into memory.
+        # make cosmic rays optional
         stardir = os.getcwd()
         # imdir = directory + '/' + night + '/' + expath
         # caldir = directory + night + '/wrk/calibrated/'
@@ -60,7 +61,7 @@ def reduce_series(imdir, imlist, flat, bias, target, resize = '', caldir = ''):
                 os.chdir(imdir)
                 hdu = CCDData.read(imlist[i], unit=u.adu)
                 hdu = ccdproc.ccd_process(hdu, master_bias = bias, master_flat = flat)
-                hdu = ccdproc.cosmicray_lacosmic(hdu, sigclip=5)
+                # hdu = ccdproc.cosmicray_lacosmic(hdu, sigclip=5)
                 hdu.header['bias corrected'] = True
                 hdu.header['flat corrected'] = True
                 hdu.header['cosmicray corrected'] = True

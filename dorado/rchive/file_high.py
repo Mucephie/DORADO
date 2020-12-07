@@ -38,7 +38,7 @@ def mkwrkdir(datadir):
         os.makedirs(path + '/calibrated', exist_ok = True)
         os.makedirs(path + '/aligned', exist_ok = True)
         # os.mkdir(path + '/stars')
-        # os.makedirs(path + '/results', exist_ok = True)
+        os.makedirs(path + '/results', exist_ok = True)
 
         os.chdir(stardir)
 

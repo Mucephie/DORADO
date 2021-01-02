@@ -185,7 +185,7 @@ def write_series(directory, series, target, expath = ''):
         # caldir = directory + night + '/wrk/calibrated'
         os.chdir(directory)
         for i in range(len(series)):
-                series[i].write(target + '_' + str(i) + expath + '.fit')
+                series[i].write(target + '_' + str(i) + expath + '.fit', overwrite = True)
 
 
         os.chdir(stardir)

@@ -1,6 +1,10 @@
 import dorado
 import astroalign as aa
 import datetime
+<<<<<<< Updated upstream
+=======
+from astroquery.simbad import Simbad
+>>>>>>> Stashed changes
 
 ## One might be interested in how long this all takes
 START_DATE_TIME = datetime.datetime.now()
@@ -13,6 +17,7 @@ print('\nFinding data...')
 
 ## Organize and prepare your data
 # Get a fits file formated date string for the current observing night.
+<<<<<<< Updated upstream
 night = dorado.get_night() 
 print('Night: ', night)
 # Your data directory
@@ -21,13 +26,33 @@ directory = 'C:/Data/' + night
 
 # You can name your target object
 target = 'WASP33b'
+=======
+# night = dorado.get_night() 
+# night = '2020-10-24+25'
+print('Night: ', night)
+# Your data directory
+# Set night as directory 
+# directory = 'C:/Data/' + night
+# directory = 'E:/DORADO/' + night
+directory = 'E:/DORADO/2020-22-04+05/'
+# You can name your target object
+target = 'WASP33b'
+s = Simbad()
+r = s.query_object(target)
+r.pprint()
+print(r.colnames)
+>>>>>>> Stashed changes
 
 # Create a working directory
 dorado.mkwrkdir(directory)
 
 
 # Catalogue input data from the data directory
+<<<<<<< Updated upstream
 bias_list, flats_list, darks_lst, lights_list = dorado.checkdir(directory)
+=======
+bias_list, flats_list, darks_list, lights_list = dorado.checkdir(directory)
+>>>>>>> Stashed changes
 
 
 
@@ -108,4 +133,10 @@ print('\n\n\n\n')
 ## exit script, it took this long
 END_DATE_TIME = datetime.datetime.now()
 print('\nFinished time: ', END_DATE_TIME)
+<<<<<<< Updated upstream
 print("Time elapsed for run: ", (END_DATE_TIME - START_DATE_TIME))
+=======
+print("Time elapsed for run: ", (END_DATE_TIME - START_DATE_TIME))
+
+# end
+>>>>>>> Stashed changes

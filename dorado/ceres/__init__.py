@@ -5,5 +5,5 @@ is just an example sub-package, so it doesn't actually do anything.
 """
 __all__ = []
 
-from .fournax import *
-__all__ += fournax.__all__
+from .ceres import *
+__all__ += ceres.__all__

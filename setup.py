@@ -88,4 +88,17 @@ setup(
         "version_scheme": "release-branch-semver"
                        }
         )
+# where is this file? os.path.dirname(__file__)
+import  astropy.config as acfg
+
+
+
+
+
+
+
+
+
+
+
 

@@ -49,12 +49,7 @@ This is the documentation hub  for dorado.
 
     dorado/index
 
-    dorado/fournax/index
-    dorado/imreduc/index
-    dorado/lazyeye/index
-    dorado/rchive/index
-    dorado/vizual/index
-    dorado/waldo/index
+
 
 
 ..  /dorado/imreduc/index.rst

@@ -61,12 +61,7 @@ Digitized Observatory Resources for Automated Data Operations (DORADO) is a pyth
 .. toctree::
     :maxdepth: 1
 
-    fournax/index
-    imreduc/index
-    lazyeye/index
-    rchive/index
-    vizual/index
-    waldo/index
+
 
 
 

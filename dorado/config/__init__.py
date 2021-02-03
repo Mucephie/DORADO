@@ -3,12 +3,23 @@ This is the configuration class for Dorado which utilizes the Astropy configurat
 system.
 '''
 
-import astropy.config as astropyconfig
+from astropy import config as _config
 
+class ConfigNamespace(_config.ConfigNamespace):
+    rootname = 'dorado'
+    api_key = _config.ConfigItem(
+        '',
+        "The Astrometry.net API key."
+    )
 
-class ConfigNamespace(astropyconfig.ConfigNamespace):
+class ConfigItem(_config.ConfigItem):
     rootname = 'dorado'
 
 
-class ConfigItem(astropyconfig.ConfigItem):
-    rootname = 'dorado'
+
+
+conf = ConfigNamespace()
+
+
+print('Dorado directory created: ', _config.get_config_dir('dorado'))
+

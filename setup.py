@@ -89,8 +89,8 @@ setup(
                        }
         )
 # where is this file? os.path.dirname(__file__)
-import  astropy.config as acfg
-
+# import  astropy.config as acfg
+# import ./dorado/config
 
 
 

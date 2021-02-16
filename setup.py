@@ -85,7 +85,7 @@ setup(
         'write_to': os.path.join('dorado', 'version.py'),
         'write_to_template': VERSION_TEMPLATE,
         "local_scheme": "no-local-version",
-        "version_scheme": "release-branch-semver"
+        "version_scheme": "python-simplified-semver"
                        }
         )
 # where is this file? os.path.dirname(__file__)

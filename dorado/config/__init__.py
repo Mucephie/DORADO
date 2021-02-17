@@ -28,6 +28,6 @@ class ConfigItem(_config.ConfigItem):
 
 conf = ConfigNamespace()
 print('Dorado directory created: ', conf.config_dir)
-conf.get_config.write()
+# conf.get_config.write()
 
 __all__ = ['conf']

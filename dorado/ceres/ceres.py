@@ -36,6 +36,25 @@ class ceres:
         for p in range(len(proc)):
             proc[p] = ccdproc.ccd_process(proc[p], master_bias = bias, master_flat = flat)
         self.data[filter] = proc
+    
+    def imarith(self, filter, operator, operand):
+        # mod to check datatype using type()
+        # mod to remove im_count and make possible to use single image
+        # mod to accomodate CCDdata object
+        series = self.data[filter]
+        for i in range(len(series)):
+            if (operator == '+'):
+                series[i].data = series[i].data  + operand
+            elif (operator == '-'):
+                series[i].data = series[i].data - operand
+            elif (operator == '/'):
+                series[i].data = series[i].data  / operand
+            elif (operator == '*'):
+                series[i].data = series[i].data  * operand
+        
+        self.data[filter] = series
+
+    # save to wrk
 
 
 

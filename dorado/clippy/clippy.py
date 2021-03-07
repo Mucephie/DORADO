@@ -2,13 +2,13 @@ import numpy as np
 from astropy import config as _config
 import os
 import datetime
+from pathlib import Path
+
 '''
 Clippy is the handler of the Dorado system,
 '''
 
 # __all__ = []
-rootname = 'dorado'
-config_dir = _config.get_config_dir(rootname)
 
 
 # os.environ['HOME'] is also the home directory if needed
@@ -41,6 +41,8 @@ config_dir = _config.get_config_dir(rootname)
 # getpass.getuser() similar to os.getlogin() gets username or login name. 
 
 
+
+
 class clippy:
 
     def __init__(self):
@@ -52,11 +54,14 @@ class clippy:
         # find most recetn calibration frame if none
         # -> figure out if none
         # clear cache function
+        self.stardir = os.getcwd()
+        self.rootname = 'dorado'
+        self.config_dir = _config.get_config_dir(self.rootname)
+        self.dordir = Path(self.config_dir).parent
         self.init_dir()
 
     def init_dir(self):
-        stardir = os.getcwd()
-        os.chdir(config_dir)
+        self.enter_dordir()
         os.makedirs('../data/wrk', exist_ok = True)
         os.makedirs('../data/flats', exist_ok = True)
         os.makedirs('../data/bias', exist_ok = True)
@@ -67,13 +72,12 @@ class clippy:
         os.makedirs('../targets', exist_ok = True)
         os.makedirs('../logs', exist_ok = True)
         os.makedirs('../cache', exist_ok = True)
-        os.chdir(stardir)
 
     def newdat(self):
         # find data that hasn't been processed yet
         print('searching for unprocessed data...')
     
-    def make_ceres(self, input):
+    def mkceres(self, input):
         # grab data from hardware storage and construct instance of ceres class
         output = input ()
         return output
@@ -95,6 +99,7 @@ class clippy:
                 Timestring for the most recent night.
         """
         # currently does not support first/last of the month
+        # option for last night or tonight
         date = datetime.date.today()
         year = date.year
         month = date.month
@@ -104,13 +109,83 @@ class clippy:
 
         return night
 
+    def enter_dordir(self):
+        os.chdir(self.config_dir)
+
+    def exit_dordir(self):
+        os.chdir(self.stardir)
+
+    def diread(self, date):
+        path = Path(os.getcwd() + '/' + date)
+        contents = os.scandir(path = path)
+        files = []
+        directories = []
+        for entry in contents:
+            if not entry.name.startswith('.'):
+                if entry.is_file():
+                    files.append(entry)
+                if entry.is_dir():
+                    directories.append(entry)
+        return files, directories
+    
+    def dirscan(self, date):
+
+        files, directories = self.diread(date)
+
+        biasstr = ['Bias', 'Bias', 'bias']
+        flatsstr = ['FLAT', 'FlatField', 'flat']
+        lightsstr = ['lights', 'Lights', 'LIGHTS']
+
+        if len(directories) == 0:
+            if len(files) == 0:
+                raise Exception('No viable data found')
+
+            else:
+                print('Single directory level organization format detected.')
+                print('Reading files.')
+                # compile these into master frame and pass them to clippy
+                bias = [s for s in directories if s.name in biasstr]
+                flats = [s for s in directories if s.name in flatsstr]
+                # strip into ceres (check if multi-filter)
+                lights = [s for s in directories if s.name in lightsstr]
+
+        elif len(files) == 0:
+            print('Multi directory level organization format detected.')
+            print('Reading directories.')
+            # read into this and compile into master bias, pass to clippy
+            bias = [s for s in directories if s.name in biasstr]
+            # check if multifilter, compile, pass to clippy
+            flats = [s for s in directories if s.name in flatsstr]
+            # check if multifilter (or subdirectories) and pass to ceres
+            lights = [s for s in directories if s.name in lightsstr]
+
+
 
 
 clip = clippy()
-# try:
-#     fp = open("myfile")
-# except PermissionError:
-#     return "some default data"
-# else:
-#     with fp:
-#         return fp.read()
+
+
+
+
+
+
+
+
+# scan a date directory, is the data in folders or just open
+# locate the science images, flats, darks, and bias images
+# is there more than one colour band? split them 
+# combine the calibration frames
+# save the calibration frames to dorado's directory (check if that one already exists)
+# we can compare these over time to look for its deviance
+
+# is this calibrated data? aligned?
+# extract the timestamps from each image
+
+
+
+# we need to pass the data stacks and their corresponding filters ( can we combine the stack and filter?)
+# make a stack class
+# we need to pass the calibration files(if none grab the most recent out of dorado by closest mjd)
+# if there is no calibration files in dorado send a warning and set calibration files to none
+# should there be a flag for calibrated and aligned?
+# pass observation date, timestrings, observatory metadata(weather, location, timezone, camera, telescope)

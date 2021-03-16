@@ -11,21 +11,24 @@ class Ceres:
     def __init__(self):
         # calibrate
         # metadata
-        self.data = {}
-        self.bias = False
+        self.filters = {}
+        self.data = []
+        self.bias = None
         self.flats = {}
         self.darks = {}
         self.time = {}
+        # date, location, weather, timezone, camera
         
 
-    def add_stack(self, stack, filter):
+    def add_stack(self, stack):
         # eventually stacks themelves should have some metadata 
         # to denote stuff like calibration status
-        self.data[filter] = stack
+        self.filters[stack.filter] = len(self.data)
+        self.data.append(stack)
         # this should also extract the time strings
 
     def rem_stack(self, filter):
-        del self.data[filter]
+        del self.data[self.filters[filter]]
         # delete time strings
 
     def calibrate(self, filter):
@@ -68,13 +71,21 @@ class Ceres:
 
 
 class Stack:
-    def __init__(self, data, filter = '', calibrated = None):
-        self.length = len(data)
+    def __init__(self, data, filter = '', calibrated = None, aligned = None):
         self.data = data
+        self.filter = filter
+        self.length = len(data)
         self.calibrated = calibrated
+        self.aligned = aligned
+        # include things like flux uncertainty etc.
+        # include times
+        # include wcs
+        # include target
+        # include CCD temp
+
         if filter == '':
             try:
                 filter = data[0].header['filter']
             except:
                 filter = ''
-        # include things like flux uncertainty etc.
+        

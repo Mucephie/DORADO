@@ -1,8 +1,20 @@
+import warnings
+warnings.filterwarnings('ignore')
+
+from astropy.nddata.ccddata import CCDData
+from ceres import Ceres, Stack
 import numpy as np
 from astropy import config as _config
+import astropy.units as un
+from ccdproc import ImageFileCollection
+import ccdproc
+
 import os
 import datetime
 from pathlib import Path
+
+
+
 
 '''
 Clippy is the handler of the Dorado system,
@@ -59,6 +71,7 @@ class clippy:
         self.config_dir = _config.get_config_dir(self.rootname)
         self.dordir = Path(self.config_dir).parent
         self.init_dir()
+        self.unit = un.adu
 
     def init_dir(self):
         self.enter_dordir()
@@ -76,11 +89,6 @@ class clippy:
     def newdat(self):
         # find data that hasn't been processed yet
         print('searching for unprocessed data...')
-    
-    def mkceres(self, input):
-        # grab data from hardware storage and construct instance of ceres class
-        output = input ()
-        return output
 
     def get_night(self):
         """
@@ -110,13 +118,13 @@ class clippy:
         return night
 
     def enter_dordir(self):
-        os.chdir(self.config_dir)
+        os.chdir(self.dordir)
 
     def exit_dordir(self):
         os.chdir(self.stardir)
 
     def diread(self, date):
-        path = Path(os.getcwd() + '/' + date)
+        path = self.dordir / 'data' / 'raw' / date
         contents = os.scandir(path = path)
         files = []
         directories = []
@@ -133,7 +141,7 @@ class clippy:
         files, directories = self.diread(date)
 
         biasstr = ['Bias', 'Bias', 'bias']
-        flatsstr = ['FLAT', 'FlatField', 'flat']
+        flatsstr = ['FLAT', 'FlatField', 'flat', 'Flat', 'Flats', 'flats', 'FLATS', 'FlatFields']
         lightsstr = ['lights', 'Lights', 'LIGHTS']
 
         if len(directories) == 0:
@@ -144,48 +152,157 @@ class clippy:
                 print('Single directory level organization format detected.')
                 print('Reading files.')
                 # compile these into master frame and pass them to clippy
-                bias = [s for s in directories if s.name in biasstr]
-                flats = [s for s in directories if s.name in flatsstr]
+                path = self.dordir / 'data' / 'raw' / date
+                # if np.any(for i in biasstr if i in s.name)
+                biasl = [s for s in files if s.name in biasstr]
+                bias = ImageFileCollection(location = path, filenames = biasl)
+                flatsl = [s for s in files if s.name in flatsstr]
+                flats = ImageFileCollection(location = path, filenames = flatsl)
                 # strip into ceres (check if multi-filter)
-                lights = [s for s in directories if s.name in lightsstr]
+                lightsl = [s for s in files if (s.name not in flatsstr) and (s.name not in biasstr)]
+                lights = ImageFileCollection(location = path, filenames = lightsl)
+                
+                return bias, flats, lights
+
 
         elif len(files) == 0:
             print('Multi directory level organization format detected.')
-            print('Reading directories.')
+            # print('Reading directories.')
             # read into this and compile into master bias, pass to clippy
-            bias = [s for s in directories if s.name in biasstr]
+            biasdir = [s for s in directories if s.name in biasstr]
             # check if multifilter, compile, pass to clippy
-            flats = [s for s in directories if s.name in flatsstr]
+            flatsdir = [s for s in directories if s.name in flatsstr]
             # check if multifilter (or subdirectories) and pass to ceres
-            lights = [s for s in directories if s.name in lightsstr]
+            lightsdir = [s for s in directories if (s.name not in flatsstr) and (s.name not in biasstr)]
+            biasl, _ = self.diread(biasdir[0])
+            bias = []
+            for i in biasl:
+                hdu = CCDData.read(i.path, unit = self.unit)
+                bias.append(hdu)
 
+
+            for ldir in lightsdir:
+                files, directories = self.diread(ldir)
+                if len(directories) == 0:
+                    if len(files) == 0:
+                        raise Exception('No viable light data found')
+                    else:
+                        print('Single directory lights organization format detected.')
+                        # print('Reading files.')
+                        lightsarr = []
+                        for i in files:
+                            hdu = CCDData.read(i.path, unit = self.unit)
+                            lightsarr.append(hdu)
+                        filter = ImageFileCollection(ldir).values('filter', unique = True)
+                        lights = [filter, lightsarr]
+
+                        
+                elif len(files) == 0:
+                    print('Multi directory lights organization format detected.')
+                    # print('Reading directories.')
+                    lights = []
+
+
+
+            for fdir in flatsdir:
+                files, directories = self.diread(fdir)
+                if len(directories) == 0:
+                    if len(files) == 0:
+                        raise Exception('No viable light data found')
+                    else:
+                        print('Single directory flats organization format detected.')
+                        # print('Reading files.')
+                        flats = []
+                        for i in files:
+                            hdu = CCDData.read(i.path, unit = self.unit)
+                            flats.append(hdu)
+
+                elif len(files) == 0:
+                    print('Multi directory flats organization format detected.')
+                    # print('Reading directories.')
+                    flats = []
+
+           
+            return bias, flats, lights
+
+    def mkFlat(self, flats):
+            """
+            mkFlat takes  a list of flats to construct a calibrated flatfield image.
+            
+            Parameters
+            ----------
+            flats: array[CCDdata]
+                    array of raw flatfields. ------------> this needs to be corrected for the new image storage format
+
+            Returns
+            -------
+            flat: CCDdata
+                    The combined calibrated flatfield image.
+            """
+            c = ccdproc.Combiner(flats)
+            c.sigma_clipping()
+            flat = c.median_combine()
+            # , method = 'average',
+            #                     sigma_clip = True, sigma_clip_low_thresh = 5, sigma_clip_high_thresh = 5,
+            #                     sigma_clip_func = np.ma.median, sigma_clip_dev_func = mad_std, unit = self.unit)
+            flat.header['stacked'] = True
+            flat.header['numsubs'] = len(flats)
+
+            return flat
+
+    def mkBias(self, biasIFC):
+            """
+            mkBias takes a list of bias images to construct 
+            a combined bias image. ------------> this needs to be corrected for the new image storage format
+            Parameters
+            ----------
+            biasIFC: array[CCDdata]
+                    array of raw bias images.
+
+            Returns
+            -------
+            bias: CCDdata
+                    The combined bias image.
+            """
+            # Allow specification of median or mean
+
+            bias = ccdproc.combine(biasIFC, method = 'average', unit = self.unit)
+            bias.meta['stacked'] = True
+            bias.header['numsubs'] = len(biasIFC)
+
+            return bias
+
+    def mkceres(self, date):
+            biasIFC, flats, lights = clip.dirscan(date)
+            flat = self.mkFlat(flats)
+            bias = self.mkBias(biasIFC)
+            # save these frames
+            time = [] # get_time() function
+
+            filter = lights[0][0]
+            lights = lights[1]
+            print(filter)
+
+            cere = Ceres()
+            cere.bias = bias
+            cere.flats = flat
+            cere.add_stack(Stack(lights, filter = filter, calibrated = False), filter)
+
+            return cere
 
 
 
 clip = clippy()
 
+# 2020-11-04+05
+cere = clip.mkceres('2020-11-04+05')
 
 
-
-
-
-
-
-# scan a date directory, is the data in folders or just open
-# locate the science images, flats, darks, and bias images
-# is there more than one colour band? split them 
-# combine the calibration frames
 # save the calibration frames to dorado's directory (check if that one already exists)
 # we can compare these over time to look for its deviance
 
 # is this calibrated data? aligned?
 # extract the timestamps from each image
 
-
-
-# we need to pass the data stacks and their corresponding filters ( can we combine the stack and filter?)
-# make a stack class
 # we need to pass the calibration files(if none grab the most recent out of dorado by closest mjd)
 # if there is no calibration files in dorado send a warning and set calibration files to none
-# should there be a flag for calibrated and aligned?
-# pass observation date, timestrings, observatory metadata(weather, location, timezone, camera, telescope)

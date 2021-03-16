@@ -17,7 +17,9 @@ class Ceres:
         self.flats = {}
         self.darks = {}
         self.time = {}
-        # date, location, weather, timezone, camera
+        # date, location, weather, timezone, camera, observer array
+        # refering instance of clippy to call and save later?
+        # or call clippy directly and feed it a ceres object
         
 
     def add_stack(self, stack):
@@ -44,7 +46,7 @@ class Ceres:
         # mod to check datatype using type()
         # mod to remove im_count and make possible to use single image
         # mod to accomodate CCDdata object
-        series = self.data[filter]
+        series = self.data[self.filters[filter]]
         for i in range(len(series)):
             if (operator == '+'):
                 series[i].data = series[i].data  + operand
@@ -55,33 +57,26 @@ class Ceres:
             elif (operator == '*'):
                 series[i].data = series[i].data  * operand
         
-        self.data[filter] = series
+        self.data[self.filters[filter]] = series
 
     # save to wrk
 
 
 
-# needs a way to save the stacks as one object and call them by name
-
-
-
-
-
-
-
-
 class Stack:
-    def __init__(self, data, filter = '', calibrated = None, aligned = None):
+    def __init__(self, data, filter = '', times = [], calibrated = None, aligned = None, target = ''):
         self.data = data
         self.filter = filter
         self.length = len(data)
         self.calibrated = calibrated
         self.aligned = aligned
+        self.target = target
+        self.target_info = {} # dictionary of values
+        self.times = times # put together a check for if filled, if not, try to find it.
+
         # include things like flux uncertainty etc.
-        # include times
         # include wcs
-        # include target
-        # include CCD temp
+
 
         if filter == '':
             try:

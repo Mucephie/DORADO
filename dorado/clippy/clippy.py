@@ -22,39 +22,6 @@ Clippy is the handler of the Dorado system,
 
 # __all__ = []
 
-
-# os.environ['HOME'] is also the home directory if needed
-# os.uname() for returning operating system information
-
-# os.open os.read os.write
-# os.get_terminal_size (gets columns, lines)
-
-# os.chdir for choosing current directory path
-# os.getcwd() get the current working directory
-# os.listdir(path='.') list directory contents by name
-
-# os.mkdir(path) make a directory
-# os.mkdirs(name, exist_ok = False) make directory and intermediate directories
-
-# os.remove(path) remove/delete a file path (not for directories)
-# os.rmdir(path) remove/delete a directory path (if dir is empty)
-# os.removedirs(name) recursively removes directories until it finds a non empty directory
-
-# os.rename(src, dst) rename a file or directory from src to dst
-# os.scandir(path='.') better than listdir, you can specify a file descriptor
-# with os.scandir(path) as it:
-#     for entry in it:
-#         if not entry.name.startswith('.') and entry.is_file():
-#             print(entry.name)
-
-# os.startfile(path[, operation]) acts like double clicking file in explorer to open with default
-# os.system(command) execute a system command string in subshell
-
-# getpass.getuser() similar to os.getlogin() gets username or login name. 
-
-
-
-
 class clippy:
 
     def __init__(self):
@@ -73,7 +40,7 @@ class clippy:
         self.init_dir()
         self.unit = un.adu
 
-    def init_dir(self):
+    def iniWt_dir(self):
         self.enter_dordir()
         os.makedirs('../data/wrk', exist_ok = True)
         os.makedirs('../data/flats', exist_ok = True)
@@ -306,3 +273,39 @@ cere = clip.mkceres('2020-11-04+05')
 
 # we need to pass the calibration files(if none grab the most recent out of dorado by closest mjd)
 # if there is no calibration files in dorado send a warning and set calibration files to none
+
+
+
+
+
+
+
+# os.environ['HOME'] is also the home directory if needed
+# os.uname() for returning operating system information
+
+# os.open os.read os.write
+# os.get_terminal_size (gets columns, lines)
+
+# os.chdir for choosing current directory path
+# os.getcwd() get the current working directory
+# os.listdir(path='.') list directory contents by name
+
+# os.mkdir(path) make a directory
+# os.mkdirs(name, exist_ok = False) make directory and intermediate directories
+
+# os.remove(path) remove/delete a file path (not for directories)
+# os.rmdir(path) remove/delete a directory path (if dir is empty)
+# os.removedirs(name) recursively removes directories until it finds a non empty directory
+
+# os.rename(src, dst) rename a file or directory from src to dst
+# os.scandir(path='.') better than listdir, you can specify a file descriptor
+# with os.scandir(path) as it:
+#     for entry in it:
+#         if not entry.name.startswith('.') and entry.is_file():
+#             print(entry.name)
+
+# os.startfile(path[, operation]) acts like double clicking file in explorer to open with default
+# os.system(command) execute a system command string in subshell
+
+# getpass.getuser() similar to os.getlogin() gets username or login name. 
+

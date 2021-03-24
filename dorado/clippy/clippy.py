@@ -48,6 +48,7 @@ class clippy:
         self.unit = un.adu
 
     def iniWt_dir(self):
+    def init_dir(self):
         self.enter_dordir()
         os.makedirs('../data/wrk', exist_ok = True)
         os.makedirs('../data/flats', exist_ok = True)
@@ -59,6 +60,18 @@ class clippy:
         os.makedirs('../targets', exist_ok = True)
         os.makedirs('../logs', exist_ok = True)
         os.makedirs('../cache', exist_ok = True)
+        os.makedirs('./data/wrk', exist_ok = True)
+        os.makedirs('./data/flats', exist_ok = True)
+        os.makedirs('./data/bias', exist_ok = True)
+        os.makedirs('./data/darks', exist_ok = True)
+        os.makedirs('./data/raw', exist_ok = True)
+        os.makedirs('./data/graphical', exist_ok = True)
+        os.makedirs('./data/projects', exist_ok = True)
+        os.makedirs('./targets', exist_ok = True)
+        os.makedirs('./logs', exist_ok = True)
+        os.makedirs('./cache', exist_ok = True)
+        os.makedirs('./cache/astrometryNet', exist_ok = True)
+        self.exit_dordir()
 
     def newdat(self):
         # find data that hasn't been processed yet

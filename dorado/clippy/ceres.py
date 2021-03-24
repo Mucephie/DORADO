@@ -216,4 +216,14 @@ class Stack:
                 print('Times set')
             except:
                 filter = ''
-        
+                        self.times = []
+     
+    def get_times(self):
+        times = []
+        for im in self.data:
+            times.append(Time(im.header['DATE-OBS'], format='fits'))
+        self.times = times
+
+    def get_target_info(self, target = None):
+        if target != None:
+            self.target = target

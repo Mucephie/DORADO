@@ -151,8 +151,10 @@ class clippy:
             else:
                 print('Single directory level organization format detected.')
                 print('Reading files.')
+                # print('Reading files.')
                 # compile these into master frame and pass them to clippy
                 path = self.dordir / 'data' / 'raw' / date
+                # path = self.dordir / 'data' / 'raw' / date
                 # if np.any(for i in biasstr if i in s.name)
                 biasl = [s for s in files if s.name in biasstr]
                 bias = ImageFileCollection(location = path, filenames = biasl)
@@ -190,11 +192,14 @@ class clippy:
                         print('Single directory lights organization format detected.')
                         # print('Reading files.')
                         lightsarr = []
+                        lights = []
                         for i in files:
                             hdu = CCDData.read(i.path, unit = self.unit)
                             lightsarr.append(hdu)
                         filter = ImageFileCollection(ldir).values('filter', unique = True)
                         lights = [filter, lightsarr]
+                        # filter = ImageFileCollection(ldir).values('filter', unique = True)
+                        # lights = [filter, lightsarr]
 
                         
                 elif len(files) == 0:

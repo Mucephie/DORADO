@@ -112,6 +112,14 @@ class clippy:
 
     def diread(self, date):
         path = self.dordir / 'data' / 'raw' / date
+    def diread(self, dirarray):
+        if isiterable(dirarray):
+            path = self.dordir
+            for dir in dirarray:
+                path = path / dir
+        else:
+            path = dirarray
+        # path = self.dordir / 'data' / 'raw' / date
         contents = os.scandir(path = path)
         files = []
         directories = []

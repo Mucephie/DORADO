@@ -48,6 +48,11 @@ class Ceres:
         # or call clippy directly and feed it a ceres object
         
 
+        try:
+            self.date = Time(int(self.time.mjd), format = 'mjd')
+        except:
+            self.date = None
+        
     def add_stack(self, stack):
         # eventually stacks themelves should have some metadata 
         # to denote stuff like calibration status

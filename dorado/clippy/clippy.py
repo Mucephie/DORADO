@@ -323,6 +323,8 @@ class clippy:
 
             return cere
 
+    def force16(self, hdu):
+        print('This function is not implemented yet. See mkBias() for example functionality.')
 
 
 clip = clippy()

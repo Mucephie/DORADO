@@ -318,6 +318,8 @@ class clippy:
             # for f in filter_data:
             # cere.flats[flat.header['filter']] = flat
             # filter = filter, 
+            cere.add_stack(Stack(lights[0:50], flat = flat, calibrated = False))
+            
 
             return cere
 

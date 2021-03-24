@@ -99,6 +99,28 @@ class Ceres:
         
         self.data[self.filters[filter]] = series
 
+    def align(self, filter, clippy, alignto = 0, getWCS = True):
+        series = self.data[self.filters[filter]]
+        toalign = series.data[alignto]
+        if getWCS:
+            fname, cachedir = clippy.mkcacheObj(toalign, 'astrometryNet')
+            path = [cachedir, fname]
+            writearray = [cachedir, 'solved.fits']
+            solved, wcs_header = clippy.plate_solve(path, writearray = writearray)
+            toalign = solved
+            self.data[self.filters[filter]].wcs = WCS(wcs_header)
+            # delete cache object
+            # save solved to target
+
+        aa_series = []
+        with ProgressBar(len(series.data)) as bar:
+            for image in series.data:
+                bar.update()
+                img, _ = aa.register(image.data, toalign.data)
+                aa_series.append(img)
+        self.data[self.filters[filter]].data = aa_series
+        self.data[self.filters[filter]].aligned = True
+
     # save to wrk
 
 

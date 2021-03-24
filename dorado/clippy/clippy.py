@@ -198,6 +198,7 @@ class clippy:
                             lightsarr.append(hdu)
                         filter = ImageFileCollection(ldir).values('filter', unique = True)
                         lights = [filter, lightsarr]
+                            lights.append(hdu)
                         # filter = ImageFileCollection(ldir).values('filter', unique = True)
                         # lights = [filter, lightsarr]
 

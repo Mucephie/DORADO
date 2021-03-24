@@ -278,6 +278,8 @@ class clippy:
             bias.meta['stacked'] = True
             bias.header['numsubs'] = len(biasIFC)
 
+            date = Time(bias.header['DATE-OBS'], format='fits').mjd
+            bias.data = bias.data.astype('uint16') 
             return bias
 
     def mkceres(self, date):

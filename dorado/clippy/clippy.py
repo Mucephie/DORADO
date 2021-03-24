@@ -3,6 +3,7 @@ warnings.filterwarnings('ignore')
 
 from astropy.nddata.ccddata import CCDData
 from ceres import Ceres, Stack
+from ceres import Ceres, Stack, zellars
 import numpy as np
 from astropy import config as _config
 from astropy.utils.misc import isiterable

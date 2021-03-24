@@ -22,6 +22,8 @@ from pathlib import Path
 
 
 
+ast = AstrometryNet()
+ast.api_key = 'jefjaaeekvrszphp'
 
 '''
 Clippy is the handler of the Dorado system,

@@ -296,6 +296,9 @@ class clippy:
 
     def mkceres(self, date):
             biasIFC, flats, lights = clip.dirscan(date)
+    def mkceres(self, date, sub = 'raw'):
+            dirarray = ['data', sub, date]
+            biasIFC, flats, lights = clip.dirscan(dirarray)
             flat = self.mkFlat(flats)
             bias = self.mkBias(biasIFC)
             # save these frames
@@ -304,6 +307,7 @@ class clippy:
             filter = lights[0][0]
             lights = lights[1]
             print(filter)
+            # print(filter)
 
             cere = Ceres()
             cere.bias = bias

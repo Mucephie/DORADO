@@ -405,8 +405,22 @@ class clippy:
 clip = clippy()
 
 # 2020-11-04+05
-cere = clip.mkceres('2020-11-04+05')
 
+
+
+
+
+clip = clippy()
+wasp33 = zellars('WASP33')
+cere = clip.mkceres('2020-11-04+05')
+# cere.calibrate('Red')
+cere.align('Red', clip)
+cere.dorphot('Red', wasp33)
+
+wasp33.ts[wasp33.filters['Red']].show_in_browser(jsviewer = True)
+
+
+print('Finished')
 
 # save the calibration frames to dorado's directory (check if that one already exists)
 # we can compare these over time to look for its deviance

@@ -357,6 +357,50 @@ class clippy:
 
         os.remove(cachedir / fname)
     
+    def plate_solve(self, dirarray, data = None, writearray = False):
+        path = self.dordir
+        for dir in dirarray:
+            path = path / dir
+
+        if data == None:
+            data = CCDData.read(path, unit = self.unit)
+
+        trying = True
+        submission_id = None
+        num = 0
+
+        while trying:
+                try:
+                    if not submission_id:
+                        wcs_header = ast.solve_from_image(path, force_image_upload=True, submission_id=submission_id, solve_timeout=300)
+                    else:
+                        print('Monitoring: try #', num)
+                        wcs_header = ast.monitor_submission(submission_id, solve_timeout=300)
+                except TimeoutError as e:
+                    print(TimeoutError)
+                    num = num + 1
+                    print('Timed out: try #', num)
+                    submission_id = e.args[1]
+
+                if wcs_header != None:
+                    # got a result, so terminate while loop
+                    trying = False
+        if wcs_header:
+            # Code to execute when solve succeeds
+            print('Solve succeeded! :)')
+            wcs_hdu = data
+            wcs_hdu.header = wcs_header
+            if writearray:
+                path = self.dordir
+                for dir in writearray:
+                    path = path / dir
+                wcs_hdu.write(path, overwrite = True)
+
+            return wcs_hdu, wcs_header
+        else:
+            # Code to execute when solve fails
+            print('Solve failed! :(')
+            return 
 
 clip = clippy()
 

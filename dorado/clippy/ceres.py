@@ -67,6 +67,8 @@ class Ceres:
     def calibrate(self, filter):
         # for bla in series: add bias corrected = True to header
         flat = self.flats[filter]
+        proc = self.data[self.filters[filter]]
+        flat = proc.flat
         bias = self.bias
         proc = self.data[filter]
         for p in range(len(proc)):

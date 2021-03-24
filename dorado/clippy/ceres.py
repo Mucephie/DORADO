@@ -166,6 +166,19 @@ class Ceres:
         zellars.ts.append(ts)
 
 
+
+class zellars:
+    def __init__(self, name):
+        # get it because zellars is the canadian target?
+        self.name = name
+        s = Simbad()
+        r = s.query_object(self.name)
+        # r.pprint()
+        # print(r.colnames)
+        self.coords = acoord(ra = r['RA'], dec = r['DEC'], unit = (un.hourangle, un.deg), frame = 'icrs')
+        
+
+
 class Stack:
     def __init__(self, data, filter = '', times = [], calibrated = None, aligned = None, target = ''):
         self.data = data

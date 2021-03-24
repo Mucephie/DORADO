@@ -134,6 +134,11 @@ class clippy:
     def dirscan(self, date):
 
         files, directories = self.diread(date)
+    def dirscan(self, dirarray):
+        path = self.dordir
+        for dir in dirarray:
+            path = path / dir
+        files, directories = self.diread(path)
 
         biasstr = ['Bias', 'Bias', 'bias']
         flatsstr = ['FLAT', 'FlatField', 'flat', 'Flat', 'Flats', 'flats', 'FLATS', 'FlatFields']

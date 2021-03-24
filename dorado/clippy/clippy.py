@@ -280,6 +280,18 @@ class clippy:
 
             date = Time(bias.header['DATE-OBS'], format='fits').mjd
             bias.data = bias.data.astype('uint16') 
+            fname = str(int(date)) + '_Bias.fits'
+            biasdir = self.dordir / 'data' / 'bias' 
+            contents = os.scandir(path = biasdir)
+            save = True
+            for entry in contents:
+                if fname in entry.name:
+                    save = False
+            if save:
+                print('Saving Bias for later use')
+                bias.write(biasdir / fname)
+            else:
+                print('Bias for date already saved.')
             return bias
 
     def mkceres(self, date):

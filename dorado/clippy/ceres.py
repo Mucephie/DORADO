@@ -75,6 +75,13 @@ class Ceres:
             proc[p] = ccdproc.ccd_process(proc[p], master_bias = bias, master_flat = flat)
         self.data[filter] = proc
     
+        with ProgressBar(len(proc.data)) as bar:
+            for p in range(len(proc.data)):
+                bar.update()
+                proc.data[p] = ccdproc.ccd_process(proc.data[p], master_bias = bias, master_flat = flat)
+        self.data[self.filters[filter]].data = proc
+        self.data[self.filters[filter]].calibrated = True
+
     def imarith(self, filter, operator, operand):
         # mod to check datatype using type()
         # mod to remove im_count and make possible to use single image

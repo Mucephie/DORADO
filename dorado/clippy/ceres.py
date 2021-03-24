@@ -217,6 +217,7 @@ class Stack:
             except:
                 filter = ''
                         self.times = []
+                self.times = []
      
     def get_times(self):
         times = []

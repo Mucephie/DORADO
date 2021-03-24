@@ -349,6 +349,14 @@ class clippy:
         object.write(cachedir / fname, overwrite = True)
         return(fname, cachedir)
 
+    def delcacheObj(self, fname, subcache = False):
+        if subcache:
+            cachedir = self.dordir / 'cache' / subcache
+        else:
+            cachedir = self.dordir / 'cache'
+
+        os.remove(cachedir / fname)
+    
 
 clip = clippy()
 

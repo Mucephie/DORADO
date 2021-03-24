@@ -39,6 +39,10 @@ class Ceres:
         self.flats = {}
         self.darks = {}
         self.time = {}
+        # self.flats = {}
+        # self.darks = {}
+        self.time = None
+        
         # date, location, weather, timezone, camera, observer array
         # refering instance of clippy to call and save later?
         # or call clippy directly and feed it a ceres object

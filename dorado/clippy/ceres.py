@@ -123,6 +123,47 @@ class Ceres:
 
     # save to wrk
 
+    def dorphot(self, filter, zellars):
+        # get seeing from PSF
+        stack = self.data[self.filters[filter]]
+        # if no wcs, complain alot
+        w = stack.wcs
+        print(w.wcs_world2pix(zellars.coords.ra.deg, zellars.coords.dec.deg, 1))
+        xy = w.wcs_world2pix(zellars.coords.ra.deg, zellars.coords.dec.deg, 1)
+        pos = Table(names=['x_0', 'y_0'], data=[float(xy[0]), float(xy[1])])
+        sigma_psf = 2.0
+        bkg_sigma = mad_std(stack.data[0]) 
+        daofind = DAOStarFinder(fwhm = 4., threshold = 3. * bkg_sigma)  
+        daogroup = DAOGroup(2.0 * sigma_psf * gaussian_sigma_to_fwhm)
+        mmm_bkg = MMMBackground()
+
+        psf_model = IntegratedGaussianPRF(sigma = sigma_psf)
+        psf_model.x_0.fixed = True
+        psf_model.y_0.fixed = True
+
+        fitter = LevMarLSQFitter()
+        bkgrms = MADStdBackgroundRMS()
+
+        ts = Table([[], [], [], [], [], [], [], []], names=('x', 'y', 'ra', 'dec', 'flux', 'flux_unc', 'time', 'exptime'), meta={'name': filter})
+
+        # if radec get xy
+        with ProgressBar(len(stack.data)) as bar:
+            for image in stack.data:
+                bar.update()
+                photometry = IterativelySubtractedPSFPhotometry(finder = daofind, group_maker = daogroup, bkg_estimator = mmm_bkg,
+                        psf_model = psf_model, fitter = LevMarLSQFitter(), niters = 1, fitshape = (21, 21))
+
+                results = photometry(image = image, init_guesses= pos)
+
+
+                time = Time(image.header['DATE-OBS'], format='fits')
+                exptime = image.header['EXPTIME']
+                [ra, dec] = w.wcs_pix2world(results['x_fit'], results['y_fit'])
+
+                ts.add_row(results['x_fit'], results['y_fit'], ra, dec, results['flux_fit'], results['flux_unc'], time, exptime)
+                # instrumental magnitude
+        zellars.filters[filter] = len(zellars.ts)
+        zellars.ts.append(ts)
 
 
 class Stack:

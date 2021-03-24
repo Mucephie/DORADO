@@ -326,6 +326,29 @@ class clippy:
     def force16(self, hdu):
         print('This function is not implemented yet. See mkBias() for example functionality.')
 
+    def mkcacheObj(self, object, subcache = False):
+        if subcache:
+            cachedir = self.dordir / 'cache' / subcache
+            dirarray = ['cache', subcache]
+        else:
+            cachedir = self.dordir / 'cache' 
+            dirarray = ['cache']
+        # if isiterable(object):
+        #     # print('This function does not currently support iterable objects.')
+        #     return warnings.WarningMessage('This function does not currently support iterable objects.')
+        # else:
+        #     files, _ = self.diread(dirarray)
+        #     fname = 'cache_object_' + str(len(files) + 1) + '.fits'
+        #     object.write(fname)
+        #     return(fname, cachedir)
+
+        # check if iterable
+        files, _ = self.diread(dirarray)
+        fname = 'cache_object_' + str(len(files) + 1) + '.fits'
+        
+        object.write(cachedir / fname, overwrite = True)
+        return(fname, cachedir)
+
 
 clip = clippy()
 

@@ -307,12 +307,17 @@ class clippy:
             filter = lights[0][0]
             lights = lights[1]
             print(filter)
+            # filter = lights[0][0]
             # print(filter)
 
             cere = Ceres()
             cere.bias = bias
             cere.flats = flat
             cere.add_stack(Stack(lights, filter = filter, calibrated = False), filter)
+            cere.time = Time(bias.header['DATE-OBS'], format='fits')
+            # for f in filter_data:
+            # cere.flats[flat.header['filter']] = flat
+            # filter = filter, 
 
             return cere
 

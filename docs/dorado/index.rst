@@ -71,39 +71,30 @@ Getting started with dorado:
 
 .. code:: python
 
-        import dorado
+        # import dorado utilities
+        from dorado.clipy import clippy
+        from dorado.Zellars import zellars
 
-        # Do some stuff
+        # make an instance of clippy
+        clip = clippy()
+        # create a target object
+        target = zellars('target_name')
+        # create a control target object
+        # create a series object
+        ceres = clip.mkceres('2021-01-01+02', target = target)
+        # calibrate the series red filter data
+        ceres.calibrate('R')
+        # align the series red filter data
+        ceres.align('R', clip, cache = True)
+        # save the resulting data
+        clip.savewrk(ceres)
 
-        # Get a fits file formated date string for the current observing night.
-        night = dorado.get_night() 
+        # perform differential photometry on the target in the red filter 
+        # data using the control as a reference
+        ceres.dorphotc('R', target, control, shape = 21)
+        # record the results
+        target.record(clip, ceres)
 
-        # Your data directory
-        directory = 'C:/Data/'
-
-        # You can name your target object
-        target = 'dorado'
-
-        # Create a working directory
-        dorado.mkwrkdir(directory, night)
-
-        # Catalogue input data from the data directory
-        bias_list, flats_list, lights_list = dorado.checkdir(directory, night)
-
-        # Read the data in
-        data_series = dorado.get_series(directory, night, lights_list, unit = None)
-        flats_series = dorado.get_series(directory, night, flats_list, unit = None)
-        bias_series = dorado.get_series(directory, night, bias_list, unit = None)
-
-        # Produce master reduction images
-        bias = dorado.mastBias(directory, night, bias_list)
-        flat = mastFlat(directory, night, flats_list, bias)
-
-        # Calibrate data series
-        series = dorado.reduce_series(directory, night, lights_list, flat, bias, target)
-
-        # You now have a working directory full of calibrated images
-        # It was that easy!
 
 Installation
 ------------
@@ -123,16 +114,18 @@ Currently DORADO relies on:
 
 2.  `matplotlib <https://matplotlib.org/>`_
 
-3.  `astropy <https://www.astropy.org/index.html>`_
+3.  `astropy <https://www.astropy.org/>`_
 
-4.  `CCDPROC <https://ccdproc.readthedocs.io/en/latest/index.html#>`_
+4.  `CCDPROC <https://ccdproc.readthedocs.io/>`_
 
-5.  `scipy <https://www.scipy.org/>`_
+5.  `photutils <https://photutils.readthedocs.io/>`_
 
-6.  `scikit-image <https://scikit-image.org/>`_
+6.  `astroalign <https://astroalign.readthedocs.io/>`_
 
-7.  `astroquery <https://astroquery.readthedocs.io/en/latest/#>`_
+7.  `astroquery <https://astroquery.readthedocs.io/>`_
 
+
+   
 Reference/API
 =============
 

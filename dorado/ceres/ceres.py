@@ -30,7 +30,7 @@ from astropy.stats import mad_std
 Ceres is the handler of series in Dorado,
 '''
 
-# __all__ = [Ceres]
+__all__ = ['Ceres']
 
 class Ceres:
 

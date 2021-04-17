@@ -2,6 +2,8 @@ import warnings
 warnings.filterwarnings('ignore')
 from astropy.time import Time
 
+__all__ = ['Stack']
+
 class Stack:
     def __init__(self, data, flat = None, filter = '', times = [], calibrated = None, aligned = None, target = None, alignTo = 0):
         self.data = data

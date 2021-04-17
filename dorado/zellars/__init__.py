@@ -1,4 +1,4 @@
 __all__ = []
 
-from .zellars import *
-__all__ += zellars.__all__
+from .Zellars import *
+__all__ += Zellars.__all__

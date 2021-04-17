@@ -4,8 +4,8 @@
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
 from ._astropy_init import *   # noqa
-from .Zellars import *
-# from .clippy import *
+from .zellars import *
+from .clippy import *
 # ----------------------------------------------------------------------------
 
 # __all__ = []

@@ -6,7 +6,7 @@
 from ._astropy_init import *   # noqa
 # ----------------------------------------------------------------------------
 
-__all__ = []
+# __all__ = []
 # from .config import *
 # from .example_mod import *   # noqa
 

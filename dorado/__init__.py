@@ -4,7 +4,7 @@
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
 from ._astropy_init import *   # noqa
-from .zellars import *
+from .Zellars import *
 # from .clippy import *
 # ----------------------------------------------------------------------------
 

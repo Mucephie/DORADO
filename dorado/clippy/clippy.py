@@ -2,9 +2,9 @@ import warnings
 warnings.filterwarnings('ignore')
 
 from astropy.nddata.ccddata import CCDData
-from .ceres import Ceres
+from .Ceres import Ceres
 from .Stack import Stack
-from .Zellars import zellars
+# from .Zellars import zellars
 import numpy as np
 from astropy import config as _config
 from astropy.utils.misc import isiterable
@@ -27,7 +27,7 @@ ast = AstrometryNet()
 Clippy is the handler of the Dorado system,
 '''
 
-# __all__ = []
+__all__ = ['clippy']
 
 class clippy:
 

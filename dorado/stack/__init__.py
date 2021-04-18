@@ -1,5 +1,6 @@
 
 __all__ = []
 
-from .Stack import *
-__all__ += Stack.__all__
+from .stack import *
+
+__all__ += stack.__all__

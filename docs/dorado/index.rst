@@ -67,7 +67,8 @@ Reference/API
 .. automodapi:: dorado
     
 
-.. automodsumm:: dorado
+.. automodsumm:: dorado.clippy
+
 
 Getting started with dorado:
 --------------
@@ -76,13 +77,13 @@ Getting started with dorado:
 .. code:: python
 
         # import dorado utilities
-        from dorado.clipy import clippy
-        from dorado.Zellars import zellars
+        from dorado.clippy import Clippy
+        from dorado.zellars import Zellars
 
         # make an instance of clippy
-        clip = clippy()
+        clip = Clippy()
         # create a target object
-        target = zellars('target_name')
+        target = Zellars('target_name')
         # create a control target object
         # create a series object
         ceres = clip.mkceres('2021-01-01+02', target = target)

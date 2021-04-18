@@ -62,8 +62,11 @@ Digitized Observatory Resources for Automated Data Operations (DORADO) is a pyth
     :maxdepth: 2
 
 
+.. toctree::
+    :maxdepth: 3
 
-
+.. toctree::
+    :maxdepth: 4
 
 Getting started with dorado:
 --------------

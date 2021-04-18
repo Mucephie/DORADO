@@ -27,9 +27,9 @@ ast = AstrometryNet()
 Clippy is the handler of the Dorado system,
 '''
 
-__all__ = ['clippy']
+__all__ = ['Clippy']
 
-class clippy:
+class Clippy:
 
     def __init__(self):
         # open and use logger

@@ -6,9 +6,9 @@ from astropy.coordinates import SkyCoord as acoord
 import numpy as np
 import astropy.units as un
 
-__all__ = ['zellars']
+__all__ = ['Zellars']
 
-class zellars:
+class Zellars:
     def __init__(self, name):
         # get it because zellars is the canadian target?
         self.name = name

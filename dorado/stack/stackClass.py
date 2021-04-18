@@ -4,7 +4,24 @@ from astropy.time import Time
 
 __all__ = ['Stack']
 
+''' 
+'dorado.stack' holds the base Stack class for handling correlated stacks of image objects. 
+The Stack class can be used alone, but is designed to work best from within other Dorado 
+components such as Ceres.
+'''
+
+
 class Stack:
+    '''
+    The Stack class handles correlated stacks of image objects and their associated data.
+    Stack exceeds simply storing stacks of images in an array or list by expanding upon the array
+    object to hold additional data about the image stack such as a WCS object, the enclosed target,
+    and the correlated calibration frames.
+
+    Attributes
+    ----------
+    
+    '''
     def __init__(self, data, flat = None, filter = '', times = [], calibrated = None, aligned = None, target = None, alignTo = 0):
         self.data = data
         self.flat = flat

@@ -67,9 +67,6 @@ Reference/API
 .. automodapi:: dorado
     
 
-.. automodsumm:: dorado.clippy
-
-
 Getting started with dorado:
 --------------
 

@@ -5,6 +5,9 @@
 # ----------------------------------------------------------------------------
 from ._astropy_init import *   # noqa
 from .zellars import *
+from .ceres import *
+from .stack import *
+from .clippy import *
 # from .clippy import *
 # ----------------------------------------------------------------------------
 

@@ -61,12 +61,13 @@ Digitized Observatory Resources for Automated Data Operations (DORADO) is a pyth
 .. toctree::
     :maxdepth: 2
 
+Reference/API
+=============
 
-.. toctree::
-    :maxdepth: 3
+.. automodapi:: dorado
+    
 
-.. toctree::
-    :maxdepth: 4
+.. automodsumm:: dorado
 
 Getting started with dorado:
 --------------
@@ -128,11 +129,6 @@ Currently DORADO relies on:
 7.  `astroquery <https://astroquery.readthedocs.io/>`_
 
 
-   
-Reference/API
-=============
-
-.. automodapi:: dorado
 
 
 Examples

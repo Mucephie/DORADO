@@ -20,3 +20,7 @@ from .clippy import *
 # __all__ += ['do_primes']   # noqa
 # or you can keep everything from the subpackage with the following instead
 # __all__ += example_mod.__all__
+
+
+# .. warning::
+# :mod:`word`

@@ -98,10 +98,15 @@ class Zellars:
         clippy: Clippy instance
             The active instance of clippy to handle writing the target file
         objectClass: str
-            Class of object to save the target under. Examples may be: 'star', 'galaxy', 'exoplanet'
-            'minor planet', 'satellite', 'white dwarf', 'nebula', 'messier_object', 'O_star', 'binary',
-            'globular_cluster', 'open_cluster', 'galaxy_cluster', 'quasar', 'AGN'. Users can craft their own 
-            object naming schemes.
+            Class of object to save the target under. 
+
+        Notes
+        -----
+        Examples of object classes may be: 'star', 'galaxy', 'exoplanet', 'minor planet', 'satellite', 
+        'white dwarf', 'nebula', 'messier_object', 'O_star', 'binary', 'globular_cluster', 'open_cluster', 
+        'galaxy_cluster', 'quasar', 'AGN'. 
+        
+        Users can craft their own object naming schemes.
         '''
         tardir = clippy.dordir / 'targets'
         if objectClass:

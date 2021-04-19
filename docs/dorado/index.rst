@@ -97,8 +97,10 @@ Getting started with dorado:
         # record the results
         target.record(clip, ceres)
 
-For more see: `Getting started <GettingStarted/>`_
-
+For more see: `Getting started <GettingStarted.rst/>`_
+`Getting started </GettingStarted.rst/>`_
+`Getting started <./GettingStarted.rst/>`_
+`Getting started <./GettingStarted/>`_
 Installation
 ------------
 

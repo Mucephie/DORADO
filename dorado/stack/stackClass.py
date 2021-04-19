@@ -25,23 +25,25 @@ class Stack:
         Array of CCDdata images.
 
     flat: CCDdata
-        Flatfield calibration frame for data stack.
+        Flatfield calibration frame for data stack. Optional
 
     filter: str
-        Name of filter data was collected in.
+        Name of filter data was collected in. Optional.
 
     times: array or list-like
-        Time for each image as an 'astropy.Time' object.
+        Time for each image as an 'astropy.Time' object. Optional.
 
     calibrated: Boolean
-        Whether the data is calibrated or not. Default is 'None'
-        
+        Whether the data is calibrated or not. Default is 'None'. Optional.
+
     aligned: Boolean
-        Whether the data is aligned or not. Default is 'None'
+        Whether the data is aligned or not. Default is 'None'. Optional.
+
     target: Zellars object
+        Instance of the Zellars astronomical target class containing the target of interest in the stack. Optional.
 
     alignTo: int
-
+        Index of the image which all other stack images should be aligned to. Default is  0. Optional.
 
     '''
     def __init__(self, data, flat = None, filter = '', times = [], calibrated = None, aligned = None, target = None, alignTo = 0):
@@ -77,12 +79,48 @@ class Stack:
                 self.times = []
      
     def get_times(self):
+        '''
+        get_times sequences through the stack data and passes the FITS header timestamp
+        for 'DATE-OBS' into 'astropy.time' and sets the resulting array of times as
+        'self.times'.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+
+        Sets
+        ----
+        self.times: array or list-like
+            array of 'astropy.time' objects for each image timestamp.
+        '''
         times = []
         for im in self.data:
             times.append(Time(im.header['DATE-OBS'], format='fits'))
         self.times = times
 
     def get_target_info(self, target = None):
+        '''
+        get_target_info is a convinience function for setting an instance of Zellars
+        as the Stack target object.
+        
+        Parameters
+        ----------
+        target: Zellars object
+            Instance of the Zellars astronomical target class containing the target of interest in the stack.
+
+        Returns
+        -------
+        None
+
+        Sets
+        ----
+        self.target: Zellars object
+            Target of interest in the stack.
+        '''
         if target != None:
             self.target = target
    

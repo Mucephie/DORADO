@@ -52,7 +52,7 @@ This is the documentation hub  for dorado.
 
 
 
-..  /dorado/imreduc/index.rst
+
 
 
 .. note:: Due to the nature of this project, these pages may change rapidly without notice. Effort is made to ensure these pages are up to date and effective.

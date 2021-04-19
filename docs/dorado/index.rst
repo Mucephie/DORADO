@@ -98,6 +98,7 @@ Getting started with dorado:
         target.record(clip, ceres)
 
 For more see: 
+
 .. toctree:: 
     :maxdepth: 1
     GettingStarted

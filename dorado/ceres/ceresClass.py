@@ -33,7 +33,26 @@ Ceres is the handler of series in Dorado,
 __all__ = ['Ceres']
 
 class Ceres:
+    '''
+    The Ceres class encapsulates a set of astronomical data from a single night of observation.
+    Ceres can handle multiple stacks of data in different filters and perform a variety of
+    actions on them in an orgainized fashion.
 
+    Attributes
+    ----------
+
+    filters: dictionary
+
+    data: Stack array
+
+    bias: CCDdata
+
+    time: 'astropy.Time' 
+
+    datestr: str
+
+    
+    '''
     def __init__(self, filters = {}, data = [], bias = None, time = None, datestr = None):
         # metadata
         self.filters = filters
@@ -154,6 +173,7 @@ class Ceres:
         self.data[self.filters[filter]].data = aa_series
         self.data[self.filters[filter]].aligned = True
 
+    # TODO: Merge these two
     def dorphot(self, filter, zellars):
         # get seeing from PSF
         stack = self.data[self.filters[filter]]
@@ -271,87 +291,3 @@ class Ceres:
         zellars.filters[filter] = len(zellars.ts)
         zellars.ts.append(ts)
 
-
-# class Stack:
-#     def __init__(self, data, flat = None, filter = '', times = [], calibrated = None, aligned = None, target = None, alignTo = 0):
-#         self.data = data
-#         self.flat = flat
-#         self.filter = filter
-#         self.length = len(data)
-#         self.calibrated = calibrated
-#         self.aligned = aligned
-
-#         self.target = target
-#         self.target_info = {} # dictionary of values, call simbad?
-
-#         self.times = times 
-#         self.wcs = None
-#         self.alignTo = alignTo
-#         self.solved = None
-#         # include things like flux uncertainty etc.
-#         # save data
-#         # if flat is none, call clippy for help
-
-#         if self.filter == '':
-#             try:
-#                 self.filter = data[0].header['filter']
-#             except:
-#                 self.filter = ''
-        
-#         if self.times == []:
-#             try: 
-#                 self.get_times()
-#                 print('Times set')
-#             except:
-#                 self.times = []
-     
-#     def get_times(self):
-#         times = []
-#         for im in self.data:
-#             times.append(Time(im.header['DATE-OBS'], format='fits'))
-#         self.times = times
-
-#     def get_target_info(self, target = None):
-#         if target != None:
-#             self.target = target
-        
-
-# class zellars:
-#     def __init__(self, name):
-#         # get it because zellars is the canadian target?
-#         self.name = name
-#         s = Simbad()
-#         r = s.query_object(self.name)
-#         self.filters = {}
-#         self.ts = []
-#         # r.pprint()
-#         # print(r.colnames)
-#         self.coords = acoord(ra = r['RA'], dec = r['DEC'], unit = (un.hourangle, un.deg), frame = 'icrs')
-#         # xy coordinates
-        
-#     def calcmag(self, filter):
-#         flux  = self.ts[self.filters[filter]]['flux']
-#         flux_unc = self.ts[self.filters[filter]]['flux_unc']
-#         magnitudes = -2.5 * np.log10(flux / 15)
-#         mag_unc = flux_unc / ((flux / 15) * 2.30258509)
-#         self.ts[self.filters[filter]]['mag'] = magnitudes
-#         self.ts[self.filters[filter]]['mag_unc'] = mag_unc
-
-#     def record(self, clippy, cr, saveType = 'fits'):
-#         wrkdir = clippy.dordir / 'data' / 'wrk'
-#         if cr.datestr == None:
-#             cr.datestr = clippy.getDateString(cr)
-#         datestr = cr.datestr
-#         wrdir = wrkdir / datestr
-#         clippy.mkwrk(cr)
-#         for fi in self.filters.keys():
-#             wrts = self.ts[self.filters[fi]]
-#             fname = str(self.name) + '_' + str(fi) + '-' + str(int(cr.date.mjd)) + '.' + saveType
-#             wrts.write(wrdir / fname, overwrite = True)
-        
-#     def export(self, clippy, cr, objectClass = None):
-#         tardir = clippy.dordir / 'targets'
-#         if objectClass:
-#             os.makedirs(tardir / objectClass, exist_ok = True)
-#             tardir = tardir / objectClass
-        

@@ -13,7 +13,7 @@ components such as Ceres.
 
 class Stack:
     '''
-    The Stack class handles correlated stacks of image objects and their associated data.
+    The Stack class encapsulates correlated stacks of image objects and their associated data.
     Stack exceeds simply storing stacks of images in an array or list by expanding upon the array
     object to hold additional data about the image stack such as a WCS object, the enclosed target,
     and the correlated calibration frames.
@@ -90,12 +90,9 @@ class Stack:
 
         Returns
         -------
-        None
-
-        Sets
-        ----
         self.times: array or list-like
             array of 'astropy.time' objects for each image timestamp.
+
         '''
         times = []
         for im in self.data:

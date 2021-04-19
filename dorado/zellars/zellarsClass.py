@@ -10,7 +10,7 @@ __all__ = ['Zellars']
 
 class Zellars:
     '''
-    The Zellars class represents an astronomical target and handles the targets releventt attributes.
+    The Zellars class represents an astronomical target and handles the targets relevent attributes.
     Unpassed target parameters will be gathered via astroquery (SIMBAD).
 
     Attributes
@@ -35,6 +35,19 @@ class Zellars:
         '''
         calcmag converts the targets flux and associated uncertainty into an 
         instrumental magnitude and uncertainty.
+
+        Parameters
+        ----------
+        filter: str
+            String representation of the relevent filter.
+
+        Returns
+        -------
+        None
+
+        Sets
+        ----
+        self.ts[filter]['mag'] and self.ts[filter]['mag_unc']
 
         '''
         flux  = self.ts[self.filters[filter]]['flux']

@@ -97,7 +97,7 @@ Getting started with dorado:
         # record the results
         target.record(clip, ceres)
 
-For more see: `Getting started <GettingStarted.html/>`_
+For more see: .. toctree:: GettingStarted
 
 Installation
 ------------

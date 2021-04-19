@@ -20,7 +20,29 @@ class Stack:
 
     Attributes
     ----------
-    
+
+    data: CCDdata array
+        Array of CCDdata images.
+
+    flat: CCDdata
+        Flatfield calibration frame for data stack.
+
+    filter: str
+        Name of filter data was collected in.
+
+    times: array or list-like
+        Time for each image as an 'astropy.Time' object.
+
+    calibrated: Boolean
+        Whether the data is calibrated or not. Default is 'None'
+        
+    aligned: Boolean
+        Whether the data is aligned or not. Default is 'None'
+    target: Zellars object
+
+    alignTo: int
+
+
     '''
     def __init__(self, data, flat = None, filter = '', times = [], calibrated = None, aligned = None, target = None, alignTo = 0):
         self.data = data

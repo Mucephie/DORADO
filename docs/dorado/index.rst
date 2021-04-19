@@ -97,12 +97,8 @@ Getting started with dorado:
         # record the results
         target.record(clip, ceres)
 
-For more see: 
+For more see: `Getting Started <dorado/GettingStarted/>`_
 
-.. toctree:: 
-    :maxdepth: 1
-    
-    GettingStarted
 
 Installation
 ------------

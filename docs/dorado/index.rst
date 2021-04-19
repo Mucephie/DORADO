@@ -97,7 +97,7 @@ Getting started with dorado:
         # record the results
         target.record(clip, ceres)
 
-For more see: :ref:`GettingStarted`
+For more see: `Getting started <GettingStarted/>`_
 
 Installation
 ------------

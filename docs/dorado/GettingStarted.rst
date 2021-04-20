@@ -61,4 +61,4 @@ world cope with CRT displays, cleaning mouse balls, and the blue screen of death
 the ghost of clippy is back to help you manage and organized and effective local astronomical
 file system. 
 
-.. image:: /dorado/_static/clippy.jfif
+.. image:: /dorado/_static/clippy.png

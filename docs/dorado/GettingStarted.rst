@@ -13,7 +13,31 @@ Install dorado by running the command: ``pip install dorado``.
     .. note:: The `dorado <https://pypi.org/project/dorado/>`_ project on `PyPI <https://pypi.org/>`_ . 
 
 Pip should install all relevent dependencies for dorado into the python environment 
-pip was run from.
+pip was run from. The dorado team recommends using the latest version of python unless otherwise 
+mentioned for the best compatibility.
+
+Dependencies
+-------------
+
+Dorado aims to be as lightweight as possible and utilize as little dependencies as it can. 
+
+Currently DORADO relies on:  
+
+1.  `numpy <http://www.numpy.org/>`_
+
+2.  `matplotlib <https://matplotlib.org/>`_
+
+3.  `astropy <https://www.astropy.org/>`_
+
+4.  `CCDPROC <https://ccdproc.readthedocs.io/>`_
+
+5.  `photutils <https://photutils.readthedocs.io/>`_
+
+6.  `astroalign <https://astroalign.readthedocs.io/>`_
+
+7.  `astroquery <https://astroquery.readthedocs.io/>`_
+
+
 
 Babies first Dorado script
 ==========================
@@ -53,12 +77,5 @@ import, initialize, and call.
         target.record(clip, ceres)
 
 
-Getting to know Clippy
-======================
-
-You may remember that condescending paperclip from the 90s that helped a computer iliterate
-world cope with CRT displays, cleaning mouse balls, and the blue screen of death; well now 
-the ghost of clippy is back to help you manage and organized and effective local astronomical
-file system. 
-
-.. image:: /dorado/_static/clippy.png
+Next: :doc:`Clippy</dorado/Clippy/clippy>`
+------------------------------------------

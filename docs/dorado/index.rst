@@ -57,49 +57,12 @@ Digitized Observatory Resources for Automated Data Operations (DORADO) is a pyth
                 Use of DORADO while in beta will not result in any risk to your computer or hardware, but may affect stability of software that are written with DORADO or the quality of data that is produced using DORADO.
 
                 During the beta, documentation and code commenting may be subpar as many things will being changing regularly with new code being written and rewritten and in-line testing appearing temporarily.
-
-.. toctree::
-    :maxdepth: 2
-
-Reference/API
-=============
-
-.. automodapi:: dorado
     
 
 Getting started with dorado:
 --------------
 
-
-.. code:: python
-
-        # import dorado utilities
-        from dorado.clippy import Clippy
-        from dorado.zellars import Zellars
-
-        # make an instance of clippy
-        clip = Clippy()
-        # create a target object
-        target = Zellars('target_name')
-        # create a control target object
-        # create a series object
-        ceres = clip.mkceres('2021-01-01+02', target = target)
-        # calibrate the series red filter data
-        ceres.calibrate('R')
-        # align the series red filter data
-        ceres.align('R', clip, cache = True)
-        # save the resulting data
-        clip.savewrk(ceres)
-
-        # perform differential photometry on the target in the red filter 
-        # data using the control as a reference
-        ceres.dorphotc('R', target, control, shape = 21)
-        # record the results
-        target.record(clip, ceres)
-
-For more see: :doc:`Getting Started</dorado/GettingStarted>`
-
-
+For help getting started see: :doc:`Getting Started</dorado/GettingStarted>`
 
 
 Installation
@@ -109,36 +72,16 @@ Install dorado by running: ``pip install dorado``.
 
     .. note:: The `dorado <https://pypi.org/project/dorado/>`_ project on `PyPI <https://pypi.org/>`_ .
 
-Dependencies
--------------
-
-Dorado aims to be as lightweight as possible and utilize as little dependencies as it can. 
-
-Currently DORADO relies on:  
-
-1.  `numpy <http://www.numpy.org/>`_
-
-2.  `matplotlib <https://matplotlib.org/>`_
-
-3.  `astropy <https://www.astropy.org/>`_
-
-4.  `CCDPROC <https://ccdproc.readthedocs.io/>`_
-
-5.  `photutils <https://photutils.readthedocs.io/>`_
-
-6.  `astroalign <https://astroalign.readthedocs.io/>`_
-
-7.  `astroquery <https://astroquery.readthedocs.io/>`_
-
-
-
 
 Examples
 --------
 
 In the near future examples, tutorials, and pre-made use scripts will be located here. The first release of Dorado should ship with an example pipeline and data formatting tutorial.
 
+Reference/API
+=============
 
+.. automodapi:: dorado
 
 Contribute
 ----------

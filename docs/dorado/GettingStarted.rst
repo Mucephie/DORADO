@@ -78,4 +78,3 @@ import, initialize, and call.
 
 
 Next: :doc:`Clippy</dorado/Clippy/clippy>`
-------------------------------------------

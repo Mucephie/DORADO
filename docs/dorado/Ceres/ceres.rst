@@ -1,4 +1,4 @@
 Ceres
 =====
 
-Previous: :doc:`Clippy</../Clippy/clippy>`
+Previous: :doc:`Clippy</Clippy/clippy>`

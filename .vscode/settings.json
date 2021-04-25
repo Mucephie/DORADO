@@ -1,4 +1,8 @@
 {
     "restructuredtext.confPath": "${workspaceFolder}\\docs",
+<<<<<<< Updated upstream
     "python.pythonPath": "/usr/bin/python"
+=======
+    "python.pythonPath": "C:\\Users\\mucep\\AppData\\Local\\Microsoft\\WindowsApps\\python3.9.exe"
+>>>>>>> Stashed changes
 }

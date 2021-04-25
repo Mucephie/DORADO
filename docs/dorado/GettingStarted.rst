@@ -77,4 +77,4 @@ import, initialize, and call.
         target.record(clip, ceres)
 
 
-Next: :doc:`Clippy</dorado/Clippy/clippy>`
+Next: :doc:`Clippy</dorado/clippy>`

@@ -8,8 +8,7 @@ file system.
 
 .. image:: /dorado/_static/clippy.png
 
-Previous: doc:`Getting Started</GettingStarted>`_ || Next: doc:`Ceres</ceres>`_
+Previous: doc:`Getting Started</dorado/GettingStarted>` || Next: doc:`Ceres</dorado/ceres>`
 
-Previous: doc:`Getting Started</GettingStarted>`_ 
---------------------------------------------------
+
 

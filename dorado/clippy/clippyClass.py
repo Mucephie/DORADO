@@ -56,7 +56,7 @@ class Clippy:
         os.makedirs('./data/raw', exist_ok = True)
         os.makedirs('./data/graphical', exist_ok = True)
         os.makedirs('./data/projects', exist_ok = True)
-        os.makedirs('./targets', exist_ok = True)
+        os.makedirs('./data/targets', exist_ok = True)
         os.makedirs('./logs', exist_ok = True)
         os.makedirs('./cache', exist_ok = True)
         os.makedirs('./cache/astrometryNet', exist_ok = True)

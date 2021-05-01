@@ -108,7 +108,7 @@ class Zellars:
         
         Users can craft their own object naming schemes.
         '''
-        tardir = clippy.dordir / 'targets'
+        tardir = clippy.dordir / 'data/targets'
         if objectClass:
             os.makedirs(tardir / objectClass, exist_ok = True)
             tardir = tardir / objectClass

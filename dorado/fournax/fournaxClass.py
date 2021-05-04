@@ -196,3 +196,5 @@ class Fournax(Zellars):
         return y
 
     def analyze(self, filter, graphical = True):
+        
+        self.superfit(filter = filter, terms = len(self.flux)/3, s = len(self.flux))

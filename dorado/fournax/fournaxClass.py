@@ -1,5 +1,7 @@
 import numpy as np
 from ..zellars import Zellars
+import astropy.units as un
+from scipy.signal import find_peaks
 '''
 Fournax is an abbreviation of Fourier numerical astronomy extension, its name is a backronym styled to match the constellation 'fornax'. 
 
@@ -28,23 +30,19 @@ class Fournax(Zellars):
             The period between extrema of interest corresponding to the ephemeris epoch given. 
 
     '''
-    def __init__(self, name, epoch = None, period = None):  
+    def __init__(self, name, epoch = None, period = None): 
+        ## Inherit from Ceres object (date, ts, etc.) 
         Zellars.__init__(name)
 
-        ## Inherit from Ceres object (date, ts, etc.)
-
-        self.toml = []
-        self.OmC = []
         self.freq = [] # Array of observed frequencies (Raw)
         ## NOTE:: Should frequencies be cleaned for aliasing, can the spread of aliasing peak values provide a measure of uncertainty on the fundamental frequency?
 
-        # self.symbo = None # make a symbolic expression to represent the curve analytically.
-
         self.Operiod = None # Observed period
         self.Operiod_unc = None # Uncertainty on period
+        self.Ofreq = None # observed frequencies
 
 
-
+        ## verify ephemeris TODO:: make into a dummy function
         if (epoch == None) and (period == None):
             print('No ephemeris data given for target')
 
@@ -66,15 +64,10 @@ class Fournax(Zellars):
             print('Epoch given: ', epoch)
 
         
-    def OMinusC(self, OBS):
+    def OMinusC(self, filter):
         '''
             OMinusC takes observed time(s) of max light for a repeating variable star and ephemeris data and returns O-C values as well as the corresponding cycle.
 
-            Parameters
-            ----------
-
-            OBS: float, list, or array
-                    Observed time(s) of max light
 
 
             Returns
@@ -89,13 +82,13 @@ class Fournax(Zellars):
 
         ## TODO:: accomodate an array of toml values. This will shift this function from returning values to a wrapper function to setting values.
         
-        cycle_ref = (OBS - self.epoch) / self.period
+        cycle_ref = (self.ts[self.filters[filter]].toml - self.epoch) / self.period
         cycle = np.round(cycle_ref)
-        OmC = OBS - (self.epoch + cycle * self.period)
+        OmC = self.ts[self.filters[filter]].toml - (self.epoch + cycle * self.period)
 
-        return cycle, OmC
-        
-    
+        self.ts[self.filters[filter]].OmC = OmC
+        self.ts[self.filters[filter]].cycle = cycle
+   
     def superfit(self, filter, terms, s):
         '''
             superfit takes a raw timeseries and performs a multistep smoothed fit of the data
@@ -140,7 +133,6 @@ class Fournax(Zellars):
 
         self.ts[self.filters[filter]].fit_flux = Y
         self.ts[self.filters[filter]].fit_times = X
-
 
     def smooth(self, x, window_len=11, window='hanning'):
         """smooth the data using a window with requested size.
@@ -196,5 +188,48 @@ class Fournax(Zellars):
         return y
 
     def analyze(self, filter, graphical = True):
-        
+
         self.superfit(filter = filter, terms = len(self.flux)/3, s = len(self.flux))
+        # Find times of max light
+        self.tomlFind(filter = filter)
+        # calculate O-C
+        self.OMinusC(filter = filter)
+        # frequency analysis
+        self.fourFind(filter = filter)
+    
+    def fourFind(self, filter, fitted = True):
+        if fitted and (self.ts[self.filters[filter]].fit_flux != []):
+            Y = self.ts[self.filters[filter]].fit_flux
+            X = self.ts[self.filters[filter]].fit_times 
+        else:
+            Y = self.ts[self.filters[filter]].flux
+            X = self.ts[self.filters[filter]].times 
+             
+        # Set up a Fourier power spectra from photometric amplitude values
+        # Compute real valued Fourier transform
+        f = np.fft.fft(Y)
+        p = np.square(np.abs(f))
+        # timestep currently defaults to units of days, whereas exposure time is in seconds
+        timestep = (np.mean(self.ts[self.filters[filter]].exptimes) * un.sec).to(un.day).value
+
+        # Build an array of frequencies to plot against
+        freq_vec = np.fft.fftfreq(len(Y), d = timestep)
+
+        # find frequency peaks
+        peaks, _ = find_peaks(p, height = np.mean(p))
+
+        # Return frequency vector for plotting?
+
+    def tomlFind(self, filter, fitted = True):
+        if fitted and (self.ts[self.filters[filter]].fit_flux != []):
+            Y = self.ts[self.filters[filter]].fit_flux
+            X = self.ts[self.filters[filter]].fit_times 
+        else:
+            Y = self.ts[self.filters[filter]].flux
+            X = self.ts[self.filters[filter]].times 
+        
+        peaks, _ = find_peaks(Y, height = 1.1 * np.mean(Y))
+
+        toml = X[peaks]
+
+        self.ts[self.filters[filter]].toml = toml

@@ -10,17 +10,17 @@ __all__ = ['Zellars']
 
 class Zellars:
     '''
-    The Zellars class represents an astronomical target and handles the targets relevent attributes.
-    Unpassed target parameters will be gathered via astroquery (SIMBAD).
+        The Zellars class represents an astronomical target and handles the targets relevent attributes.
+        Unpassed target parameters will be gathered via astroquery (SIMBAD).
 
-    The name is a reference to the now defunct Canadian store chain, Zellars, which many Canadians
-    saw as the Canadian version of the American store chain, Target.
+        The name is a reference to the now defunct Canadian store chain, Zellars, which many Canadians
+        saw as the Canadian version of the American store chain, Target.
 
-    Attributes
-    ----------
+        Attributes
+        ----------
 
-    name: str
-        name of target in string format.
+        name: str
+            name of target in string format.
     '''
     def __init__(self, name):
         self.name = name
@@ -31,7 +31,7 @@ class Zellars:
         
         self.filters = {}
         self.ts = []
-        # xy coordinates
+
         
     def calcmag(self, filter):
         '''

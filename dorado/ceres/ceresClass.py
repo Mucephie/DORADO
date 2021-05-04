@@ -26,32 +26,34 @@ from photutils import DAOStarFinder
 from astropy.stats import mad_std
 # from astroquery.simbad import Simbad
 
+from .timeseries import timeSeries
+
 '''
-Ceres is the handler of series in Dorado,
+Ceres is the handler of image series in Dorado,
 '''
 
 __all__ = ['Ceres']
 
 class Ceres:
     '''
-    The Ceres class encapsulates a set of astronomical data from a single night of observation.
-    Ceres can handle multiple stacks of data in different filters and perform a variety of
-    actions on them in an orgainized fashion.
+        The Ceres class encapsulates a set of astronomical data from a single night of observation.
+        Ceres can handle multiple stacks of data in different filters and perform a variety of
+        actions on them in an orgainized fashion.
 
-    Attributes
-    ----------
+        Attributes
+        ----------
 
-    filters: dictionary
+        filters: dictionary
 
-    data: Stack array
+        data: Stack array
 
-    bias: CCDdata
+        bias: CCDdata
 
-    time: 'astropy.Time' 
+        time: 'astropy.Time' 
 
-    datestr: str
+        datestr: str
 
-    
+        
     '''
     def __init__(self, filters = {}, data = [], bias = None, time = None, datestr = None):
         # metadata
@@ -173,17 +175,20 @@ class Ceres:
         self.data[self.filters[filter]].data = aa_series
         self.data[self.filters[filter]].aligned = True
 
-    # TODO: Merge these two
-    def dorphot(self, filter, zellars):
+
+    def dorphot(self, filter, zellars, zcontrol = None, shape = 21):
         # get seeing from PSF
         stack = self.data[self.filters[filter]]
         # if no wcs, complain alot
         w = stack.wcs
         xy = w.wcs_world2pix(zellars.coords.ra.deg, zellars.coords.dec.deg, 1)
+        if zcontrol != None:
+            xyc = w.wcs_world2pix(zcontrol.coords.ra.deg, zcontrol.coords.dec.deg, 1)
+            pos = Table(names=['x_0', 'y_0'], data = ([float(xy[0]), float(xyc[0])], [float(xy[1]), float(xyc[1])]))
 
-        print(float(xy[0]), ' : ',  float(xy[1]))
+        else:
+            pos = Table(names=['x_0', 'y_0'], data = ([float(xy[0])], [float(xy[1])]))
 
-        pos = Table(names=['x_0', 'y_0'], data=xy)
         sigma_psf = 2.0
         bkg_sigma = mad_std(stack.data[0]) 
         daofind = DAOStarFinder(fwhm = 4., threshold = 3. * bkg_sigma)  
@@ -205,67 +210,8 @@ class Ceres:
         y = []
         flux = []
         fluxunc = []
-        # if radec get xy
-        with ProgressBar(len(stack.data)) as bar:
-            for image in stack.data:
-                bar.update()
-                photometry = IterativelySubtractedPSFPhotometry(finder = daofind, group_maker = daogroup, bkg_estimator = mmm_bkg,
-                        psf_model = psf_model, fitter = LevMarLSQFitter(), niters = 1, fitshape = (21, 21))
-                results = photometry(image = image, init_guesses= pos)
-                [ra, dec] = w.wcs_pix2world(results['x_fit'], results['y_fit'], 1)
-                
-                times.append(Time(image.header['DATE-OBS']))
-                exptimes.append(image.header['EXPTIME'])
-                ray.append(ra)
-                decx.append(dec)
-                x.append(results['x_fit'])
-                y.append(results['y_fit'])
-                flux.append(results['flux_fit'])
-                fluxunc.append(results['flux_unc'])
-                # if ts:
-                    # ts.add_row([time, exptime, results['x_fit'], results['y_fit'], ra, dec, results['flux_fit'], results['flux_unc']])
-                # else:
-                    # ts = QTable([time, exptime, results['x_fit'], results['y_fit'], ra, dec, results['flux_fit'], results['flux_unc']], names=('time', 'exptime', 'x', 'y', 'ra', 'dec', 'flux', 'flux_unc'), meta={'name': filter})
-                # instrumental magnitude
-        ts = QTable([times, exptimes, x, y, ray, decx, flux, fluxunc], names=('time', 'exptime', 'x', 'y', 'ra', 'dec', 'flux', 'flux_unc'), meta={'name': filter})
-        
-        zellars.filters[filter] = len(zellars.ts)
-        zellars.ts.append(ts)
-
-    def dorphotc(self, filter, zellars, zcontrol, shape = 21):
-        # get seeing from PSF
-        stack = self.data[self.filters[filter]]
-        # if no wcs, complain alot
-        w = stack.wcs
-        xy = w.wcs_world2pix(zellars.coords.ra.deg, zellars.coords.dec.deg, 1)
-        xyc = w.wcs_world2pix(zcontrol.coords.ra.deg, zcontrol.coords.dec.deg, 1)
-        
-        # print(float(xy[0]), ' : ',  float(xy[1]))
-        # print(xyc)
-
-        pos = Table(names=['x_0', 'y_0'], data = ([float(xy[0]), float(xyc[0])], [float(xy[1]), float(xyc[1])]))
-        # print(pos)
-        sigma_psf = 2.0
-        bkg_sigma = mad_std(stack.data[0]) 
-        daofind = DAOStarFinder(fwhm = 4., threshold = 3. * bkg_sigma)  
-        daogroup = DAOGroup(2.0 * sigma_psf * gaussian_sigma_to_fwhm)
-        mmm_bkg = MMMBackground()
-
-        psf_model = IntegratedGaussianPRF(sigma = sigma_psf)
-        psf_model.x_0.fixed = True
-        psf_model.y_0.fixed = True
-
-        fitter = LevMarLSQFitter()
-        bkgrms = MADStdBackgroundRMS()
-
-        times = []
-        exptimes = []
-        ray = []
-        decx = []
-        x = []
-        y = []
-        flux = []
-        fluxunc = []
+        apsum = []
+        apsum_unc = []
         # if radec get xy
         itera = 0
         with ProgressBarOrSpinner(len(stack.data), msg = 'Performing PSF photometry') as bar:
@@ -283,11 +229,19 @@ class Ceres:
                 decx.append(dec)
                 x.append(results['x_fit'][0])
                 y.append(results['y_fit'][0])
-                flux.append(results['flux_fit'][0] - results['flux_fit'][1])
-                fluxunc.append(results['flux_unc'][0])
 
-        ts = QTable([times, exptimes, x, y, ray, decx, flux, fluxunc], names=('time', 'exptime', 'x', 'y', 'ra', 'dec', 'flux', 'flux_unc'), meta={'name': filter})
-        ## TODO:: Set flux to photons per second instead of photons per exposure.
+                if zcontrol != None:
+                    apsum.append(results['flux_fit'][0] - results['flux_fit'][1])
+                    flux.append((results['flux_fit'][0] - results['flux_fit'][1])/image.header['EXPTIME'])
+                else:
+                    apsum.append(results['flux_fit'][0])
+                    flux.append(results['flux_fit'][0]/image.header['EXPTIME'])
+
+                fluxunc.append(results['flux_unc'][0]) ## TODO:: modify this to account for exposure time and control
+                apsum_unc.append(results['flux_unc'][0])
+
+        # ts = QTable([times, exptimes, x, y, ray, decx, flux, fluxunc], names=('time', 'exptime', 'x', 'y', 'ra', 'dec', 'flux', 'flux_unc'), meta={'name': filter})
+        ts = timeSeries(times = times, flux = flux, exptimes = exptimes, x = x, y = y, ra = ray, dec = decx, flux_unc = fluxunc, apsum = apsum, apsum_unc = apsum_unc)
         zellars.filters[filter] = len(zellars.ts)
         zellars.ts.append(ts)
 

@@ -20,22 +20,28 @@ class timeSeries:
             name of target in string format.
 
     '''
-    def __init__(self, times, flux, exptimes = [], x = [], y = [], ra = [], dec = [], flux_unc = [], apsum = [], apsum_unc = []):  
+    def __init__(self, times, flux, exptimes = [], x = [], y = [], ra = [], dec = [], flux_unc = [], apsum = [], apsum_unc = [], fit_times = [], fit_flux = []):  
         self.times = times
         self.flux = flux
+
         self.exptimes = exptimes
+
         self.x = x
         self.y = y
         self.ra = ra
         self.dec = dec
+        
         self.flux_unc = flux_unc
         self.apsum = apsum
         self.apsum_unc = apsum_unc
 
+        self.fit_times = fit_times
+        self.fit_flux = fit_flux
+
     def toTable(self, name):
 
         self.table = QTable([times, flux], names=('time','flux'), meta={'name': name})
-        
+
         colnom = ['flux_unc', 'exptime', 'apsum', 'apsum_unc', 'x', 'y', 'ra', 'dec']
         cols = [self.flux_unc, self.exptimes, self.apsum, self.apsum_unc, self.x, self.y, self.ra, self.dec]
 

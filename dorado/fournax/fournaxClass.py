@@ -31,9 +31,8 @@ class Fournax(Zellars):
     def __init__(self, name, epoch = None, period = None):  
         Zellars.__init__(name)
 
-        ## Inherit from Ceres object (date, etc.)
+        ## Inherit from Ceres object (date, ts, etc.)
 
-        self.fts = [] # fitted tmeseries
         self.toml = []
         self.OmC = []
         self.freq = [] # Array of observed frequencies (Raw)
@@ -43,11 +42,6 @@ class Fournax(Zellars):
 
         self.Operiod = None # Observed period
         self.Operiod_unc = None # Uncertainty on period
-
-
-
-
-
 
 
 
@@ -125,33 +119,27 @@ class Fournax(Zellars):
         ## NOTE:: The name is tacky.
         ## TODO:: accomodate flux uncertainties
         ## TODO:: Zero mean of signal.
-        ## TODO:: check if flux is photons or photons per second
 
-        y = self.ts[self.filters[filter]]['flux']
-        x = self.ts[self.filters[filter]]['time'] ## TODO:: convert to float friendly format like mjd
+        y = self.ts[self.filters[filter]].flux
+        x = self.ts[self.filters[filter]].times ## TODO:: convert to float friendly format like mjd
 
-        ########################################################################
-        # # Fourier fit the data to model curvature
-        # f = np.fft.rfft(y)
-        # # Null or zero coefficients above ammount of series "terms"
-        # # This corresponds to undesired high-frequency terms
-        # f[terms+1:] = 0
-        # # Collapse back into function space, result is smoothed Fourier curve
-        # F = np.fft.irfft(f)
-        ########################################################################
-
-        F = np.fft.irfft((np.fft.rfft(y)[terms+1:] = 0))
+        # Fourier fit the data to model curvature
+        f = np.fft.rfft(y)
+        # Null or zero coefficients above ammount of series "terms"
+        # This corresponds to undesired high-frequency terms
+        f[terms+1:] = 0
+        # Collapse back into function space, result is smoothed Fourier curve
+        F = np.fft.irfft(f)
         # Create a spline fit of the fourier fit to extract knots
         tispl = InterpolatedUnivariateSpline(x[:len(F)], F, k = 5)
         # feed knots into spline of raw data
         LSQspl = LSQUnivariateSpline(x, y, tispl.get_knots()[1:-1]) 
 
-
         X = np.linspace(np.min(x), np.max(x), s)
         Y = self.smooth(LSQspl(X), window = 'blackman')[5:-5]
 
-        ## TODO:: internalize the results
-        # return X, Y
+        self.ts[self.filters[filter]].fit_flux = Y
+        self.ts[self.filters[filter]].fit_times = X
 
 
     def smooth(self, x, window_len=11, window='hanning'):

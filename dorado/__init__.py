@@ -9,6 +9,8 @@ from .zellars import *
 from .ceres import *
 from .stack import *
 from .clippy import *
+from .fournax import *
+from .timeseries import *
 # ----------------------------------------------------------------------------
 
 # __all__ = []

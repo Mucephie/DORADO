@@ -287,7 +287,7 @@ class Ceres:
                 fluxunc.append(results['flux_unc'][0])
 
         ts = QTable([times, exptimes, x, y, ray, decx, flux, fluxunc], names=('time', 'exptime', 'x', 'y', 'ra', 'dec', 'flux', 'flux_unc'), meta={'name': filter})
-        
+        ## TODO:: Set flux to photons per second instead of photons per exposure.
         zellars.filters[filter] = len(zellars.ts)
         zellars.ts.append(ts)
 

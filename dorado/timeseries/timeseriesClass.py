@@ -20,7 +20,7 @@ class timeSeries:
             name of target in string format.
 
     '''
-    def __init__(self, times, flux, exptimes = [], x = [], y = [], ra = [], dec = [], flux_unc = [], apsum = [], apsum_unc = [], fit_times = [], fit_flux = []):  
+    def __init__(self, times, flux, exptimes = [], x = [], y = [], ra = [], dec = [], flux_unc = [], apsum = [], apsum_unc = [], fit_times = [], fit_flux = [], toml = [], OmC = [], cycle = []):  
         self.times = times
         self.flux = flux
 
@@ -30,13 +30,19 @@ class timeSeries:
         self.y = y
         self.ra = ra
         self.dec = dec
-        
+
         self.flux_unc = flux_unc
         self.apsum = apsum
         self.apsum_unc = apsum_unc
 
         self.fit_times = fit_times
         self.fit_flux = fit_flux
+
+        self.toml = toml
+        self.OmC = OmC
+        self.cycle = cycle
+
+        # self.symbo = None # make a symbolic expression to represent the curve analytically.
 
     def toTable(self, name):
 

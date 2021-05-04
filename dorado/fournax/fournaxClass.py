@@ -1,5 +1,5 @@
 import numpy as np
-from .zellars import Zellars
+from ..zellars import Zellars
 '''
 Fournax is an abbreviation of Fourier numerical astronomy extension, its name is a backronym styled to match the constellation 'fornax'. 
 

@@ -26,7 +26,7 @@ from photutils import DAOStarFinder
 from astropy.stats import mad_std
 # from astroquery.simbad import Simbad
 
-from .timeseries import timeSeries
+from ..timeseries import timeSeries
 
 '''
 Ceres is the handler of image series in Dorado,
@@ -174,7 +174,6 @@ class Ceres:
 
         self.data[self.filters[filter]].data = aa_series
         self.data[self.filters[filter]].aligned = True
-
 
     def dorphot(self, filter, zellars, zcontrol = None, shape = 21):
         # get seeing from PSF

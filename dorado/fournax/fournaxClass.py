@@ -11,28 +11,45 @@ __all__ = ['Fournax']
 
 class Fournax(Zellars):
     '''
-    The Fournax class extends the Zellars target class to provide a consistent simple, yet robust interface to targets with regular or semi-regular photometric variability for the purposes of lightcurve/timeseries fourier analysis.  
+        The Fournax class extends the Zellars target class to provide a consistent simple, yet robust interface to targets with regular or semi-regular photometric variability for the purposes of lightcurve/timeseries fourier analysis.  
 
-    Fournax is an abbreviation of Fourier numerical astronomy extension, its name is a backronym styled to match the constellation 'fornax'. 
+        Fournax is an abbreviation of Fourier numerical astronomy extension, its name is a backronym styled to match the constellation 'fornax'. 
 
-    Attributes
-    ----------
+        Attributes
+        ----------
 
-    name: str
-        name of target in string format.
+        name: str
+            name of target in string format.
 
-    epoch: float or astropy.Time
-        Epoch for the targets ephemeris of which the theoretical times of extrema will be extrapolated from.
+        epoch: float or astropy.Time
+            Epoch for the targets ephemeris of which the theoretical times of extrema will be extrapolated from.
 
-    period: float
-        The period between extrema of interest corresponding to the ephemeris epoch given. 
+        period: float
+            The period between extrema of interest corresponding to the ephemeris epoch given. 
 
     '''
     def __init__(self, name, epoch = None, period = None):  
         Zellars.__init__(name)
 
-        self.toml =[]
-        self.
+        ## Inherit from Ceres object (date, etc.)
+
+        self.fts = [] # fitted tmeseries
+        self.toml = []
+        self.OmC = []
+        self.freq = [] # Array of observed frequencies (Raw)
+        ## NOTE:: Should frequencies be cleaned for aliasing, can the spread of aliasing peak values provide a measure of uncertainty on the fundamental frequency?
+
+        # self.symbo = None # make a symbolic expression to represent the curve analytically.
+
+        self.Operiod = None # Observed period
+        self.Operiod_unc = None # Uncertainty on period
+
+
+
+
+
+
+
 
         if (epoch == None) and (period == None):
             print('No ephemeris data given for target')
@@ -55,24 +72,28 @@ class Fournax(Zellars):
             print('Epoch given: ', epoch)
 
         
-    def var_ephem(self, OBS):
+    def OMinusC(self, OBS):
         '''
-        var_ephem takes observed time(s) of max light for a repeating variable star and ephemeris data and returns O-C values as well as the corresponding cycle.
-        Parameters
-        ----------
-        OBS: float, list, or array
-                Observed time(s) of max light
-        epoch: float
-                Epoch of ephemeris
-        period: float
-                Period of ephemeris 
-        Returns
-        -------
-        cycle: float, list, or array
-                The cycle corresponding to the time(s) of max light
-        OmC: float, list, or array
-                The O-C value for the time(s) of max light
+            OMinusC takes observed time(s) of max light for a repeating variable star and ephemeris data and returns O-C values as well as the corresponding cycle.
+
+            Parameters
+            ----------
+
+            OBS: float, list, or array
+                    Observed time(s) of max light
+
+
+            Returns
+            -------
+
+            cycle: float, list, or array
+                    The cycle corresponding to the time(s) of max light
+
+            OmC: float, list, or array
+                    The O-C value for the time(s) of max light
         '''
+
+        ## TODO:: accomodate an array of toml values. This will shift this function from returning values to a wrapper function to setting values.
         
         cycle_ref = (OBS - self.epoch) / self.period
         cycle = np.round(cycle_ref)
@@ -83,24 +104,25 @@ class Fournax(Zellars):
     
     def superfit(self, filter, terms, s):
         '''
-        superfit takes a raw timeseries and performs a multistep smoothed fit of the data
-        which includes a spline fit tailored with the curvature of knots from a spline
-        fit of a Fourier fit. The result is then expanded and then convoluted with a
-        'blackman' window function.
-        Parameters
-        ----------
-        x, y: array
-                timeseries arrays to be fit
-        terms: int
-                terms to retain in the fourier fit.
-        s: int
-                new data array size 
-        Returns
-        -------
-        X, Y: array
-                The superfit timeseries arrays.
+            superfit takes a raw timeseries and performs a multistep smoothed fit of the data
+            which includes a spline fit tailored with the curvature of knots from a spline
+            fit of a Fourier fit. The result is then expanded and then convoluted with a
+            'blackman' window function.
+            Parameters
+            ----------
+            x, y: array
+                    timeseries arrays to be fit
+            terms: int
+                    terms to retain in the fourier fit.
+            s: int
+                    new data array size 
+            Returns
+            -------
+            X, Y: array
+                    The superfit timeseries arrays.
         '''
 
+        ## NOTE:: The name is tacky.
         ## TODO:: accomodate flux uncertainties
         ## TODO:: Zero mean of signal.
         ## TODO:: check if flux is photons or photons per second
@@ -184,3 +206,5 @@ class Fournax(Zellars):
         y = np.convolve(w/w.sum(), s, mode='valid')
 
         return y
+
+    def analyze(self, filter, graphical = True):

@@ -9,7 +9,9 @@ Fournax is an abbreviation of Fourier numerical astronomy extension, its name is
 
 __all__ = ['Fournax']
 
-
+'''
+    This copy of Fournax is depreciated, see target.Fournax for current version.
+'''
 
 class Fournax(TOI):
     '''

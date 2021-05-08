@@ -5,19 +5,17 @@
 # ----------------------------------------------------------------------------
 from ._astropy_init import *   # noqa
 
-from .zellars import *
+from .target import *
 from .ceres import *
 from .stack import *
-from .clippy import *
-from .fournax import *
+from .filer import *
+# from .fournax import *
 from .timeseries import *
 # ----------------------------------------------------------------------------
 
 # __all__ = []
 # from .config import *
 # from .example_mod import *   # noqa
-
-
 # Then you can be explicit to control what ends up in the namespace,
 # __all__ += ['do_primes']   # noqa
 # or you can keep everything from the subpackage with the following instead

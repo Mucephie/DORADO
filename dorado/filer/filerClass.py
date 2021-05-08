@@ -1,10 +1,11 @@
 import warnings
 warnings.filterwarnings('ignore')
 
-from astropy.nddata.ccddata import CCDData
 from ..ceres import Ceres
 from ..stack import Stack
-# from .Zellars import zellars
+
+
+from astropy.nddata.ccddata import CCDData
 import numpy as np
 from astropy import config as _config
 from astropy.utils.misc import isiterable
@@ -24,12 +25,12 @@ from pathlib import Path
 ast = AstrometryNet()
 
 '''
-Clippy is the handler of the Dorado system,
+Filer is the handler of the Dorado system,
 '''
 
-__all__ = ['Clippy']
+__all__ = ['Filer']
 
-class Clippy:
+class Filer:
 
     def __init__(self):
         # open and use logger
@@ -135,7 +136,7 @@ class Clippy:
             else:
                 print('Single directory level organization format detected.')
                 # print('Reading files.')
-                # compile these into master frame and pass them to clippy
+                # compile these into master frame and pass them to Filer
                 # path = self.dordir / 'data' / 'raw' / date
                 biasl = []
                 for strbias in biasstr:
@@ -181,9 +182,9 @@ class Clippy:
         elif len(files) == 0:
             print('Multi directory level organization format detected.')
             # print('Reading directories.')
-            # read into this and compile into master bias, pass to clippy
+            # read into this and compile into master bias, pass to Filer
             biasdir = [s for s in directories if s.name in biasstr]
-            # check if multifilter, compile, pass to clippy
+            # check if multifilter, compile, pass to Filer
             flatsdir = [s for s in directories if s.name in flatsstr]
             # check if multifilter (or subdirectories) and pass to ceres
             lightsdir = [s for s in directories if (s.name not in flatsstr) and (s.name not in biasstr)]

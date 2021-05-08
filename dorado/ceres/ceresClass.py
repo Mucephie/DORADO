@@ -118,42 +118,43 @@ class Ceres:
         
         self.data[self.filters[filter]] = series
 
-    def getWCS(self, filter, clippy, alignto = None, cache = True):
+    def getWCS(self, filter, filer, alignto = None, cache = True):
         series = self.data[self.filters[filter]]
         if alignto == None:
             alignto = series.alignTo
         if cache:
-            hdulist = fits.open(clippy.dordir / 'cache' / 'astrometryNet' / 'solved.fits') 
+            hdulist = fits.open(filer.dordir / 'cache' / 'astrometryNet' / 'solved.fits') 
             self.data[self.filters[filter]].wcs = WCS(hdulist[0].header, hdulist)
-            self.data[self.filters[filter]].solved = CCDData.read(clippy.dordir / 'cache' / 'astrometryNet' / 'solved.fits')
+            self.data[self.filters[filter]].solved = CCDData.read(filer.dordir / 'cache' / 'astrometryNet' / 'solved.fits')
             hdulist.close()
         else:
             toalign = series.data[alignto]
-            fname, cachedir = clippy.mkcacheObj(toalign, 'astrometryNet')
+            fname, cachedir = filer.mkcacheObj(toalign, 'astrometryNet')
             path = [cachedir, fname]
             writearray = [cachedir, 'solved.fits']
-            solved, wcs_header = clippy.plate_solve(path, writearray = writearray)
-            clippy.delcacheObj( fname, 'astrometryNet')
+            solved, wcs_header = filer.plate_solve(path, writearray = writearray)
+            filer.delcacheObj( fname, 'astrometryNet')
             self.data[self.filters[filter]].wcs = WCS(wcs_header)
             self.data[self.filters[filter]].solved = solved
 
-    def align(self, filter, clippy, alignto = None, getWCS = True, cache = False):
+    def align(self, filter, filer, alignto = None, getWCS = True, cache = False):
         series = self.data[self.filters[filter]]
         if alignto == None:
             alignto = series.alignTo
         toalign = series.data[alignto]
+        ## TODO :: make this use ceres.getWCS()
         if getWCS:
             if cache:
-                toalign =  CCDData.read(clippy.dordir / 'cache' / 'astrometryNet' / 'solved.fits', unit = clippy.unit)
-                hdulist = fits.open(clippy.dordir / 'cache' / 'astrometryNet' / 'solved.fits') 
+                toalign =  CCDData.read(filer.dordir / 'cache' / 'astrometryNet' / 'solved.fits', unit = filer.unit)
+                hdulist = fits.open(filer.dordir / 'cache' / 'astrometryNet' / 'solved.fits') 
                 self.data[self.filters[filter]].wcs = WCS(hdulist[0].header, hdulist)
                 hdulist.close()
                 self.data[self.filters[filter]].solved = toalign
             else:
-                fname, cachedir = clippy.mkcacheObj(toalign, 'astrometryNet')
+                fname, cachedir = filer.mkcacheObj(toalign, 'astrometryNet')
                 path = [cachedir, fname]
                 writearray = [cachedir, 'solved.fits']
-                solved, wcs_header = clippy.plate_solve(path, writearray = writearray)
+                solved, wcs_header = filer.plate_solve(path, writearray = writearray)
                 toalign = solved
                 clippy.delcacheObj( fname, 'astrometryNet')
                 self.data[self.filters[filter]].wcs = WCS(wcs_header)
@@ -162,6 +163,7 @@ class Ceres:
                 # save solved to target
 
         aa_series = []
+        ## TODO :: fix this progressbar so it prints on one line then updates that line.
         with ProgressBar(len(series.data)) as bar:
             for image in series.data:
                 bar.update()
@@ -175,14 +177,14 @@ class Ceres:
         self.data[self.filters[filter]].data = aa_series
         self.data[self.filters[filter]].aligned = True
 
-    def dorphot(self, filter, zellars, zcontrol = None, shape = 21):
+    def dorphot(self, filter, toi, control_toi = None, shape = 21):
         # get seeing from PSF
         stack = self.data[self.filters[filter]]
         # if no wcs, complain alot
         w = stack.wcs
-        xy = w.wcs_world2pix(zellars.coords.ra.deg, zellars.coords.dec.deg, 1)
-        if zcontrol != None:
-            xyc = w.wcs_world2pix(zcontrol.coords.ra.deg, zcontrol.coords.dec.deg, 1)
+        xy = w.wcs_world2pix(toi.coords.ra.deg, toi.coords.dec.deg, 1)
+        if control_toi != None:
+            xyc = w.wcs_world2pix(control_toi.coords.ra.deg, control_toi.coords.dec.deg, 1)
             pos = Table(names=['x_0', 'y_0'], data = ([float(xy[0]), float(xyc[0])], [float(xy[1]), float(xyc[1])]))
 
         else:
@@ -229,7 +231,7 @@ class Ceres:
                 x.append(results['x_fit'][0])
                 y.append(results['y_fit'][0])
 
-                if zcontrol != None:
+                if control_toi != None:
                     apsum.append(results['flux_fit'][0] - results['flux_fit'][1])
                     flux.append((results['flux_fit'][0] - results['flux_fit'][1])/image.header['EXPTIME'])
                 else:
@@ -241,6 +243,6 @@ class Ceres:
 
         # ts = QTable([times, exptimes, x, y, ray, decx, flux, fluxunc], names=('time', 'exptime', 'x', 'y', 'ra', 'dec', 'flux', 'flux_unc'), meta={'name': filter})
         ts = timeSeries(times = times, flux = flux, exptimes = exptimes, x = x, y = y, ra = ray, dec = decx, flux_unc = fluxunc, apsum = apsum, apsum_unc = apsum_unc)
-        zellars.filters[filter] = len(zellars.ts)
-        zellars.ts.append(ts)
+        toi.filters[filter] = len(toi.ts)
+        toi.ts.append(ts)
 

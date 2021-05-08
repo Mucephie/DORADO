@@ -39,13 +39,16 @@ class Stack:
     aligned: Boolean
         Whether the data is aligned or not. Default is 'None'. Optional.
 
-    target: Zellars object
-        Instance of the Zellars astronomical target class containing the target of interest in the stack. Optional.
+    target: TOI object
+        Instance of the TOI astronomical target class containing the target of interest in the stack. Optional.
 
     alignTo: int
         Index of the image which all other stack images should be aligned to. Default is  0. Optional.
 
     '''
+
+    ## TODO :: auto identify targets in stack
+
     def __init__(self, data, flat = None, filter = '', times = [], calibrated = None, aligned = None, target = None, alignTo = 0):
         self.data = data
         self.flat = flat
@@ -101,13 +104,13 @@ class Stack:
 
     def get_target_info(self, target = None):
         '''
-        get_target_info is a convinience function for setting an instance of Zellars
+        get_target_info is a convinience function for setting an instance of TOI
         as the Stack target object.
         
         Parameters
         ----------
-        target: Zellars object
-            Instance of the Zellars astronomical target class containing the target of interest in the stack.
+        target: TOI object
+            Instance of the TOI astronomical target class containing the target of interest in the stack.
 
         Returns
         -------
@@ -115,7 +118,7 @@ class Stack:
 
         Sets
         ----
-        self.target: Zellars object
+        self.target: TOI object
             Target of interest in the stack.
         '''
         if target != None:

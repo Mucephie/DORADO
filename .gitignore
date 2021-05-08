@@ -60,3 +60,5 @@ pip-wheel-metadata/
 
 # Mac OSX
 .DS_Store
+.vscode/settings.json
+.vscode/settings.json

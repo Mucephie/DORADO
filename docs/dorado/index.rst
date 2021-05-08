@@ -57,58 +57,13 @@ Digitized Observatory Resources for Automated Data Operations (DORADO) is a pyth
                 Use of DORADO while in beta will not result in any risk to your computer or hardware, but may affect stability of software that are written with DORADO or the quality of data that is produced using DORADO.
 
                 During the beta, documentation and code commenting may be subpar as many things will being changing regularly with new code being written and rewritten and in-line testing appearing temporarily.
-
-.. toctree::
-    :maxdepth: 1
-
-    fournax/index
-    imreduc/index
-    lazyeye/index
-    rchive/index
-    vizual/index
-    waldo/index
-
-
+    
 
 Getting started with dorado:
 --------------
 
+For help getting started see: :doc:`Getting Started</dorado/GettingStarted>`
 
-.. code:: python
-
-        import dorado
-
-        # Do some stuff
-
-        # Get a fits file formated date string for the current observing night.
-        night = dorado.get_night() 
-
-        # Your data directory
-        directory = 'C:/Data/'
-
-        # You can name your target object
-        target = 'dorado'
-
-        # Create a working directory
-        dorado.mkwrkdir(directory, night)
-
-        # Catalogue input data from the data directory
-        bias_list, flats_list, lights_list = dorado.checkdir(directory, night)
-
-        # Read the data in
-        data_series = dorado.get_series(directory, night, lights_list, unit = None)
-        flats_series = dorado.get_series(directory, night, flats_list, unit = None)
-        bias_series = dorado.get_series(directory, night, bias_list, unit = None)
-
-        # Produce master reduction images
-        bias = dorado.mastBias(directory, night, bias_list)
-        flat = mastFlat(directory, night, flats_list, bias)
-
-        # Calibrate data series
-        series = dorado.reduce_series(directory, night, lights_list, flat, bias, target)
-
-        # You now have a working directory full of calibrated images
-        # It was that easy!
 
 Installation
 ------------
@@ -117,39 +72,16 @@ Install dorado by running: ``pip install dorado``.
 
     .. note:: The `dorado <https://pypi.org/project/dorado/>`_ project on `PyPI <https://pypi.org/>`_ .
 
-Dependencies
--------------
-
-Dorado aims to be as lightweight as possible and utilize as little dependencies as it can. 
-
-Currently DORADO relies on:  
-
-1.  `numpy <http://www.numpy.org/>`_
-
-2.  `matplotlib <https://matplotlib.org/>`_
-
-3.  `astropy <https://www.astropy.org/index.html>`_
-
-4.  `CCDPROC <https://ccdproc.readthedocs.io/en/latest/index.html#>`_
-
-5.  `scipy <https://www.scipy.org/>`_
-
-6.  `scikit-image <https://scikit-image.org/>`_
-
-7.  `astroquery <https://astroquery.readthedocs.io/en/latest/#>`_
-
-Reference/API
-=============
-
-.. automodapi:: dorado
-
 
 Examples
 --------
 
 In the near future examples, tutorials, and pre-made use scripts will be located here. The first release of Dorado should ship with an example pipeline and data formatting tutorial.
 
+Reference/API
+=============
 
+.. automodapi:: dorado
 
 Contribute
 ----------

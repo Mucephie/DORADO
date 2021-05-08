@@ -1,3 +1,37 @@
+2.0.1 (2021-04-16) ()
+=====================
+
+New Features
+------------
+
+-Introduction of the Clippy file management and assistance class.
+
+-Introduction of the Zellars celestial target class.
+
+-Introduction of the Ceres observation data series class.
+
+-Introduction of the Stack observational data stack class.
+
+Other Changes and Additions
+---------------------------
+
+-Removed two unused dependencies.
+
+-Moved to python class based operations.
+
+-Removed older example files.
+
+-Development files left in place
+
+-Astoquery.astrometryNet API key moved to astroquery config file
+
+-Dorado now makes its own working directory
+
+Bug Fixes
+---------
+
+-File size enlargement has been fixed for Bias frames
+
 0.1.2 (2020-09-14) ()
 =====================
 

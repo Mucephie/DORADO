@@ -6,15 +6,13 @@ from astropy.coordinates import SkyCoord as acoord
 import numpy as np
 import astropy.units as un
 
-__all__ = ['Zellars']
+__all__ = ['TOI']
 
-class Zellars:
+class TOI:
     '''
-        The Zellars class represents an astronomical target and handles the targets relevent attributes.
+        The TOI class represents an astronomical target of interest (TOI) and handles the targets relevent attributes.
         Unpassed target parameters will be gathered via astroquery (SIMBAD).
 
-        The name is a reference to the now defunct Canadian store chain, Zellars, which many Canadians
-        saw as the Canadian version of the American store chain, Target.
 
         Attributes
         ----------
@@ -90,7 +88,7 @@ class Zellars:
         
     def export(self, clippy, objectClass = None):
         '''
-        export will record the Zellars object into the dorado targets directory for future use 
+        export will record the TOI object into the dorado targets directory for future use 
         and reference. This function is not implemented yet.
 
         Parameters

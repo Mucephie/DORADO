@@ -1,5 +1,5 @@
 import numpy as np
-from ..zellars import Zellars
+from ..target import TOI
 import astropy.units as un
 from scipy.signal import find_peaks
 '''
@@ -11,9 +11,9 @@ __all__ = ['Fournax']
 
 
 
-class Fournax(Zellars):
+class Fournax(TOI):
     '''
-        The Fournax class extends the Zellars target class to provide a consistent simple, yet robust interface to targets with regular or semi-regular photometric variability for the purposes of lightcurve/timeseries fourier analysis.  
+        The Fournax class extends the TOI target class to provide a consistent simple, yet robust interface to targets with regular or semi-regular photometric variability for the purposes of lightcurve/timeseries fourier analysis.  
 
         Fournax is an abbreviation of Fourier numerical astronomy extension, its name is a backronym styled to match the constellation 'fornax'. 
 
@@ -32,7 +32,7 @@ class Fournax(Zellars):
     '''
     def __init__(self, name, epoch = None, period = None): 
         ## Inherit from Ceres object (date, ts, etc.) 
-        Zellars.__init__(name)
+        TOI.__init__(name)
 
         self.freq = [] # Array of observed frequencies (Raw)
         ## NOTE:: Should frequencies be cleaned for aliasing, can the spread of aliasing peak values provide a measure of uncertainty on the fundamental frequency?

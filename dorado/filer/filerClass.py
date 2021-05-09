@@ -306,7 +306,7 @@ class Filer:
                 dirarray = ['data', sub, date, 'calibrated']
             else:
                 dirarray = ['data', sub, date]
-            biasIFC, flats, lights = clip.dirscan(dirarray)
+            biasIFC, flats, lights = self.dirscan(dirarray)
             print(len(flats), ' flats found.')
             print(len(biasIFC), ' bias frames found.')
             print(len(lights), ' lights found')

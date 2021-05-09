@@ -6,9 +6,9 @@ from astropy.coordinates import SkyCoord as acoord
 import numpy as np
 import astropy.units as un
 
-__all__ = ['TOI', 'Fournax']
+__all__ = ['Target', 'Fournax']
 
-class TOI:
+class Target:
     '''
         The TOI class represents an astronomical target of interest (TOI) and handles the targets relevent attributes.
         Unpassed target parameters will be gathered via astroquery (SIMBAD).
@@ -23,9 +23,12 @@ class TOI:
     def __init__(self, name):
         self.name = name
         # Call Simbad for relevent data
-        s = Simbad()
-        r = s.query_object(self.name)
-        self.coords = acoord(ra = r['RA'], dec = r['DEC'], unit = (un.hourangle, un.deg), frame = 'icrs')
+        try:
+            s = Simbad()
+            r = s.query_object(self.name)
+            self.coords = acoord(ra = r['RA'], dec = r['DEC'], unit = (un.hourangle, un.deg), frame = 'icrs')
+        except:
+            raise Exception('Error initializing Target.')
         
         self.filters = {}
         self.ts = []
@@ -122,7 +125,7 @@ Fournax is an abbreviation of Fourier numerical astronomy extension, its name is
 
 from scipy.signal import find_peaks
 
-class Fournax(TOI):
+class Fournax(Target):
     '''
         The Fournax class extends the TOI target class to provide a consistent simple, yet robust interface to targets with regular or semi-regular photometric variability for the purposes of lightcurve/timeseries fourier analysis.  
 

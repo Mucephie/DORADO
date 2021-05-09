@@ -5,5 +5,5 @@ is just an example sub-package, so it doesn't actually do anything.
 """
 __all__ = []
 
-from .clippyClass import *
-__all__ += clippyClass.__all__
+from .filerClass import *
+__all__ += filerClass.__all__

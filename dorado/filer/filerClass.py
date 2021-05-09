@@ -145,7 +145,7 @@ class Filer:
                             biasl.append(s)
                 bias = []
                 for i in range(len(biasl)):
-                    hdu = CCDData.read(biasl[i].path) #, unit = self.unit)
+                    hdu = CCDData.read(biasl[i].path, unit = self.unit)
                     bias.append(hdu)
                 print('Bias searched.')
                 flatsl = []
@@ -155,7 +155,7 @@ class Filer:
                             flatsl.append(s)
                 flats = []
                 for i in flatsl:
-                    hdu = CCDData.read(i.path) #, unit = self.unit)
+                    hdu = CCDData.read(i.path, unit = self.unit)
                     flats.append(hdu)
                 print('flats searched.')
                 # strip into ceres (check if multi-filter)
@@ -173,7 +173,7 @@ class Filer:
                 # lightsl = [s for s in files if (s.name not in biasl) and (s.name not in flatsl)]
                 lights = []
                 for i in lightsl:
-                    hdu = CCDData.read(i.path) # , unit = self.unit)
+                    hdu = CCDData.read(i.path, unit = self.unit)
                     lights.append(hdu)
                 print('lights searched.')
                 return bias, flats, lights

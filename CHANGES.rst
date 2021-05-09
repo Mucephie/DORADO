@@ -1,3 +1,14 @@
+2.0.2-dev (2021-05-09) ()
+=====================
+
+Bug Fixes
+------------
+
+-Shifted class names to correct temps.
+
+-Fixed single level directory CCDdata unit value.
+
+
 2.0.1-dev (2021-05-08) ()
 =====================
 
@@ -14,7 +25,7 @@ New Features
 
 -Introduction of the timeSeries object class.
 
--Introduction of the Fournax variable stellar target  extension to the TOI class.
+-Introduction of the Fournax variable stellar target extension to the TOI class.
 
 
 

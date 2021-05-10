@@ -262,6 +262,24 @@ class Filer:
             flat.header['stacked'] = True
             flat.header['numsubs'] = len(flats)
 
+            date = Time(flat.header['DATE-OBS'], format='fits').mjd
+            flat.data = flat.data.astype('uint16') 
+
+            filt = flat.header['filter']
+            ## TODO :: standardize filter names and include telescope profiles
+            fname = str(int(date)) + '_' + str(filt) + '_flat.fits'
+            flatdir = self.dordir / 'data' / 'flats' 
+            contents = os.scandir(path = flatdir)
+            save = True
+            for entry in contents:
+                if fname in entry.name:
+                    save = False
+            if save:
+                print('Saving Flat for later use')
+                flat.write(flatdir / fname)
+            else:
+                print('Flat for filter and date already saved.')
+
             return flat
 
     def mkBias(self, biasIFC):
@@ -325,6 +343,7 @@ class Filer:
             # for f in filter_data:
             # cere.flats[flat.header['filter']] = flat
 
+            ## TODO :: multifilter fun
             if len(flats) == 0:
                  cere.add_stack(Stack(lights, calibrated = calibrated, aligned = aligned, target = target))
             else:

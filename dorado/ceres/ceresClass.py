@@ -156,7 +156,7 @@ class Ceres:
                 writearray = [cachedir, 'solved.fits']
                 solved, wcs_header = filer.plate_solve(path, writearray = writearray)
                 toalign = solved
-                clippy.delcacheObj( fname, 'astrometryNet')
+                filer.delcacheObj( fname, 'astrometryNet')
                 self.data[self.filters[filter]].wcs = WCS(wcs_header)
                 self.data[self.filters[filter]].solved = solved
                 # delete cache object

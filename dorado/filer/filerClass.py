@@ -261,7 +261,7 @@ class Filer:
             #                     sigma_clip_func = np.ma.median, sigma_clip_dev_func = mad_std, unit = self.unit)
             flat.header['stacked'] = True
             flat.header['numsubs'] = len(flats)
-
+            flat.header['DATE-OBS'] = flats[0].header['DATE-OBS']
             date = Time(flat.header['DATE-OBS'], format='fits').mjd
             flat.data = flat.data.astype('uint16') 
 

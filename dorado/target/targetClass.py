@@ -146,7 +146,7 @@ class Fournax(Target):
     '''
     def __init__(self, name, epoch = None, period = None): 
         ## Inherit from Ceres object (date, ts, etc.) 
-        TOI.__init__(name)
+        Target.__init__(name)
 
         self.freq = [] # Array of observed frequencies (Raw)
         ## NOTE:: Should frequencies be cleaned for aliasing, can the spread of aliasing peak values provide a measure of uncertainty on the fundamental frequency?

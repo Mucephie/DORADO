@@ -262,6 +262,9 @@ class Filer:
             flat.header['stacked'] = True
             flat.header['numsubs'] = len(flats)
             flat.header['DATE-OBS'] = flats[0].header['DATE-OBS']
+            flat.header['filter'] = flats[0].header['filter']
+            ## TODO :: There is probably more missing keywords in the combined header, where's Waldo...
+
             date = Time(flat.header['DATE-OBS'], format='fits').mjd
             flat.data = flat.data.astype('uint16') 
 

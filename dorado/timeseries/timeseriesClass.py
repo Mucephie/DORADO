@@ -46,7 +46,7 @@ class timeSeries:
 
     def toTable(self, name):
 
-        self.table = QTable([times, flux], names=('time','flux'), meta={'name': name})
+        self.table = QTable([self.times, self.flux], names=('time','flux'), meta={'name': name})
 
         colnom = ['flux_unc', 'exptime', 'apsum', 'apsum_unc', 'x', 'y', 'ra', 'dec']
         cols = [self.flux_unc, self.exptimes, self.apsum, self.apsum_unc, self.x, self.y, self.ra, self.dec]

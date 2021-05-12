@@ -336,7 +336,7 @@ class Filer:
 
             # save these frames
 
-
+            ## TODO :: look into UTC wrecking stuff
             if len(biasIFC) == 0:
                 cere = Ceres(time = Time(lights[0].header['DATE-OBS'], format='fits'))
             else:
@@ -436,13 +436,16 @@ class Filer:
             return 
 
     def getDateString(self, cr):
+        ## TODO :: look into UTC wrecking stuff
         day = str(cr.date.ymdhms['day'])
         day2 = str(cr.date.ymdhms['day'] + 1)
         month = str(cr.date.ymdhms['month'])
+
         if cr.date.ymdhms['day'] < 10:
             day = '0' + str(cr.date.ymdhms['day'])
             if cr.date.ymdhms['day'] < 9:
                 day2 = '0' + str(cr.date.ymdhms['day'] + 1)
+
         if cr.date.ymdhms['month'] < 10:
             month = '0' + str(cr.date.ymdhms['month'])
 

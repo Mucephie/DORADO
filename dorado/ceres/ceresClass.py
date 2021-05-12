@@ -9,7 +9,8 @@ from astropy.time import Time
 from astropy.table import QTable, Table
 import astroalign as aa
 from astropy.wcs import WCS
-from astropy.utils.console import ProgressBar, ProgressBarOrSpinner
+# from astropy.utils.console import ProgressBar, ProgressBarOrSpinner
+from tqdm import tqdm
 # from astropy.coordinates import SkyCoord as acoord
 # import astropy.units as un
 from astropy.io import fits
@@ -89,15 +90,15 @@ class Ceres:
         flat = stack.flat
         bias = self.bias
         c_series = []
-        with ProgressBar(len(stack.data)) as bar:
-            for im in stack.data:
-                bar.update()
-                im.data = im.data.astype('uint16') 
-                flat.data = flat.data.astype('uint16') 
-                bias.data = bias.data.astype('uint16') 
-                im = ccdproc.ccd_process(im, master_bias = bias, master_flat = flat)
-                im.data = im.data.astype('uint16') 
-                c_series.append(im)
+        # with ProgressBar(len(stack.data)) as bar:
+        for im in tqdm(stack.data, colour = 'green'):
+            # bar.update()
+            im.data = im.data.astype('uint16') 
+            flat.data = flat.data.astype('uint16') 
+            bias.data = bias.data.astype('uint16') 
+            im = ccdproc.ccd_process(im, master_bias = bias, master_flat = flat)
+            im.data = im.data.astype('uint16') 
+            c_series.append(im)
         self.data[self.filters[filter]].data = c_series
         self.data[self.filters[filter]].calibrated = True
 
@@ -164,15 +165,15 @@ class Ceres:
 
         aa_series = []
         ## TODO :: fix this progressbar so it prints on one line then updates that line.
-        with ProgressBar(len(series.data)) as bar:
-            for image in series.data:
-                bar.update()
-                try:
-                    img, _ = aa.register(image.data, toalign.data)
-                    image.data = img
-                    aa_series.append(image)
-                except:
-                    print('Image skipped')
+        # with ProgressBar(len(series.data)) as bar:
+        for image in tqdm(series.data, colour = 'green'):
+            # bar.update()
+            try:
+                img, _ = aa.register(image.data, toalign.data)
+                image.data = img
+                aa_series.append(image)
+            except:
+                print('Image skipped')
 
         self.data[self.filters[filter]].data = aa_series
         self.data[self.filters[filter]].aligned = True
@@ -215,31 +216,31 @@ class Ceres:
         apsum_unc = []
         # if radec get xy
         itera = 0
-        with ProgressBarOrSpinner(len(stack.data), msg = 'Performing PSF photometry') as bar:
-            for image in stack.data:
-                bar.update(itera)
-                itera = itera + 1
-                photometry = IterativelySubtractedPSFPhotometry(finder = daofind, group_maker = daogroup, bkg_estimator = mmm_bkg,
-                        psf_model = psf_model, fitter = LevMarLSQFitter(), niters = 1, fitshape = (shape, shape))
-                results = photometry(image = image, init_guesses= pos)
-                [ra, dec] = w.wcs_pix2world(results['x_fit'], results['y_fit'], 1)
-                
-                times.append(Time(image.header['DATE-OBS']))
-                exptimes.append(image.header['EXPTIME'])
-                ray.append(ra)
-                decx.append(dec)
-                x.append(results['x_fit'][0])
-                y.append(results['y_fit'][0])
+        # with ProgressBarOrSpinner(len(stack.data), msg = 'Performing PSF photometry') as bar:
+        for image in tqdm(stack.data, colour = 'green'):
+            # bar.update(itera)
+            itera = itera + 1
+            photometry = IterativelySubtractedPSFPhotometry(finder = daofind, group_maker = daogroup, bkg_estimator = mmm_bkg,
+                    psf_model = psf_model, fitter = LevMarLSQFitter(), niters = 1, fitshape = (shape, shape))
+            results = photometry(image = image, init_guesses= pos)
+            [ra, dec] = w.wcs_pix2world(results['x_fit'], results['y_fit'], 1)
+            
+            times.append(Time(image.header['DATE-OBS']))
+            exptimes.append(image.header['EXPTIME'])
+            ray.append(ra)
+            decx.append(dec)
+            x.append(results['x_fit'][0])
+            y.append(results['y_fit'][0])
 
-                if control_toi != None:
-                    apsum.append(results['flux_fit'][0] - results['flux_fit'][1])
-                    flux.append((results['flux_fit'][0] - results['flux_fit'][1])/image.header['EXPTIME'])
-                else:
-                    apsum.append(results['flux_fit'][0])
-                    flux.append(results['flux_fit'][0]/image.header['EXPTIME'])
+            if control_toi != None:
+                apsum.append(results['flux_fit'][0] - results['flux_fit'][1])
+                flux.append((results['flux_fit'][0] - results['flux_fit'][1])/image.header['EXPTIME'])
+            else:
+                apsum.append(results['flux_fit'][0])
+                flux.append(results['flux_fit'][0]/image.header['EXPTIME'])
 
-                fluxunc.append(results['flux_unc'][0]) ## TODO:: modify this to account for exposure time and control
-                apsum_unc.append(results['flux_unc'][0])
+            fluxunc.append(results['flux_unc'][0]) ## TODO:: modify this to account for exposure time and control
+            apsum_unc.append(results['flux_unc'][0])
 
         # ts = QTable([times, exptimes, x, y, ray, decx, flux, fluxunc], names=('time', 'exptime', 'x', 'y', 'ra', 'dec', 'flux', 'flux_unc'), meta={'name': filter})
         ts = timeSeries(times = times, flux = flux, exptimes = exptimes, x = x, y = y, ra = ray, dec = decx, flux_unc = fluxunc, apsum = apsum, apsum_unc = apsum_unc)

@@ -80,7 +80,7 @@ class Ceres:
                 day2 = str(self.date.ymdhms['day'] + 1)
                 month = str(self.date.ymdhms['month'])
 
-                 if self.date.ymdhms['day'] < 10:
+                if self.date.ymdhms['day'] < 10:
                     day = '0' + str(self.date.ymdhms['day'])
                     if self.date.ymdhms['day'] < 9:
                         day2 = '0' + str(self.date.ymdhms['day'] + 1)

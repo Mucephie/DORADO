@@ -87,7 +87,7 @@ class Target:
         for fi in self.filters.keys():
             wrts = self.ts[self.filters[fi]]
             fname = str(self.name) + '_' + str(fi) + '-' + str(int(cr.date.mjd)) + '.' + saveType
-            wrts.toTable
+            wrts.toTable(self.name)
             wrts.table.write(wrdir / fname, overwrite = True)
         
     def export(self, filer, objectClass = None):

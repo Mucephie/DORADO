@@ -335,13 +335,16 @@ class Filer:
             
 
             # save these frames
+            ## TODO :: get missing calibraation files
 
             ## TODO :: look into UTC wrecking stuff
             if len(biasIFC) == 0:
                 cere = Ceres(time = Time(lights[0].header['DATE-OBS'], format='fits'))
+                self.getDateString(cere)
             else:
                 bias = self.mkBias(biasIFC)
                 cere = Ceres(bias = bias, time = Time(lights[0].header['DATE-OBS'], format='fits'))
+                self.getDateString(cere)
 
             # for f in filter_data:
             # cere.flats[flat.header['filter']] = flat

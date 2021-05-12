@@ -74,6 +74,24 @@ class Ceres:
         except:
             self.date = None
         
+        if datestr == None:
+            try:
+                day = str(self.date.ymdhms['day'])
+                day2 = str(self.date.ymdhms['day'] + 1)
+                month = str(self.date.ymdhms['month'])
+
+                 if self.date.ymdhms['day'] < 10:
+                    day = '0' + str(self.date.ymdhms['day'])
+                    if self.date.ymdhms['day'] < 9:
+                        day2 = '0' + str(self.date.ymdhms['day'] + 1)
+                        
+                if self.date.ymdhms['month'] < 10:
+                    month = '0' + str(self.date.ymdhms['month'])
+
+                self.datestr = str(self.date.ymdhms['year']) + '-' + month + '-' + day + '+' + day2
+            except:
+                self.datestr = datestr
+        
     def add_stack(self, stack):
         # eventually stacks themelves should have some metadata 
         # to denote stuff like calibration status

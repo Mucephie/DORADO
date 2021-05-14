@@ -209,6 +209,8 @@ class Ceres:
         w = stack.wcs
 
         xy = w.wcs_world2pix(toi.coords.ra.deg, toi.coords.dec.deg, 1)
+        ra = toi.coords.ra.deg
+        dec = toi.coords.dec.deg
         # pos = Table(names=['x_0', 'y_0'], data = ([float(xy[0])], [float(xy[1])]))
         pos = [(float(xy[0]), float(xy[1]))]
         aperture = CircularAperture(pos, r = shape)

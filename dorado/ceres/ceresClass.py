@@ -191,7 +191,7 @@ class Ceres:
         for image in tqdm(series.data, colour = 'green'):
             # bar.update()
             try:
-                img, _ = aa.register(image.data, toalign.data, max_control_points = 100, detection_sigma = 3)
+                img, _ = aa.register(image.data, toalign.data, max_control_points = 100, detection_sigma = 6)
                 aaim = image
                 aaim.data = img
                 aa_series.append(aaim)

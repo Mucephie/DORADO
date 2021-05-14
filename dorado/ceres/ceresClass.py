@@ -267,8 +267,8 @@ class Ceres:
                 apsum.append(results['flux_fit'][0])
                 flux.append(results['flux_fit'][0]/image.header['EXPTIME'])
 
-            fluxunc.append(results['aperture_sum_0_err'][0]) ## TODO:: modify this to account for exposure time and control
-            apsum_unc.append(results['aperture_sum_0_err'][0])
+            fluxunc.append(1) ## TODO:: modify this to account for exposure time and control
+            apsum_unc.append(1)
 
         ts = timeSeries(times = times, flux = flux, exptimes = exptimes, x = x, y = y, ra = ray, dec = decx, flux_unc = fluxunc, apsum = apsum, apsum_unc = apsum_unc)
         toi.filters[filter] = len(toi.ts)

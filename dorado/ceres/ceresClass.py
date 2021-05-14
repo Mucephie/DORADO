@@ -238,7 +238,7 @@ class Ceres:
 
         print('Performing photometry')
         for image in tqdm(stack.data, colour = 'green'):
-            error = unc * image
+            error = unc * image.data
             results = aperture_photometry(image, apers, error = error)
             bkg_mean = results['aperture_sum_1'] / annulus_aperture.area
             bkg_sum = bkg_mean * aperture.area

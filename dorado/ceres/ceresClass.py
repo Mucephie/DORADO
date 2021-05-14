@@ -191,14 +191,17 @@ class Ceres:
         for image in tqdm(series.data, colour = 'green'):
             # bar.update()
             try:
-                img, _ = aa.register(image.data, toalign.data)
-                image.data = img
-                aa_series.append(image)
+                img, _ = aa.register(image.data, toalign.data, max_control_points = 100, detection_sigma = 3)
+                aaim = image
+                aaim.data = img
+                aa_series.append(aaim)
             except:
                 skipped.append(image)
                 # print('Image skipped')
         if len(skipped) != 0:
             print(len(skipped), ' images skipped.')
+            ## TODO :: need to redo times and such for less ims
+
         self.data[self.filters[filter]].data = aa_series
         self.data[self.filters[filter]].aligned = True
 

@@ -23,6 +23,7 @@ from photutils.background import MMMBackground, MADStdBackgroundRMS
 from astropy.modeling.fitting import LevMarLSQFitter
 from astropy.stats import gaussian_sigma_to_fwhm
 from photutils.psf import IterativelySubtractedPSFPhotometry
+from photutils.aperture import CircularAperture, aperture_photometry, CircularAnnulus
 from photutils import DAOStarFinder
 from astropy.stats import mad_std
 # from astroquery.simbad import Simbad
@@ -109,6 +110,7 @@ class Ceres:
         bias = self.bias
         c_series = []
         # with ProgressBar(len(stack.data)) as bar:
+        print('Calibrating')
         for im in tqdm(stack.data, colour = 'green'):
             # bar.update()
             im.data = im.data.astype('uint16') 
@@ -182,8 +184,10 @@ class Ceres:
                 # save solved to target
 
         aa_series = []
+        skipped = []
         ## TODO :: fix this progressbar so it prints on one line then updates that line.
         # with ProgressBar(len(series.data)) as bar:
+        print('Aligning')
         for image in tqdm(series.data, colour = 'green'):
             # bar.update()
             try:
@@ -191,12 +195,14 @@ class Ceres:
                 image.data = img
                 aa_series.append(image)
             except:
-                print('Image skipped')
-
+                skipped.append(image)
+                # print('Image skipped')
+        if len(skipped) != 0:
+            print(len(skipped), ' images skipped.')
         self.data[self.filters[filter]].data = aa_series
         self.data[self.filters[filter]].aligned = True
 
-    def dorphot(self, filter, toi, control_toi = None, shape = 21):
+    def dorphot(self, filter, toi, control_toi = None, shape = 21, unc = 0.1):
         # get seeing from PSF
         stack = self.data[self.filters[filter]]
         # if no wcs, complain alot
@@ -209,18 +215,7 @@ class Ceres:
         else:
             pos = Table(names=['x_0', 'y_0'], data = ([float(xy[0])], [float(xy[1])]))
 
-        sigma_psf = 2.0
-        bkg_sigma = mad_std(stack.data[0]) 
-        daofind = DAOStarFinder(fwhm = 4., threshold = 3. * bkg_sigma)  
-        daogroup = DAOGroup(2.0 * sigma_psf * gaussian_sigma_to_fwhm)
-        mmm_bkg = MMMBackground()
 
-        psf_model = IntegratedGaussianPRF(sigma = sigma_psf)
-        psf_model.x_0.fixed = True
-        psf_model.y_0.fixed = True
-
-        fitter = LevMarLSQFitter()
-        bkgrms = MADStdBackgroundRMS()
 
         times = []
         exptimes = []
@@ -232,23 +227,27 @@ class Ceres:
         fluxunc = []
         apsum = []
         apsum_unc = []
+
+        aperture = CircularAperture(pos, r = shape)
+        annulus_aperture = CircularAnnulus(pos, r_in = shape + 2, r_out = shape + 5)
+        apers = [aperture, annulus_aperture]
         # if radec get xy
-        itera = 0
-        # with ProgressBarOrSpinner(len(stack.data), msg = 'Performing PSF photometry') as bar:
+        print('Performing photometry')
         for image in tqdm(stack.data, colour = 'green'):
-            # bar.update(itera)
-            itera = itera + 1
-            photometry = IterativelySubtractedPSFPhotometry(finder = daofind, group_maker = daogroup, bkg_estimator = mmm_bkg,
-                    psf_model = psf_model, fitter = LevMarLSQFitter(), niters = 1, fitshape = (shape, shape))
-            results = photometry(image = image, init_guesses= pos)
-            [ra, dec] = w.wcs_pix2world(results['x_fit'], results['y_fit'], 1)
+            error = unc * image
+            results = aperture_photometry(image, apers, error = error)
+            bkg_mean = results['aperture_sum_1'] / annulus_aperture.area
+            bkg_sum = bkg_mean * aperture.area
+            results['flux_fit'] = results['aperture_sum_0'] - bkg_sum
             
             times.append(Time(image.header['DATE-OBS']))
             exptimes.append(image.header['EXPTIME'])
             ray.append(ra)
             decx.append(dec)
-            x.append(results['x_fit'][0])
-            y.append(results['y_fit'][0])
+            x.append(results['xcenter'][0])
+            y.append(results['ycenter'][0])
+            # x.append(results['x_fit'][0])
+            # y.append(results['y_fit'][0])
 
             if control_toi != None:
                 apsum.append(results['flux_fit'][0] - results['flux_fit'][1])
@@ -257,10 +256,9 @@ class Ceres:
                 apsum.append(results['flux_fit'][0])
                 flux.append(results['flux_fit'][0]/image.header['EXPTIME'])
 
-            fluxunc.append(results['flux_unc'][0]) ## TODO:: modify this to account for exposure time and control
-            apsum_unc.append(results['flux_unc'][0])
+            fluxunc.append(results['aperture_sum_err'][0]) ## TODO:: modify this to account for exposure time and control
+            apsum_unc.append(results['aperture_sum_err'][0])
 
-        # ts = QTable([times, exptimes, x, y, ray, decx, flux, fluxunc], names=('time', 'exptime', 'x', 'y', 'ra', 'dec', 'flux', 'flux_unc'), meta={'name': filter})
         ts = timeSeries(times = times, flux = flux, exptimes = exptimes, x = x, y = y, ra = ray, dec = decx, flux_unc = fluxunc, apsum = apsum, apsum_unc = apsum_unc)
         toi.filters[filter] = len(toi.ts)
         toi.ts.append(ts)

@@ -13,37 +13,37 @@ storing it in the aformentioned folder when the night is done. We've also set th
 a script is called to process our fresh data and neatly store the results for us to enjoy after we go home for some much needed rest.
 
 Let's write that script now so we can get a feel for using Dorado in the wild. The first thing we want to do is import our Dorado
-utilities (including Clippy) and then initialize Clippy and construct our Zellars(target) objects.
+utilities and then initialize Filer and construct our target objects.
 
 .. code:: python
 
-        # import Clippy from Dorado
-        from dorado.clippy import Clippy
-        from dorado.zellars import Zellars
+        # import Dorado utilities
+        from dorado.filer import Filer
+        from dorado.target import Target
 
         ## initialize
-        # make an instance of clippy
-        clip = Clippy()
-        # create a target object
-        target = Zellars('McCool's star')
+        # make an instance of Filer
+        clippy = Filer()
+        # create a target of interest object
+        toi = Target('McCool's star')
         # create a control target object
-        target = Zellars('Boring star')
+        control = Target('Boring star')
 
-Our next step is to tell Clippy that you want to find and read in last nightss data:
+Our next step is to tell Filer that you want to find and read in last nightss data:
 
 .. code:: python
 
         # retrieve the previous nights datestring
-        night = clip.get_night()
+        night = clippy.get_night()
         # create a series object from last nights data
-        ceres = clip.mkceres(night, target = target)
+        ceres = clippy.mkceres(night, target = toi)
 
-Clippy has now read through the directory and scanned for each image type. Calibration frames are stacked
+Filer has now read through the directory and scanned for each image type. Calibration frames are stacked
 into base calibration frames, which are passed along with the science frames to into a data series class
-known as Ceres. The Ceres object is returned to us by Clippy and now we wish to calibrate and align the 
+known as Ceres. The Ceres object is returned to us by Filer and now we wish to calibrate and align the 
 data. This is done via the ``calibrate()`` and ``align()`` Ceres commands. Since there is data for more
 than one filter stored in our Ceres object, we need to specify that we are interested in performing these
-actions on the red filter.
+actions on the ``R`` filter.
 
 .. code:: python
 
@@ -51,11 +51,11 @@ actions on the red filter.
         # calibrate the series red filter data
         ceres.calibrate('R')
         # align the series red filter data
-        ceres.align('R', clip, cache = True)
+        ceres.align('R', clippy, cache = True)
 
 In the alignment step Dorado called 'Astrometry.Net' to plate solve the aligned field so we have WCS
 coordinates for this filters stack of data. This will allow Dorado to quickly find McCool's star and
-Boring star in the images and perform photometry on them. This is done using the ``dorphotc()` Ceres
+Boring star in the images and perform photometry on them. This is done using the ``dorphot()` Ceres
 command, again we are specifying that we are interested in the red filter and we are feeding our target
 and control objects, along with a PSF fit shape to the command.
 
@@ -63,7 +63,7 @@ and control objects, along with a PSF fit shape to the command.
 
         # perform differential photometry on the target in the red filter 
         # data using the control as a reference
-        ceres.dorphotc('R', target, control, shape = 21)
+        ceres.dorphotc('R', toi, control)
 
 We now have our timeseries data for our lightcurve and wish to save it for review later. Lets save both
 our target data and the calibrated/aligned images.

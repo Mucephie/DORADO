@@ -52,7 +52,7 @@ Digitized Observatory Resources for Automated Data Operations (DORADO) is a pyth
 
         .. admonition:: ☣⚠ DORADO is in beta ⚠☣
 
-                DORADO is in beta and as such is highly experimental and still a work in progress. While still in active development DORADO may still be used and experimented with; but a stable channel will not be created until DORADO enters a beta phase in the future.
+                DORADO is in beta and as such is highly experimental and still a work in progress. While still in active development DORADO may still be used and experimented with; but a stable channel will not be created until DORADO enters a stable phase in the future.
 
                 Use of DORADO while in beta will not result in any risk to your computer or hardware, but may affect stability of software that are written with DORADO or the quality of data that is produced using DORADO.
 

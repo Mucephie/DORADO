@@ -16,6 +16,7 @@ Pip should install all relevent dependencies for dorado into the python environm
 pip was run from. The dorado team recommends using the latest version of python unless otherwise 
 mentioned for the best compatibility.
 
+
 Dependencies
 -------------
 
@@ -37,7 +38,11 @@ Currently DORADO relies on:
 
 7.  `astroquery <https://astroquery.readthedocs.io/>`_
 
-
+    .. note:: CCDPROC requires the ``astroscrappy`` package for install. Currently, astroscrappy requires 
+                Visual C++ redistributable for build and function. This dependency is currently having issues 
+                with ``python 3.9``, compatability with python 3.9 is incoming. The install of astroscrappy may also 
+                require the ``wheel`` python package for some python environments. If you are having trouble 
+                installing DORADO, please contact us for assistance.
 
 Babies first Dorado script
 ==========================
@@ -49,32 +54,33 @@ import, initialize, and call.
 
         ## import
         # import dorado utilities
-        from dorado.clippy import Clippy
-        from dorado.zellars import Zellars
+        from dorado.filer import Filer
+        from dorado.target import Target
 
         ## initialize
         # make an instance of clippy
-        clip = Clippy()
-        # create a target object
-        target = Zellars('target_name')
+        clippy = Filer()
+        # create a target object 'target of interest' toi
+        toi = Target('target_name')
         # create a control target object
+        control = Target('control_target_name')
         # create a series object
-        ceres = clip.mkceres('2021-01-01+02', target = target)
+        ceres = clippy.mkceres('2021-01-01+02', target = toi)
 
         ## call
         # calibrate the series red filter data
         ceres.calibrate('R')
         # align the series red filter data
-        ceres.align('R', clip, cache = True)
+        ceres.align('R', clippy, cache = True)
         # perform differential photometry on the target in the red filter 
         # data using the control as a reference
-        ceres.dorphotc('R', target, control, shape = 21)
+        ceres.dorphotc('R', toi, control)
 
         ## finish by saving
         # save the resulting data
-        clip.savewrk(ceres)
+        clippy.savewrk(ceres)
         # record the results
-        target.record(clip, ceres)
+        toi.record(clippy, ceres)
 
 
-Next: :doc:`Clippy</dorado/clippy>`
+Next: :doc:`Filer</dorado/filer>`

@@ -207,14 +207,19 @@ class Ceres:
         stack = self.data[self.filters[filter]]
         # if no wcs, complain alot
         w = stack.wcs
+        
         xy = w.wcs_world2pix(toi.coords.ra.deg, toi.coords.dec.deg, 1)
+        pos = Table(names=['x_0', 'y_0'], data = ([float(xy[0])], [float(xy[1])]))
+        aperture = CircularAperture(pos, r = shape)
+        annulus_aperture = CircularAnnulus(pos, r_in = shape + 2, r_out = shape + 5)
+        apers = [aperture, annulus_aperture]
+
         if control_toi != None:
             xyc = w.wcs_world2pix(control_toi.coords.ra.deg, control_toi.coords.dec.deg, 1)
-            pos = Table(names=['x_0', 'y_0'], data = ([float(xy[0]), float(xyc[0])], [float(xy[1]), float(xyc[1])]))
-
-        else:
-            pos = Table(names=['x_0', 'y_0'], data = ([float(xy[0])], [float(xy[1])]))
-
+            posc = Table(names=['x_0', 'y_0'], data = ([float(xyc[0])], [float(xyc[1])]))
+            aperturec = CircularAperture(posc, r = shape)
+            annulus_aperturec = CircularAnnulus(posc, r_in = shape + 2, r_out = shape + 5)
+            apersc = [aperturec, annulus_aperturec]
 
 
         times = []
@@ -228,10 +233,7 @@ class Ceres:
         apsum = []
         apsum_unc = []
 
-        aperture = CircularAperture(pos, r = shape)
-        annulus_aperture = CircularAnnulus(pos, r_in = shape + 2, r_out = shape + 5)
-        apers = [aperture, annulus_aperture]
-        # if radec get xy
+
         print('Performing photometry')
         for image in tqdm(stack.data, colour = 'green'):
             error = unc * image
@@ -250,8 +252,13 @@ class Ceres:
             # y.append(results['y_fit'][0])
 
             if control_toi != None:
-                apsum.append(results['flux_fit'][0] - results['flux_fit'][1])
-                flux.append((results['flux_fit'][0] - results['flux_fit'][1])/image.header['EXPTIME'])
+                resultsc = aperture_photometry(image, apersc, error = error)
+                bkg_meanc = resultsc['aperture_sum_1'] / annulus_aperturec.area
+                bkg_sumc = bkg_meanc * aperturec.area
+                resultsc['flux_fit'] = resultsc['aperture_sum_0'] - bkg_sumc
+
+                apsum.append(results['flux_fit'][0] - resultsc['flux_fit'][0])
+                flux.append((results['flux_fit'][0] - resultsc['flux_fit'][0])/image.header['EXPTIME'])
             else:
                 apsum.append(results['flux_fit'][0])
                 flux.append(results['flux_fit'][0]/image.header['EXPTIME'])

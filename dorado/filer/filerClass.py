@@ -147,7 +147,7 @@ class Filer:
                 for i in range(len(biasl)):
                     hdu = CCDData.read(biasl[i].path, unit = self.unit)
                     bias.append(hdu)
-                print('Bias searched.')
+                # print('Bias searched.')
                 flatsl = []
                 for strflat in flatsstr:
                     for s in files:
@@ -157,7 +157,7 @@ class Filer:
                 for i in flatsl:
                     hdu = CCDData.read(i.path, unit = self.unit)
                     flats.append(hdu)
-                print('flats searched.')
+                # print('flats searched.')
                 # strip into ceres (check if multi-filter)
                 lightsl = []
                 nonlight = []
@@ -175,7 +175,7 @@ class Filer:
                 for i in lightsl:
                     hdu = CCDData.read(i.path, unit = self.unit)
                     lights.append(hdu)
-                print('lights searched.')
+                # print('lights searched.')
                 return bias, flats, lights
 
 
@@ -483,7 +483,7 @@ class Filer:
         #     month = '0' + str(cr.date.ymdhms['month'])
 
         # datestr = str(cr.date.ymdhms['year']) + '-' + month + '-' + day + '+' + day2
-        print(datestr)
+        print('Saved to data/wrk/', datestr)
         self.mkwrk(cr)
         # mk wrk folder, allow for it to already exist
         # os.makedirs(wrkdir / datestr, exist_ok = True)

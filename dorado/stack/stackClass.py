@@ -77,7 +77,7 @@ class Stack:
         if self.times == []:
             try: 
                 self.get_times()
-                print('Times set')
+                # print('Times set')
             except:
                 self.times = []
      

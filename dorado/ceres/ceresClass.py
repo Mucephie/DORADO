@@ -210,7 +210,7 @@ class Ceres:
 
         xy = w.wcs_world2pix(toi.coords.ra.deg, toi.coords.dec.deg, 1)
         # pos = Table(names=['x_0', 'y_0'], data = ([float(xy[0])], [float(xy[1])]))
-        pos = [float(xy[0])], [float(xy[1])]
+        pos = [(float(xy[0]), float(xy[1]))]
         aperture = CircularAperture(pos, r = shape)
         annulus_aperture = CircularAnnulus(pos, r_in = shape + 2, r_out = shape + 5)
         apers = [aperture, annulus_aperture]
@@ -218,7 +218,7 @@ class Ceres:
         if control_toi != None:
             xyc = w.wcs_world2pix(control_toi.coords.ra.deg, control_toi.coords.dec.deg, 1)
             # posc = Table(names=['x_0', 'y_0'], data = ([float(xyc[0])], [float(xyc[1])]))
-            posc = [float(xyc[0])], [float(xyc[1])]
+            posc = [(float(xyc[0]), float(xyc[1]))]
             aperturec = CircularAperture(posc, r = shape)
             annulus_aperturec = CircularAnnulus(posc, r_in = shape + 2, r_out = shape + 5)
             apersc = [aperturec, annulus_aperturec]

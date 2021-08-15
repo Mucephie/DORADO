@@ -547,7 +547,24 @@ class Filer:
             solved = cr.data[cr.filters[filter]].solved
             solved.write(wrkdir / datestr / 'WCS' / fname, overwrite = True)
             
+    def saveBase(self, cr, filters = None):
+        wrkdir = self.dordir / 'data' / 'wrk'
+        if cr.datestr == None:
+            self.getDateString(cr)
+        datestr = cr.datestr
 
+        print('Saved to data/wrk/', datestr)
+        self.mkwrk(cr)
+
+        if filters == None:
+            filters = cr.filters.keys()
+        
+        for filter in filters:
+            fname = wrkdir / datestr / filter + '_base.fits'
+            base = cr.data[cr.filters[filter]].base
+            base.write(fname, overwrite = True)
+
+        
 
     # merge header
 

@@ -28,6 +28,12 @@ from photutils.aperture import CircularAperture, aperture_photometry, CircularAn
 # from astropy.stats import mad_std
 # from astroquery.simbad import Simbad
 
+from astropy.visualization import SqrtStretch
+from astropy.visualization.mpl_normalize import ImageNormalize
+from astropy.stats import SigmaClip
+from photutils import Background2D, MedianBackground
+
+
 from ..timeseries import timeSeries
 
 '''
@@ -289,7 +295,7 @@ class Ceres:
 
         c = ccdprocx.Combiner(series.data)
         if minmax:
-            c.minmax_clipping(min_clip=0.1)
+            c.minmax_clipping(min_clip = 0.1)
         if sigClip:
             c.sigma_clipping()
         self.data[self.filters[filter]].base = c.median_combine()
@@ -297,6 +303,16 @@ class Ceres:
 
         ## TODO :: Sort out how to save this to the filesystem 
 
+    def calBase(self, filter):
+        img = self.data[self.filters[filter]].base
+        norm = ImageNormalize(stretch=SqrtStretch())
+        sigma_clip = SigmaClip(sigma=3.)
+        bkg_estimator = MedianBackground()
+        bkg = Background2D(img, (50, 50), filter_size=(3, 3), sigma_clip=sigma_clip, bkg_estimator=bkg_estimator)
+        base = img
+        base.data = img.data / bkg.background.value
+        base.data[np.isnan(base.data)] = 0
+        self.data[self.filters[filter]].base = base
 
 ## TODO :: figure out how to handle aligning and processing planetary images and image with low star counts
 ## TODO :: remove dorphot and shift it to its own class which will take the ceres object as an input.

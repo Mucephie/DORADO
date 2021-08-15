@@ -64,6 +64,7 @@ class Stack:
         self.wcs = None
         self.alignTo = alignTo
         self.solved = None
+        self.base = None
         # include things like flux uncertainty etc.
         # save data
         # if flat is none, call clippy for help

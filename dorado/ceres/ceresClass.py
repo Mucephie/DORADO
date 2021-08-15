@@ -3,7 +3,7 @@ warnings.filterwarnings('ignore')
 # import sys
 # import os
 
-# import numpy as np
+import numpy as np
 import ccdprocx
 from astropy.time import Time
 from astropy.table import QTable, Table

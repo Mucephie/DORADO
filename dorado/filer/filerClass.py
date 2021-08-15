@@ -174,6 +174,8 @@ class Filer:
                 lights = []
                 for i in lightsl:
                     hdu = CCDData.read(i.path, unit = self.unit)
+                    ## Trying to enforce 16bit data instead of 32 or 64
+                    hdu.data = hdu.data.astype('uint16')
                     lights.append(hdu)
                 # print('lights searched.')
                 return bias, flats, lights
@@ -206,6 +208,8 @@ class Filer:
                         lights = []
                         for i in files:
                             hdu = CCDData.read(i.path, unit = self.unit)
+                            ## Trying to enforce 16bit data instead of 32 or 64
+                            hdu.data = hdu.data.astype('uint16')
                             lights.append(hdu)
                         # filter = ImageFileCollection(ldir).values('filter', unique = True)
                         # lights = [filter, lightsarr]

@@ -103,7 +103,7 @@ class Ceres:
         del self.data[self.filters[filter]]
         # delete time strings
 
-    def calibrate(self, filter, use_med_cr_removal = False):
+    def calibrate(self, filter, use_med_cr_removal = False, rb = 0):
         # for bla in series: add bias corrected = True to header
         stack = self.data[self.filters[filter]]
         flat = stack.flat
@@ -118,7 +118,7 @@ class Ceres:
             bias.data = bias.data.astype('uint16') 
             im = ccdprocx.ccd_process(im, master_bias = bias, master_flat = flat)
             if use_med_cr_removal:
-                im = ccdprocx.cosmicray_median(im, rbox = 5)
+                im = ccdprocx.cosmicray_median(im, rbox = rb)
             im.data = im.data.astype('uint16') 
             c_series.append(im)
         self.data[self.filters[filter]].data = c_series
@@ -281,14 +281,15 @@ class Ceres:
         toi.filters[filter] = len(toi.ts)
         toi.ts.append(ts)
 
-    def mkBase(self, filter):
+    def mkBase(self, filter, sigClip = False):
         ## TODO :: add the option to change the combination method. Right now default is 
         # sigma clipped median combination.
         series = self.data[self.filters[filter]]
         # toalign = series.data[series.alignTo]
 
         c = ccdprocx.Combiner(series.data)
-        c.sigma_clipping()
+        if sigClip:
+            c.sigma_clipping()
         self.data[self.filters[filter]].base = c.median_combine()
         ## TODO :: sort out what is in the header of this base file.
 

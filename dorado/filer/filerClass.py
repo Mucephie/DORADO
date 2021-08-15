@@ -11,7 +11,7 @@ from astropy import config as _config
 from astropy.utils.misc import isiterable
 import astropy.units as un
 from astropy.time import Time
-import ccdproc
+import ccdprocx
 
 from astroquery.astrometry_net import AstrometryNet
 from astroquery.exceptions  import TimeoutError
@@ -253,7 +253,7 @@ class Filer:
             flat: CCDdata
                     The combined calibrated flatfield image.
             """
-            c = ccdproc.Combiner(flats)
+            c = ccdprocx.Combiner(flats)
             c.sigma_clipping()
             flat = c.median_combine()
             # , method = 'average',
@@ -301,7 +301,7 @@ class Filer:
             """
             # Allow specification of median or mean
 
-            bias = ccdproc.combine(biasIFC, method = 'average', unit = self.unit)
+            bias = ccdprocx.combine(biasIFC, method = 'average', unit = self.unit)
             bias.meta['stacked'] = True
             bias.header['numsubs'] = len(biasIFC)
             date = Time(bias.header['DATE-OBS'], format='fits').mjd
@@ -439,7 +439,9 @@ class Filer:
             return 
 
     def getDateString(self, cr):
+
         ## TODO :: look into UTC wrecking stuff
+        # if the hour is less than the utc offset of the site then the utc date is one ahead of local time
         day = str(cr.date.ymdhms['day'])
         day2 = str(cr.date.ymdhms['day'] + 1)
         month = str(cr.date.ymdhms['month'])

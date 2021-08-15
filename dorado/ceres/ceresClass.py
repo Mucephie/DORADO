@@ -103,7 +103,7 @@ class Ceres:
         del self.data[self.filters[filter]]
         # delete time strings
 
-    def calibrate(self, filter):
+    def calibrate(self, filter, use_med_cr_removal = False):
         # for bla in series: add bias corrected = True to header
         stack = self.data[self.filters[filter]]
         flat = stack.flat
@@ -117,6 +117,8 @@ class Ceres:
             flat.data = flat.data.astype('uint16') 
             bias.data = bias.data.astype('uint16') 
             im = ccdprocx.ccd_process(im, master_bias = bias, master_flat = flat)
+            if use_med_cr_removal:
+                im = ccdprocx.cosmicray_median(im, rbox = 5)
             im.data = im.data.astype('uint16') 
             c_series.append(im)
         self.data[self.filters[filter]].data = c_series
@@ -158,7 +160,7 @@ class Ceres:
             self.data[self.filters[filter]].wcs = WCS(wcs_header)
             self.data[self.filters[filter]].solved = solved
 
-    def align(self, filter, filer, alignto = None, getWCS = True, cache = False):
+    def align(self, filter, filer, alignto = None, getWCS = True, cache = False, ds = 2, ma = 5):
         series = self.data[self.filters[filter]]
         if alignto == None:
             alignto = series.alignTo
@@ -193,7 +195,7 @@ class Ceres:
         for image in tqdm(series.data, colour = 'green'):
             # bar.update()
             try:
-                img, _ = aa.register(image.data, toalign.data, max_control_points = 100, detection_sigma = 6)
+                img, _ = aa.register(image.data, toalign.data, detection_sigma = ds, min_area = ma)
                 aaim = image
                 aaim.data = img
                 aa_series.append(aaim)

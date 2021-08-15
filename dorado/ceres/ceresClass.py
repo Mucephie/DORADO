@@ -283,7 +283,7 @@ class Ceres:
         ## TODO :: add the option to change the combination method. Right now default is 
         # sigma clipped median combination.
         series = self.data[self.filters[filter]]
-        toalign = series.data[series.alignto]
+        # toalign = series.data[series.alignTo]
 
         c = ccdprocx.Combiner(series.data)
         c.sigma_clipping()

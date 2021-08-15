@@ -4,7 +4,7 @@ warnings.filterwarnings('ignore')
 # import os
 
 # import numpy as np
-import ccdproc
+import ccdprocx
 from astropy.time import Time
 from astropy.table import QTable, Table
 import astroalign as aa
@@ -18,20 +18,20 @@ from astropy.io import fits
 from astropy.nddata.ccddata import CCDData
 
 # photometry imports
-from photutils.psf import IntegratedGaussianPRF, DAOGroup
-from photutils.background import MMMBackground, MADStdBackgroundRMS
-from astropy.modeling.fitting import LevMarLSQFitter
-from astropy.stats import gaussian_sigma_to_fwhm
-from photutils.psf import IterativelySubtractedPSFPhotometry
+# from photutils.psf import IntegratedGaussianPRF, DAOGroup
+# from photutils.background import MMMBackground, MADStdBackgroundRMS
+# from astropy.modeling.fitting import LevMarLSQFitter
+# from astropy.stats import gaussian_sigma_to_fwhm
+# from photutils.psf import IterativelySubtractedPSFPhotometry
 from photutils.aperture import CircularAperture, aperture_photometry, CircularAnnulus
-from photutils import DAOStarFinder
-from astropy.stats import mad_std
+# from photutils import DAOStarFinder
+# from astropy.stats import mad_std
 # from astroquery.simbad import Simbad
 
 from ..timeseries import timeSeries
 
 '''
-Ceres is the handler of image series in Dorado,
+Ceres is the handler of observational image series in Dorado.
 '''
 
 __all__ = ['Ceres']
@@ -116,7 +116,7 @@ class Ceres:
             im.data = im.data.astype('uint16') 
             flat.data = flat.data.astype('uint16') 
             bias.data = bias.data.astype('uint16') 
-            im = ccdproc.ccd_process(im, master_bias = bias, master_flat = flat)
+            im = ccdprocx.ccd_process(im, master_bias = bias, master_flat = flat)
             im.data = im.data.astype('uint16') 
             c_series.append(im)
         self.data[self.filters[filter]].data = c_series
@@ -162,6 +162,8 @@ class Ceres:
         series = self.data[self.filters[filter]]
         if alignto == None:
             alignto = series.alignTo
+        else: 
+            series.alignTo = alignto
         toalign = series.data[alignto]
         ## TODO :: make this use ceres.getWCS()
         if getWCS:
@@ -276,4 +278,21 @@ class Ceres:
         ts = timeSeries(times = times, flux = flux, exptimes = exptimes, x = x, y = y, ra = ray, dec = decx, flux_unc = fluxunc, apsum = apsum, apsum_unc = apsum_unc)
         toi.filters[filter] = len(toi.ts)
         toi.ts.append(ts)
+
+    def mkBase(self, filter):
+        ## TODO :: add the option to change the combination method. Right now default is 
+        # sigma clipped median combination.
+        series = self.data[self.filters[filter]]
+        toalign = series.data[series.alignto]
+
+        c = ccdprocx.Combiner(series.data)
+        c.sigma_clipping()
+        self.data[self.filters[filter]].base = c.median_combine()
+        ## TODO :: sort out what is in the header of this base file.
+
+        ## TODO :: Sort out how to save this to the filesystem 
+
+
+## TODO :: figure out how to handle aligning and processing planetary images and image with low star counts
+## TODO :: remove dorphot and shift it to its own class which will take the ceres object as an input.
 

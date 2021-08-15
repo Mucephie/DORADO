@@ -281,13 +281,15 @@ class Ceres:
         toi.filters[filter] = len(toi.ts)
         toi.ts.append(ts)
 
-    def mkBase(self, filter, sigClip = False):
+    def mkBase(self, filter, sigClip = False, minmax = False):
         ## TODO :: add the option to change the combination method. Right now default is 
         # sigma clipped median combination.
         series = self.data[self.filters[filter]]
         # toalign = series.data[series.alignTo]
 
         c = ccdprocx.Combiner(series.data)
+        if minmax:
+            c.minmax_clipping(min_clip=0.1)
         if sigClip:
             c.sigma_clipping()
         self.data[self.filters[filter]].base = c.median_combine()

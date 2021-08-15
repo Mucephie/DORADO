@@ -560,7 +560,8 @@ class Filer:
             filters = cr.filters.keys()
         
         for filter in filters:
-            fname = wrkdir / datestr / filter + '_base.fits'
+            imname = filter + '_base.fits'
+            fname = wrkdir / datestr / imname
             base = cr.data[cr.filters[filter]].base
             base.write(fname, overwrite = True)
 

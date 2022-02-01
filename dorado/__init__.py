@@ -9,8 +9,10 @@ from .target import *
 from .ceres import *
 from .stack import *
 from .core import *
-# from .fournax import *
 from .timeseries import *
+from .dorphot import *
+
+# from .fournax import *
 # dorphot
 # reader
 # ----------------------------------------------------------------------------

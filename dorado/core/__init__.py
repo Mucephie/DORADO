@@ -5,6 +5,7 @@ is just an example sub-package, so it doesn't actually do anything.
 """
 __all__ = []
 
-from .filerClass import *
-__all__ += filerClass.__all__
+from .coreClass import *
+from .readerClass import *
+__all__ += coreClass.__all__
 __all__ += readerClass.__all__

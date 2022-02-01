@@ -49,7 +49,8 @@ class Stack:
 
     ## TODO :: auto identify targets in stack
 
-    def __init__(self, data, flat = None, filter = '', times = [], calibrated = None, aligned = None, target = None, alignTo = 0):
+    def __init__(self, data, flat = None, filter = '', times = [], calibrated = None,
+     aligned = None, target = None, alignTo = 0):
         self.data = data
         self.flat = flat
         self.filter = filter
@@ -81,7 +82,7 @@ class Stack:
                 # print('Times set')
             except:
                 self.times = []
-     
+        # done
     def get_times(self):
         '''
         get_times sequences through the stack data and passes the FITS header timestamp
@@ -102,6 +103,7 @@ class Stack:
         for im in self.data:
             times.append(Time(im.header['DATE-OBS'], format='fits'))
         self.times = times
+        # done
 
     def get_target_info(self, target = None):
         '''
@@ -122,6 +124,8 @@ class Stack:
         self.target: TOI object
             Target of interest in the stack.
         '''
+        # TODO does this need to be a wrapper or need more here
         if target != None:
             self.target = target
+        # done
    

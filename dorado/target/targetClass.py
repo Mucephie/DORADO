@@ -56,7 +56,7 @@ class Target:
         self.ts[self.filters[filter]]['mag'] = magnitudes
         self.ts[self.filters[filter]]['mag_unc'] = mag_unc
 
-    def record(self, filer, cr, saveType = 'fits'):
+    def record(self, Dorado, cr, saveType = 'fits'):
         '''
         record writes each filters timeseries to the dorado working data directory
         for the relevent date and target.
@@ -78,19 +78,19 @@ class Target:
         -------
         None
         '''
-        wrkdir = filer.dordir / 'data' / 'wrk'
+        wrkdir = Dorado.dordir / 'data' / 'wrk'
         if cr.datestr == None:
-            cr.datestr = filer.getDateString(cr)
+            cr.datestr = Dorado.getDateString(cr)
         datestr = cr.datestr
         wrdir = wrkdir / datestr
-        filer.mkwrk(cr)
+        Dorado.mkwrk(cr)
         for fi in self.filters.keys():
             wrts = self.ts[self.filters[fi]]
             fname = str(self.name) + '_' + str(fi) + '-' + str(int(cr.date.mjd)) + '.' + saveType
             wrts.toTable(self.name)
             wrts.table.write(wrdir / fname, overwrite = True)
         
-    def export(self, filer, objectClass = None):
+    def export(self, Dorado, objectClass = None):
         '''
         export will record the TOI object into the dorado targets directory for future use 
         and reference. This function is not implemented yet.
@@ -111,7 +111,7 @@ class Target:
         
         Users can craft their own object naming schemes.
         '''
-        tardir = filer.dordir / 'data/targets'
+        tardir = Dorado.dordir / 'data/targets'
         if objectClass:
             os.makedirs(tardir / objectClass, exist_ok = True)
             tardir = tardir / objectClass
@@ -127,6 +127,7 @@ Fournax is an abbreviation of Fourier numerical astronomy extension, its name is
 from scipy.signal import find_peaks
 
 class Fournax(Target):
+
     '''
         The Fournax class extends the TOI target class to provide a consistent simple, yet robust interface to targets with regular or semi-regular photometric variability for the purposes of lightcurve/timeseries fourier analysis.  
 
@@ -149,8 +150,9 @@ class Fournax(Target):
         ## Inherit from Ceres object (date, ts, etc.) 
         Target.__init__(self, name)
 
-        self.freq = [] # Array of observed frequencies (Raw)
-        ## NOTE:: Should frequencies be cleaned for aliasing, can the spread of aliasing peak values provide a measure of uncertainty on the fundamental frequency?
+        self.freq = [] # Array of observed frequencies (Raw) --> convert to table with amplitudes
+        ## NOTE:: Should frequencies be cleaned for aliasing, can the spread of aliasing peak
+        #  values provide a measure of uncertainty on the fundamental frequency?
 
         self.Operiod = None # Observed period
         self.Operiod_unc = None # Uncertainty on period
@@ -348,3 +350,14 @@ class Fournax(Target):
         toml = X[peaks]
 
         self.ts[self.filters[filter]].toml = toml
+
+class TESSeract(Fournax):
+    '''
+    
+    '''
+    def __init__(self, tid = None, sector = None, type = None):
+        self.tid = tid # find this if possible
+        self.sector = sector # set this later if not given, with all possibilities
+        self.type = type
+
+        

@@ -7,3 +7,4 @@ __all__ = []
 
 from .filerClass import *
 __all__ += filerClass.__all__
+__all__ += readerClass.__all__

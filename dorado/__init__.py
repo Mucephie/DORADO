@@ -8,9 +8,11 @@ from ._astropy_init import *   # noqa
 from .target import *
 from .ceres import *
 from .stack import *
-from .filer import *
+from .core import *
 # from .fournax import *
 from .timeseries import *
+# dorphot
+# reader
 # ----------------------------------------------------------------------------
 
 # __all__ = []

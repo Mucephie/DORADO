@@ -57,13 +57,13 @@ In the alignment step Dorado called 'Astrometry.Net' to plate solve the aligned 
 coordinates for this filters stack of data. This will allow Dorado to quickly find McCool's star and
 Boring star in the images and perform photometry on them. This is done using the ``dorphot()` Ceres
 command, again we are specifying that we are interested in the red filter and we are feeding our target
-and control objects, along with a PSF fit shape to the command.
+and control objects.
 
 .. code:: python
 
         # perform differential photometry on the target in the red filter 
         # data using the control as a reference
-        ceres.dorphotc('R', toi, control)
+        ceres.dorphot('R', toi, control)
 
 We now have our timeseries data for our lightcurve and wish to save it for review later. Lets save both
 our target data and the calibrated/aligned images.
@@ -72,9 +72,9 @@ our target data and the calibrated/aligned images.
 
         ## finish by saving
         # save the resulting data
-        clip.savewrk(ceres)
+        clippy.savewrk(ceres)
         # record the results
-        target.record(clip, ceres)
+        toi.record(clippy, ceres)
 
 Yay, it was that easy and this script can be called every morning. Although modifications should be made 
 to allow for you to set the target and control without hardcoding like we've done here as its probable that 

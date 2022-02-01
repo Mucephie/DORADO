@@ -104,9 +104,8 @@ class Ceres:
         # TODO do I need to add times?
         self.filters[stack.filter] = len(self.data)
         self.data.append(stack)
-        # done
-
+        
     def rem_stack(self, filter):
         # TODO delete time strings
         del self.data[self.filters[filter]]
-        # done
+        

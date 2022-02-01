@@ -82,7 +82,7 @@ class Stack:
                 # print('Times set')
             except:
                 self.times = []
-        # done
+        
     def get_times(self):
         '''
         get_times sequences through the stack data and passes the FITS header timestamp
@@ -103,7 +103,7 @@ class Stack:
         for im in self.data:
             times.append(Time(im.header['DATE-OBS'], format='fits'))
         self.times = times
-        # done
+        
 
     def get_target_info(self, target = None):
         '''
@@ -127,5 +127,5 @@ class Stack:
         # TODO does this need to be a wrapper or need more here
         if target != None:
             self.target = target
-        # done
+        
    

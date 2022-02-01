@@ -46,8 +46,7 @@ class aicoPhot:
             c_series.append(im)
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].data = c_series
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].calibrated = True
-        # done mod
-
+        
     def imarith(self, cr, filter, operator, operand):
         # mod to check datatype using type()
         # mod to remove im_count and make possible to use single image
@@ -64,27 +63,26 @@ class aicoPhot:
                 series[i].data = series[i].data  * operand
         
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]] = series
-        # done mod
         # TODO should this be in stack? like have a wrapper here?
 
     def getWCS(self, cere, filter, filer, alignto = None, cache = True):
-        series = cere.data[cere.filters[filter]]
+        series = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
         if alignto == None:
             alignto = series.alignTo
         if cache:
-            hdulist = fits.open(filer.dordir / 'cache' / 'astrometryNet' / 'solved.fits') 
-            cere.data[cere.filters[filter]].wcs = WCS(hdulist[0].header, hdulist)
-            cere.data[cere.filters[filter]].solved = CCDData.read(filer.dordir / 'cache' / 'astrometryNet' / 'solved.fits')
+            hdulist = fits.open(Dorado.dordir / 'cache' / 'astrometryNet' / 'solved.fits') 
+            Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].wcs = WCS(hdulist[0].header, hdulist)
+            Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].solved = CCDData.read(Dorado.dordir / 'cache' / 'astrometryNet' / 'solved.fits')
             hdulist.close()
         else:
             toalign = series.data[alignto]
-            fname, cachedir = filer.mkcacheObj(toalign, 'astrometryNet')
+            fname, cachedir = Dorado.mkcacheObj(toalign, 'astrometryNet')
             path = [cachedir, fname]
             writearray = [cachedir, 'solved.fits']
-            solved, wcs_header = filer.plate_solve(path, writearray = writearray)
+            solved, wcs_header = Dorado.plate_solve(path, writearray = writearray)
             filer.delcacheObj( fname, 'astrometryNet')
-            cere.data[cere.filters[filter]].wcs = WCS(wcs_header)
-            cere.data[cere.filters[filter]].solved = solved
+            Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].wcs = WCS(wcs_header)
+            Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].solved = solved
     
     def align(self, cr, filter, alignto = None, getWCS = True, cache = False, ds = 2, ma = 5):
         
@@ -135,8 +133,7 @@ class aicoPhot:
 
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].data = aa_series
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].aligned = True
-        # done mod
-
+        
     def dorphot(self, cr, filter, toi, control_toi = None, shape = 21, unc = 0.1):
         # get seeing from PSF
         stack = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
@@ -210,8 +207,7 @@ class aicoPhot:
         toi.ts.append(ts)
         # TODO accomodate targets embedded in core
         # TODO the name for this function needs updating
-        # done mod
-
+        
     def mkBase(self, cr, filter, sigClip = False, minmax = False):
         ## TODO :: add the option to change the combination method. Right now default is 
         # sigma clipped median combination.
@@ -226,8 +222,7 @@ class aicoPhot:
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].base = c.median_combine()
         ## TODO :: sort out what is in the header of this base file.
         ## TODO :: Sort out how to save this to the filesystem 
-        # done mod
-
+        
     def calBase(self, cr, filter):
         # TODO this needs hella optimization and direction
         img = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].base
@@ -239,7 +234,7 @@ class aicoPhot:
         base.data = img.data / bkg.background.value
         base.data[np.isnan(base.data)] = 0
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].base = base
-        # done mod
+        
 
 
 ## TODO :: figure out how to handle aligning and processing planetary images and image with low star counts

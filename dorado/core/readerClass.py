@@ -52,7 +52,7 @@ class aico_reader:
                             biasl.append(s)
                 bias = []
                 for i in range(len(biasl)):
-                    hdu = CCDData.read(biasl[i].path, unit = self.unit)
+                    hdu = CCDData.read(biasl[i].path, unit = Dorado.unit)
                     bias.append(hdu)
                 # print('Bias searched.')
                 flatsl = []
@@ -62,7 +62,7 @@ class aico_reader:
                             flatsl.append(s)
                 flats = []
                 for i in flatsl:
-                    hdu = CCDData.read(i.path, unit = self.unit)
+                    hdu = CCDData.read(i.path, unit = Dorado.unit)
                     flats.append(hdu)
                 # print('flats searched.')
                 # strip into ceres (check if multi-filter)
@@ -80,7 +80,7 @@ class aico_reader:
                 # lightsl = [s for s in files if (s.name not in biasl) and (s.name not in flatsl)]
                 lights = []
                 for i in lightsl:
-                    hdu = CCDData.read(i.path, unit = self.unit)
+                    hdu = CCDData.read(i.path, unit = Dorado.unit)
                     ## Trying to enforce 16bit data instead of 32 or 64
                     hdu.data = hdu.data.astype('uint16')
                     lights.append(hdu)
@@ -97,15 +97,15 @@ class aico_reader:
             flatsdir = [s for s in directories if s.name in flatsstr]
             # check if multifilter (or subdirectories) and pass to ceres
             lightsdir = [s for s in directories if (s.name not in flatsstr) and (s.name not in biasstr)]
-            biasl, _ = self.diread(biasdir[0])
+            biasl, _ = Dorado.diread(biasdir[0])
             bias = []
             for i in biasl:
-                hdu = CCDData.read(i.path, unit = self.unit)
+                hdu = CCDData.read(i.path, unit = Dorado.unit)
                 bias.append(hdu)
 
 
             for ldir in lightsdir:
-                files, directories = self.diread(ldir)
+                files, directories = Dorado.diread(ldir)
                 if len(directories) == 0:
                     if len(files) == 0:
                         raise Exception('No viable light data found')
@@ -114,7 +114,7 @@ class aico_reader:
                         # print('Reading files.')
                         lights = []
                         for i in files:
-                            hdu = CCDData.read(i.path, unit = self.unit)
+                            hdu = CCDData.read(i.path, unit = Dorado.unit)
                             ## Trying to enforce 16bit data instead of 32 or 64
                             hdu.data = hdu.data.astype('uint16')
                             lights.append(hdu)
@@ -130,7 +130,7 @@ class aico_reader:
 
 
             for fdir in flatsdir:
-                files, directories = self.diread(fdir)
+                files, directories = Dorado.diread(fdir)
                 if len(directories) == 0:
                     if len(files) == 0:
                         raise Exception('No viable light data found')
@@ -139,7 +139,7 @@ class aico_reader:
                         # print('Reading files.')
                         flats = []
                         for i in files:
-                            hdu = CCDData.read(i.path, unit = self.unit)
+                            hdu = CCDData.read(i.path, unit = Dorado.unit)
                             flats.append(hdu)
 
                 elif len(files) == 0:
@@ -149,7 +149,7 @@ class aico_reader:
 
            
             return bias, flats, lights
-        # done mod
+        
     def mkceres(self,  date, sub = 'raw', target = None, calibrated = False, aligned = False):
             # TODO needs ability to handle multifilter directories
             if aligned:
@@ -193,7 +193,7 @@ class aico_reader:
             
 
             return cere
-        # done mod
+        
     def mkFlat(self, flats):
             """
             mkFlat takes  a list of flats to construct a calibrated flatfield image.
@@ -227,7 +227,7 @@ class aico_reader:
             filt = flat.header['filter']
             ## TODO :: standardize filter names and include telescope profiles
             fname = str(int(date)) + '_' + str(filt) + '_flat.fits'
-            flatdir = self.dordir / 'data' / 'flats' 
+            flatdir = Dorado.dordir / 'data' / 'flats' 
             contents = os.scandir(path = flatdir)
             save = True
             for entry in contents:
@@ -240,7 +240,7 @@ class aico_reader:
                 print('Flat for filter and date already saved.')
 
             return flat
-        # done
+        
     def mkBias(self, biasIFC):
             """
             mkBias takes a list of bias images to construct 
@@ -258,13 +258,13 @@ class aico_reader:
             # Allow specification of median or mean
             # Allow RGB data
 
-            bias = ccdprocx.combine(biasIFC, method = 'average', unit = self.unit)
+            bias = ccdprocx.combine(biasIFC, method = 'average', unit = Dorado.unit)
             bias.meta['stacked'] = True
             bias.header['numsubs'] = len(biasIFC)
             date = Time(bias.header['DATE-OBS'], format='fits').mjd
             bias.data = bias.data.astype('uint16') 
             fname = str(int(date)) + '_Bias.fits'
-            biasdir = self.dordir / 'data' / 'bias' 
+            biasdir = Dorado.dordir / 'data' / 'bias' 
             contents = os.scandir(path = biasdir)
             save = True
             for entry in contents:
@@ -276,7 +276,7 @@ class aico_reader:
             else:
                 print('Bias for date already saved.')
             return bias
-        # done
+        
 
 
 # class tess_reader:

@@ -95,7 +95,7 @@ class Dorado_core:
         if tess:
             os.makedirs('./data/tess', exist_ok = True)
         self.exit_dordir()
-        # done
+        
 
     def newdat(self):
         # find data that hasn't been processed yet
@@ -128,15 +128,15 @@ class Dorado_core:
         night = str(year) + '-' + str(month) + '-' + str(date1) + '+' + str(date2)
 
         return night
-        # done
+        
 
     def enter_dordir(self):
         os.chdir(self.dordir)
-        # done 
+         
 
     def exit_dordir(self):
         os.chdir(self.stardir)
-        # done
+        
 
     def diread(self, dirarray):
         if isiterable(dirarray):
@@ -159,7 +159,11 @@ class Dorado_core:
     
 
     def mkceres(self, date, name = None, sub = 'raw', target = None, calibrated = False, aligned = False):
-            ctemp = self.reader.mkceres(date, sub = sub, target = target, calibrated = calibrated, aligned = aligned)
+            if target == None:
+                ctemp = self.reader.mkceres(date, sub = sub, target = target, calibrated = calibrated, aligned = aligned)
+            else:
+                ctemp = self.reader.mkceres(date, sub = sub, target = self.targets[self.target_keys[target]], calibrated = calibrated, aligned = aligned)
+
             if name == None:
                 name = ctemp.datestr
                 # TODO handle if no date found either
@@ -168,7 +172,7 @@ class Dorado_core:
                 print('Call series as: ', name)
             self.ceres_keys[name] = len(self.ceres)
             self.ceres.append(ctemp)
-        # done
+        
 
 
     def mktrgt(self, name):
@@ -176,10 +180,10 @@ class Dorado_core:
         # , coordinates = None
         self.target_keys[name] = len(self.targets)
         self.targets.append(Target(name))
-        # done
+        
     def force16(self, hdu):
         print('This function is not implemented yet. See mkBias() for example functionality.')
-        # done
+        
     def mkcacheObj(self, object, subcache = False):
         if subcache:
             cachedir = self.dordir / 'cache' / subcache
@@ -202,7 +206,7 @@ class Dorado_core:
         
         object.write(cachedir / fname, overwrite = True)
         return(fname, cachedir)
-        # done
+        
 
     def delcacheObj(self, fname, subcache = False):
         if subcache:
@@ -211,7 +215,7 @@ class Dorado_core:
             cachedir = self.dordir / 'cache'
 
         os.remove(cachedir / fname)
-        # done
+        
     
     def plate_solve(self, dirarray, data = None, writearray = False):
         path = self.dordir
@@ -257,7 +261,7 @@ class Dorado_core:
             # Code to execute when solve fails
             print('Solve failed! :(')
             return 
-        # done 
+         
 
     def getDateString(self, cr):
 
@@ -277,7 +281,7 @@ class Dorado_core:
 
         datestr = str(self.ceres[self.ceres_keys[cr]].date.ymdhms['year']) + '-' + month + '-' + day + '+' + day2
         self.ceres[self.ceres_keys[cr]].datestr = datestr
-        # done
+        
 
     def mkwrk(self, cr):
         if self.ceres[self.ceres_keys[cr]].datestr == None:
@@ -291,8 +295,9 @@ class Dorado_core:
         os.makedirs(wrkdir / datestr / 'uncalibrated', exist_ok = True)
         os.makedirs(wrkdir / datestr / 'WCS', exist_ok = True)
         # figures, targets, log, omitted images, observation metadata
-        # done
+        
     def savewrk(self, cr, filters = None):
+        # TODO mod fplate to accept cr name
         if self.ceres[self.ceres_keys[cr]].datestr == None:
             self.getDateString(cr) # this function needs to be modded TODO
         wrkdir = self.dordir / 'data' / 'wrk'
@@ -313,11 +318,7 @@ class Dorado_core:
         # datestr = str(cr.date.ymdhms['year']) + '-' + month + '-' + day + '+' + day2
         print('Saved to data/wrk/', datestr)
         self.mkwrk(cr)
-        # mk wrk folder, allow for it to already exist
-        # os.makedirs(wrkdir / datestr, exist_ok = True)
-        # os.makedirs(wrkdir / datestr / 'aligned', exist_ok = True)
-        # os.makedirs(wrkdir / datestr / 'calibrated', exist_ok = True)
-        # os.makedirs(wrkdir / datestr / 'uncalibrated', exist_ok = True)
+
         if filters == None:
             filters = self.ceres[self.ceres_keys[cr]].filters.keys()
         
@@ -351,7 +352,7 @@ class Dorado_core:
                 image = fildat.data[p]
                 fname = fplate + str(p) + fsub + '.fits'
                 image.write(wrdir / fname, overwrite = True)
-        # done
+        
 
     def saveWCS(self, cr, filters = None):
         wrkdir = self.dordir / 'data' / 'wrk'
@@ -365,7 +366,7 @@ class Dorado_core:
         for filter in filters:
             stack = self.ceres[self.ceres_keys[cr]].data[self.ceres[self.ceres_keys[cr]].filters[filter]]
             if stack.wcs == None:
-                cr.getWCS(filter, self) # TODO this is now in dorphot, should it be moved?
+                self.dorphot.getWCS(filter, self) # TODO this is now in dorphot, should it be moved?
             fname = str(filter) + '-solved.fits'
             solved = self.ceres[self.ceres_keys[cr]].data[self.ceres[self.ceres_keys[cr]].filters[filter]].solved
             solved.write(wrkdir / datestr / 'WCS' / fname, overwrite = True)
@@ -387,7 +388,7 @@ class Dorado_core:
             fname = wrkdir / datestr / imname
             base = self.ceres[self.ceres_keys[cr]].data[self.ceres[self.ceres_keys[cr]].filters[filter]].base
             base.write(fname, overwrite = True)
-        # done
+        
         
 
     # merge header

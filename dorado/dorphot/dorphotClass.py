@@ -1,8 +1,8 @@
 import tqdm
-from ..coreClass import *
-
 import numpy as np
-from dorado.timeseries.timeseriesClass import timeSeries
+
+from ..core.coreClass import *
+from ..timeseries.timeseriesClass import timeSeries
 import ccdprocx
 
 from astropy.time import Time

@@ -34,7 +34,6 @@ from astropy.stats import SigmaClip
 from photutils import Background2D, MedianBackground
 
 
-from ..timeseries import timeSeries
 
 '''
 Ceres is the handler of observational image series in Dorado.

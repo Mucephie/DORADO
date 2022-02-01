@@ -3,7 +3,7 @@ warnings.filterwarnings('ignore')
 
 from ..ceres import Ceres
 from ..stack import Stack
-from .coreClass import *
+from ..core.coreClass import *
 
 import ccdprocx
 

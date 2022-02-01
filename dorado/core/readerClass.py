@@ -3,7 +3,7 @@ warnings.filterwarnings('ignore')
 
 from ..ceres import Ceres
 from ..stack import Stack
-from .coreClass import Dorado
+from .coreClass import *
 
 import ccdprocx
 
@@ -23,12 +23,12 @@ class aico_reader:
     def __init__(self):
         self.temp = None
 
-    def dirscan(self, Dor, dirarray):
+    def dirscan(self, dirarray):
         # TODO handle multi filter searching 
-        path = Dor.dordir
+        path = Dorado.dordir
         for dir in dirarray:
             path = path / dir
-        files, directories = Dor.diread(path)
+        files, directories = Dorado.diread(path)
 
         biasstr = ['Bias', 'Bias', 'bias', 'BIAS']
 
@@ -149,8 +149,8 @@ class aico_reader:
 
            
             return bias, flats, lights
-        # done
-    def mkceres(self, Dor, date, sub = 'raw', target = None, calibrated = False, aligned = False):
+        # done mod
+    def mkceres(self,  date, sub = 'raw', target = None, calibrated = False, aligned = False):
             # TODO needs ability to handle multifilter directories
             if aligned:
                 dirarray = ['data', sub, date, 'aligned']
@@ -159,7 +159,7 @@ class aico_reader:
             else:
                 dirarray = ['data', sub, date]
 
-            biasIFC, flats, lights = self.dirscan(Dor, dirarray)
+            biasIFC, flats, lights = self.dirscan(dirarray)
 
             print(len(flats), ' flats found.')
             print(len(biasIFC), ' bias frames found.')
@@ -193,7 +193,7 @@ class aico_reader:
             
 
             return cere
-        # done
+        # done mod
     def mkFlat(self, flats):
             """
             mkFlat takes  a list of flats to construct a calibrated flatfield image.

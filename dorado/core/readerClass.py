@@ -16,7 +16,7 @@ from lightkurve.lightcurve import TessLightCurve as tlc
 
 import os
 
-__all__ = ['aico_reader', 'tess_reader']
+__all__ = ['aico_reader'] #, 'tess_reader'
 
 # TODO Make it so that each class isnt loaded unless chosen (core class takes string and then imports correct class)
 class aico_reader:

@@ -19,6 +19,8 @@ from photutils import Background2D, MedianBackground
 from photutils.aperture import CircularAperture, aperture_photometry, CircularAnnulus
 
 
+__all__ = ['aicoPhot']
+
 class aicoPhot:
 
     def __init__(self):

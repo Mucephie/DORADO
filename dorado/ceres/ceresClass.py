@@ -82,19 +82,34 @@ class Ceres:
         
         if datestr == None:
             try:
-                day = str(self.date.ymdhms['day'])
-                day2 = str(self.date.ymdhms['day'] + 1)
-                month = str(self.date.ymdhms['month'])
+                epoch = self.date.ymdhms
+                if (epoch['hour'] + Dorado.UTCoffset) < 0:
+                    day = str(epoch['day'] - 1)
+                    day2 = str(epoch['day'])
+                    month = str(epoch['month'])
 
-                if self.date.ymdhms['day'] < 10:
-                    day = '0' + str(self.date.ymdhms['day'])
-                    if self.date.ymdhms['day'] < 9:
-                        day2 = '0' + str(self.date.ymdhms['day'] + 1)
-                        
-                if self.date.ymdhms['month'] < 10:
-                    month = '0' + str(self.date.ymdhms['month'])
+                    if (epoch['day'] - 1) < 10:
+                        day = '0' + str(epoch['day'] - 1)
+                    if epoch['day'] < 10:
+                        day2 = '0' + str(epoch['day'])
 
-                self.datestr = str(self.date.ymdhms['year']) + '-' + month + '-' + day + '+' + day2
+                    if epoch['month'] < 10:
+                        month = '0' + str(epoch['month'])
+
+                else: 
+                    day = str(epoch['day'])
+                    day2 = str(epoch['day'] + 1)
+                    month = str(epoch['month'])
+
+                    if epoch['day'] < 10:
+                        day = '0' + str(epoch['day'])
+                        if epoch['day'] < 9:
+                            day2 = '0' + str(epoch['day'] + 1)
+
+                    if epoch['month'] < 10:
+                        month = '0' + str(epoch['month'])
+
+                self.datestr = str(epoch['year']) + '-' + month + '-' + day + '+' + day2
             except:
                 self.datestr = datestr
         

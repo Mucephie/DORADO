@@ -283,7 +283,64 @@ class aico_reader:
             else:
                 print('Bias for date already saved.')
             return bias
+    
+    def savewrk(self, cr, filters = None):
         
+        # TODO mod fplate to accept cr name
+        if Dorado.ceres[Dorado.ceres_keys[cr]].datestr == None:
+            Dorado.getDateString(cr) 
+        wrkdir = Dorado.dordir / 'data' / 'wrk'
+
+        datestr = Dorado.ceres[Dorado.ceres_keys[cr]].datestr
+        print('Saved to data/wrk/', datestr)
+        Dorado.mkwrk(cr)
+
+        if filters == None:
+            filters = Dorado.ceres[Dorado.ceres_keys[cr]].filters.keys()
+        
+        for filter in filters:
+            fildat = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
+            
+            if (fildat.target == None):
+                fplate = str(int(Dorado.ceres[Dorado.ceres_keys[cr]].date.mjd)) + '-' + filter + '_'
+            else:
+                fplate = str(fildat.target.name) + '-' + filter + '_' 
+
+
+            if (fildat.calibrated == True) and (fildat.aligned == True): 
+                wrdir = wrkdir / datestr / 'aligned'
+                if len(filters) != 1:
+                    os.makedirs(wrkdir / datestr / 'aligned' / filter, exist_ok = True)
+                    wrdir = wrdir / filter
+                fsub = '_ca'
+            elif (fildat.calibrated == True):
+                wrdir = wrkdir / datestr / 'calibrated'
+                if len(filters) != 1:
+                    os.makedirs(wrkdir / datestr / 'calibrated' / filter, exist_ok = True)
+                    wrdir = wrdir / filter
+                fsub = '_c'
+            else: 
+                wrdir = wrkdir / datestr / 'uncalibrated'
+                if len(filters) != 1:
+                    os.makedirs(wrkdir / datestr / 'uncalibrated' / filter, exist_ok = True)
+                    wrdir = wrdir / filter
+                fsub = ''
+
+
+            if fildat.base != None:
+                fname = fplate + '_base.fits'
+                fildat.base.write(wrkdir / datestr / fname, overwrite = True)
+            if fildat.solved != None: 
+                fname = fplate + '_solved.fits'
+                fildat.solved.write(wrkdir / datestr / fname, overwrite = True)
+                
+
+
+            for p in range(len(fildat.data)):
+                image = fildat.data[p]
+                image.data = image.data.astype('uint16') 
+                fname = fplate + str(p) + fsub + '.fits'
+                image.write(wrdir / fname, overwrite = True)
 
 
 # class tess_reader:

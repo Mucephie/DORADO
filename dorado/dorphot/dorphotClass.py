@@ -219,9 +219,15 @@ class aicoPhot:
             c.minmax_clipping(min_clip = 0.1)
         if sigClip:
             c.sigma_clipping()
-        Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].base = c.median_combine()
+        base = c.median_combine()
+        base.header['stacked'] = True
+        base.header['numsubs'] = len(series.data)
+        base.header['DATE-OBS'] = series.data[0].header['DATE-OBS']
+        base.header['filter'] = series.filter
+
+        Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].base = base
         ## TODO :: sort out what is in the header of this base file.
-        ## TODO :: Sort out how to save this to the filesystem 
+
         
     def calBase(self, cr, filter):
         # TODO this needs hella optimization and direction

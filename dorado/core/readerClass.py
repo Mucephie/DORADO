@@ -208,23 +208,8 @@ class aico_reader:
             flat: CCDdata
                     The combined calibrated flatfield image.
             """
-            # Allow RGB data
-            c = ccdprocx.Combiner(flats)
-            c.sigma_clipping()
-            flat = c.median_combine()
-            # , method = 'average',
-            #                     sigma_clip = True, sigma_clip_low_thresh = 5, sigma_clip_high_thresh = 5,
-            #                     sigma_clip_func = np.ma.median, sigma_clip_dev_func = mad_std, unit = self.unit)
-            flat.header['stacked'] = True
-            flat.header['numsubs'] = len(flats)
-            flat.header['DATE-OBS'] = flats[0].header['DATE-OBS']
-            flat.header['filter'] = flats[0].header['filter']
-            ## TODO :: There is probably more missing keywords in the combined header, where's Waldo...
-
-            date = Time(flat.header['DATE-OBS'], format='fits').mjd
-            flat.data = flat.data.astype('uint16') 
-
-            filt = flat.header['filter']
+            date = Time(flats[0].header['DATE-OBS'], format='fits').mjd
+            filt = flats[0].header['filter']
             ## TODO :: standardize filter names and include telescope profiles
             fname = str(int(date)) + '_' + str(filt) + '_flat.fits'
             flatdir = Dorado.dordir / 'data' / 'flats' 
@@ -233,7 +218,26 @@ class aico_reader:
             for entry in contents:
                 if fname in entry.name:
                     save = False
+                    flat = CCDData.read(flatdir / fname, unit = Dorado.unit)
+            # TODO Allow RGB data
+            
+            
             if save:
+                c = ccdprocx.Combiner(flats)
+                c.sigma_clipping()
+                flat = c.median_combine()
+                # , method = 'average',
+                #                     sigma_clip = True, sigma_clip_low_thresh = 5, sigma_clip_high_thresh = 5,
+                #                     sigma_clip_func = np.ma.median, sigma_clip_dev_func = mad_std, unit = self.unit)
+                flat.header['stacked'] = True
+                flat.header['numsubs'] = len(flats)
+                flat.header['DATE-OBS'] = flats[0].header['DATE-OBS']
+                flat.header['filter'] = flats[0].header['filter']
+                ## TODO :: There is probably more missing keywords in the combined header, where's Waldo...
+
+                
+                flat.data = flat.data.astype('uint16') 
+
                 print('Saving Flat for later use')
                 flat.write(flatdir / fname)
             else:
@@ -258,11 +262,7 @@ class aico_reader:
             # Allow specification of median or mean
             # Allow RGB data
 
-            bias = ccdprocx.combine(biasIFC, method = 'average', unit = Dorado.unit)
-            bias.meta['stacked'] = True
-            bias.header['numsubs'] = len(biasIFC)
-            date = Time(bias.header['DATE-OBS'], format='fits').mjd
-            bias.data = bias.data.astype('uint16') 
+            date = Time(biasIFC[0].header['DATE-OBS'], format='fits').mjd
             fname = str(int(date)) + '_Bias.fits'
             biasdir = Dorado.dordir / 'data' / 'bias' 
             contents = os.scandir(path = biasdir)
@@ -270,7 +270,14 @@ class aico_reader:
             for entry in contents:
                 if fname in entry.name:
                     save = False
+                    bias = CCDData.read(biasdir / fname, unit = Dorado.unit)
+             
             if save:
+                bias = ccdprocx.combine(biasIFC, method = 'average', unit = Dorado.unit)
+                bias.meta['stacked'] = True
+                bias.header['numsubs'] = len(biasIFC)
+                # date = Time(bias.header['DATE-OBS'], format='fits').mjd
+                bias.data = bias.data.astype('uint16')
                 print('Saving Bias for later use')
                 bias.write(biasdir / fname)
             else:

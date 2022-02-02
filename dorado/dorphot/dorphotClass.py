@@ -1,4 +1,4 @@
-import tqdm
+from tqdm import tqdm
 import numpy as np
 
 from ..core.coreClass import *
@@ -205,7 +205,7 @@ class aicoPhot:
         ts = timeSeries(times = times, flux = flux, exptimes = exptimes, x = x, y = y, ra = ray, dec = decx, flux_unc = fluxunc, apsum = apsum, apsum_unc = apsum_unc)
         toi.filters[filter] = len(toi.ts)
         toi.ts.append(ts)
-        # TODO accomodate targets embedded in core
+        # TODO accomodate targets embedded in core (list of targets)
         # TODO the name for this function needs updating
         
     def mkBase(self, cr, filter, sigClip = False, minmax = False):

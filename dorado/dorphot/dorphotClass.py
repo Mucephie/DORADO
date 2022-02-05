@@ -65,7 +65,7 @@ class aicoPhot:
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]] = series
         # TODO should this be in stack? like have a wrapper here?
 
-    def getWCS(self, cere, filter, filer, alignto = None, cache = True):
+    def getWCS(self, cr, filter,  alignto = None, cache = True):
         series = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
         if alignto == None:
             alignto = series.alignTo
@@ -80,7 +80,7 @@ class aicoPhot:
             path = [cachedir, fname]
             writearray = [cachedir, 'solved.fits']
             solved, wcs_header = Dorado.plate_solve(path, writearray = writearray)
-            filer.delcacheObj( fname, 'astrometryNet')
+            Dorado.delcacheObj( fname, 'astrometryNet')
             Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].wcs = WCS(wcs_header)
             Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].solved = solved
     

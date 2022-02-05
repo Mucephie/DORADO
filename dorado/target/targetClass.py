@@ -32,6 +32,10 @@ class Target:
         
         self.filters = {}
         self.ts = []
+        # TODO also include size angular size and other info like magnitude and type
+        self.x = None
+        self.y = None
+
 
         
     def calcmag(self, filter):
@@ -56,7 +60,7 @@ class Target:
         self.ts[self.filters[filter]]['mag'] = magnitudes
         self.ts[self.filters[filter]]['mag_unc'] = mag_unc
 
-    def record(self, Dorado, cr, saveType = 'fits'):
+    def record(self, cr, saveType = 'fits'):
         '''
         record writes each filters timeseries to the dorado working data directory
         for the relevent date and target.
@@ -79,18 +83,18 @@ class Target:
         None
         '''
         wrkdir = Dorado.dordir / 'data' / 'wrk'
-        if cr.datestr == None:
-            cr.datestr = Dorado.getDateString(cr)
-        datestr = cr.datestr
+        if Dorado.ceres[Dorado.ceres_keys[cr]].datestr == None:
+            Dorado.ceres[Dorado.ceres_keys[cr]].datestr = Dorado.getDateString(cr)
+        datestr = Dorado.ceres[Dorado.ceres_keys[cr]].datestr
         wrdir = wrkdir / datestr
         Dorado.mkwrk(cr)
         for fi in self.filters.keys():
             wrts = self.ts[self.filters[fi]]
-            fname = str(self.name) + '_' + str(fi) + '-' + str(int(cr.date.mjd)) + '.' + saveType
+            fname = str(self.name) + '_' + str(fi) + '-' + str(int(Dorado.ceres[Dorado.ceres_keys[cr]].date.mjd)) + '.' + saveType
             wrts.toTable(self.name)
             wrts.table.write(wrdir / fname, overwrite = True)
         
-    def export(self, Dorado, objectClass = None):
+    def export(self, objectClass = None):
         '''
         export will record the TOI object into the dorado targets directory for future use 
         and reference. This function is not implemented yet.

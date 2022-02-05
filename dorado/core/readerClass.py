@@ -52,7 +52,7 @@ class aico_reader:
                             biasl.append(s)
                 bias = []
                 for i in range(len(biasl)):
-                    hdu = CCDData.read(biasl[i].path, unit = Dorado.unit)
+                    hdu = CCDData.read(biasl[i].path) #, unit = Dorado.unit) ## NOTE edited
                     bias.append(hdu)
                 # print('Bias searched.')
                 flatsl = []
@@ -62,7 +62,7 @@ class aico_reader:
                             flatsl.append(s)
                 flats = []
                 for i in flatsl:
-                    hdu = CCDData.read(i.path, unit = Dorado.unit)
+                    hdu = CCDData.read(i.path) #, unit = Dorado.unit) ## NOTE edited
                     flats.append(hdu)
                 # print('flats searched.')
                 # strip into ceres (check if multi-filter)
@@ -80,7 +80,7 @@ class aico_reader:
                 # lightsl = [s for s in files if (s.name not in biasl) and (s.name not in flatsl)]
                 lights = []
                 for i in lightsl:
-                    hdu = CCDData.read(i.path, unit = Dorado.unit)
+                    hdu = CCDData.read(i.path) #, unit = Dorado.unit) ## NOTE edited
                     ## Trying to enforce 16bit data instead of 32 or 64
                     hdu.data = hdu.data.astype('uint16')
                     lights.append(hdu)
@@ -100,7 +100,7 @@ class aico_reader:
             biasl, _ = Dorado.diread(biasdir[0])
             bias = []
             for i in biasl:
-                hdu = CCDData.read(i.path, unit = Dorado.unit)
+                hdu = CCDData.read(i.path) #, unit = Dorado.unit) ## NOTE edited
                 bias.append(hdu)
 
 
@@ -114,7 +114,7 @@ class aico_reader:
                         # print('Reading files.')
                         lights = []
                         for i in files:
-                            hdu = CCDData.read(i.path, unit = Dorado.unit)
+                            hdu = CCDData.read(i.path) #, unit = Dorado.unit) ## NOTE edited
                             ## Trying to enforce 16bit data instead of 32 or 64
                             hdu.data = hdu.data.astype('uint16')
                             lights.append(hdu)
@@ -139,7 +139,7 @@ class aico_reader:
                         # print('Reading files.')
                         flats = []
                         for i in files:
-                            hdu = CCDData.read(i.path, unit = Dorado.unit)
+                            hdu = CCDData.read(i.path) #, unit = Dorado.unit) ## NOTE edited
                             flats.append(hdu)
 
                 elif len(files) == 0:
@@ -218,7 +218,7 @@ class aico_reader:
             for entry in contents:
                 if fname in entry.name:
                     save = False
-                    flat = CCDData.read(flatdir / fname, unit = Dorado.unit)
+                    flat = CCDData.read(flatdir / fname) #, unit = Dorado.unit) ## NOTE edited
             # TODO Allow RGB data
             
             
@@ -270,10 +270,10 @@ class aico_reader:
             for entry in contents:
                 if fname in entry.name:
                     save = False
-                    bias = CCDData.read(biasdir / fname, unit = Dorado.unit)
+                    bias = CCDData.read(biasdir / fname) #, unit = Dorado.unit) ## NOTE edited
              
             if save:
-                bias = ccdprocx.combine(biasIFC, method = 'average', unit = Dorado.unit)
+                bias = ccdprocx.combine(biasIFC, method = 'average') #, unit = Dorado.unit) ## NOTE edited
                 bias.meta['stacked'] = True
                 bias.header['numsubs'] = len(biasIFC)
                 # date = Time(bias.header['DATE-OBS'], format='fits').mjd

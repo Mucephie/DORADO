@@ -20,7 +20,9 @@ class timeSeries:
             name of target in string format.
 
     '''
-    def __init__(self, times, flux, exptimes = [], x = [], y = [], ra = [], dec = [], flux_unc = [], apsum = [], apsum_unc = [], fit_times = [], fit_flux = [], toml = [], OmC = [], cycle = []):  
+    def __init__(self, times, flux, exptimes = [], x = [], y = [], ra = [], dec = [], flux_unc = [], 
+        apsum = [], apsum_unc = [], fit_times = [], fit_flux = [], toml = [], OmC = [], cycle = []):  
+        
         self.times = times
         self.flux = flux
 

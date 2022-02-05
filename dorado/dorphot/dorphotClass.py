@@ -134,24 +134,25 @@ class aicoPhot:
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].data = aa_series
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].aligned = True
         
-    def dorphot(self, cr, filter, toi, control_toi = None, shape = 21, unc = 0.1):
-        # get seeing from PSF
+    def measure(self, cr, filter, toid, control_toid = None, shape = 21, unc = 0.1):
+        # TODO this needs a better name
+        # TODO get seeing from PSF
         stack = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
-        # if no wcs, complain alot
+        # TODO if no wcs, complain alot
         w = stack.wcs
-
+        toi = Dorado.targets[Dorado.target_keys[toid]]
         xy = w.wcs_world2pix(toi.coords.ra.deg, toi.coords.dec.deg, 1)
         ra = toi.coords.ra.deg
         dec = toi.coords.dec.deg
-        # pos = Table(names=['x_0', 'y_0'], data = ([float(xy[0])], [float(xy[1])]))
         pos = [(float(xy[0]), float(xy[1]))]
         aperture = CircularAperture(pos, r = shape)
         annulus_aperture = CircularAnnulus(pos, r_in = shape + 2, r_out = shape + 5)
         apers = [aperture, annulus_aperture]
 
-        if control_toi != None:
+        # TODO can a control be chosen? can more than one be chosen?
+        if control_toid != None:
+            control_toi = Dorado.targets[Dorado.target_keys[control_toid]]
             xyc = w.wcs_world2pix(control_toi.coords.ra.deg, control_toi.coords.dec.deg, 1)
-            # posc = Table(names=['x_0', 'y_0'], data = ([float(xyc[0])], [float(xyc[1])]))
             posc = [(float(xyc[0]), float(xyc[1]))]
             aperturec = CircularAperture(posc, r = shape)
             annulus_aperturec = CircularAnnulus(posc, r_in = shape + 2, r_out = shape + 5)
@@ -164,9 +165,9 @@ class aicoPhot:
         decx = []
         x = []
         y = []
-        flux = []
+        flux = [] # NOTE this is exptime corrected
         fluxunc = []
-        apsum = []
+        apsum = [] # NOTE this is raw aperture sum
         apsum_unc = []
 
 
@@ -178,14 +179,12 @@ class aicoPhot:
             bkg_sum = bkg_mean * aperture.area
             results['flux_fit'] = results['aperture_sum_0'] - bkg_sum
             
-            times.append(Time(image.header['DATE-OBS']))
-            exptimes.append(image.header['EXPTIME'])
-            ray.append(ra)
+            times.append(Time(image.header['DATE-OBS'])) # TODO This is most likely needed, but verify 
+            exptimes.append(image.header['EXPTIME']) # TODO is this also needed
+            ray.append(ra) # TODO is this really needed?
             decx.append(dec)
-            x.append(results['xcenter'][0])
+            x.append(results['xcenter'][0]) # TODO is this needed either?
             y.append(results['ycenter'][0])
-            # x.append(results['x_fit'][0])
-            # y.append(results['y_fit'][0])
 
             if control_toi != None:
                 resultsc = aperture_photometry(image, apersc, error = error)
@@ -203,8 +202,8 @@ class aicoPhot:
             apsum_unc.append(1)
 
         ts = timeSeries(times = times, flux = flux, exptimes = exptimes, x = x, y = y, ra = ray, dec = decx, flux_unc = fluxunc, apsum = apsum, apsum_unc = apsum_unc)
-        toi.filters[filter] = len(toi.ts)
-        toi.ts.append(ts)
+        Dorado.targets[Dorado.target_keys[toid]].filters[filter] = len(toi.ts)
+        Dorado.targets[Dorado.target_keys[toid]].ts.append(ts) 
         # TODO accomodate targets embedded in core (list of targets)
         # TODO the name for this function needs updating
         

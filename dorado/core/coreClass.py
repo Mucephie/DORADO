@@ -203,6 +203,7 @@ class Dorado_core:
         return(fname, cachedir)
         
     def delcacheObj(self, fname, subcache = False):
+        # TODO extend to clearing cache
         if subcache:
             cachedir = self.dordir / 'cache' / subcache
         else:
@@ -216,7 +217,7 @@ class Dorado_core:
             path = path / dir
 
         if data == None:
-            data = CCDData.read(path, unit = self.unit)
+            data = CCDData.read(path) #, unit = Dorado.unit) ## NOTE edited
 
         trying = True
         submission_id = None

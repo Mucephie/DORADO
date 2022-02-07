@@ -66,14 +66,13 @@ class Ceres:
         # metadata
         self.filters = filters
         self.data = data
-        self.bias = bias
         self.time = time
         self.datestr = datestr
+
+        self.bias = bias
         
         # location, weather, timezone, camera, observer array
 
-        # refering instance of clippy to call and save later?
-        # or call clippy directly and feed it a ceres object
         # TODO figure out how to clean this up
         try:
             self.date = Time(int(self.time.mjd), format = 'mjd')

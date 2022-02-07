@@ -21,8 +21,9 @@ class timeSeries:
 
     '''
     def __init__(self, times, flux, exptimes = [], x = [], y = [], ra = [], dec = [], flux_unc = [], 
-        apsum = [], apsum_unc = [], fit_times = [], fit_flux = [], toml = [], OmC = [], cycle = []):  
-        
+        apsum = [], apsum_unc = [], fit_times = [], fit_flux = [], toml = [], OmC = [], cycle = []): 
+
+        # TODO append info on time system
         self.times = times
         self.flux = flux
 
@@ -47,8 +48,9 @@ class timeSeries:
         # self.symbo = None # make a symbolic expression to represent the curve analytically.
 
     def toTable(self, name):
-
-        self.table = QTable([self.times, self.flux], names=('time','flux'), meta={'name': name})
+        # name is table name
+        # TODO verify the mjd part is exporting properly
+        self.table = QTable([self.times.mjd, self.flux], names=('time','flux'), meta={'name': name}) 
 
         colnom = ['flux_unc', 'exptime', 'apsum', 'apsum_unc', 'x', 'y', 'ra', 'dec']
         cols = [self.flux_unc, self.exptimes, self.apsum, self.apsum_unc, self.x, self.y, self.ra, self.dec]

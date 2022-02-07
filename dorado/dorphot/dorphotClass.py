@@ -24,7 +24,9 @@ __all__ = ['aicoPhot']
 class aicoPhot:
 
     def __init__(self):
+        # TODO make observatory class
         self.temp = None
+
     
     def calibrate(self, cr,  filter, use_med_cr_removal = False, rb = 0):
         # for bla in series: add bias corrected = True to header
@@ -65,7 +67,7 @@ class aicoPhot:
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]] = series
         # TODO should this be in stack? like have a wrapper here?
 
-    def getWCS(self, cr, filter,  alignto = None, cache = True):
+    def getWCS(self, cr, alignto = None, cache = True):
         series = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
         if alignto == None:
             alignto = series.alignTo
@@ -134,7 +136,7 @@ class aicoPhot:
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].data = aa_series
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].aligned = True
         
-    def measure(self, cr, filter, toid, control_toid = None, shape = 21, unc = 0.1):
+    def apPhot(self, cr, filter, toid, control_toid = None, shape = 21, unc = 0.1):
         # TODO this needs a better name
         # TODO get seeing from PSF
         stack = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
@@ -186,7 +188,7 @@ class aicoPhot:
             x.append(results['xcenter'][0]) # TODO is this needed either?
             y.append(results['ycenter'][0])
 
-            if control_toi != None:
+            if control_toid != None:
                 resultsc = aperture_photometry(image, apersc, error = error)
                 bkg_meanc = resultsc['aperture_sum_1'] / annulus_aperturec.area
                 bkg_sumc = bkg_meanc * aperturec.area
@@ -201,7 +203,9 @@ class aicoPhot:
             fluxunc.append(1) ## TODO:: modify this to account for exposure time and control
             apsum_unc.append(1)
 
-        ts = timeSeries(times = times, flux = flux, exptimes = exptimes, x = x, y = y, ra = ray, dec = decx, flux_unc = fluxunc, apsum = apsum, apsum_unc = apsum_unc)
+        ts = timeSeries(times = times, flux = flux, exptimes = exptimes, x = x, y = y, 
+        ra = ray, dec = decx, flux_unc = fluxunc, apsum = apsum, apsum_unc = apsum_unc)
+
         Dorado.targets[Dorado.target_keys[toid]].filters[filter] = len(toi.ts)
         Dorado.targets[Dorado.target_keys[toid]].ts.append(ts) 
         # TODO accomodate targets embedded in core (list of targets)
@@ -230,6 +234,7 @@ class aicoPhot:
         
     def calBase(self, cr, filter):
         # TODO this needs hella optimization and direction
+        # I am 99% sure this is to remove the background gradient from the stacked base image
         img = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].base
         norm = ImageNormalize(stretch=SqrtStretch())
         sigma_clip = SigmaClip(sigma=3.)
@@ -242,7 +247,19 @@ class aicoPhot:
         
 
 
+
+
+
+
+
+
 ## TODO :: figure out how to handle aligning and processing planetary images and image with low star counts
+
+
+
+
+
+
 
 # class tessPhot:
     # def __init__(self):

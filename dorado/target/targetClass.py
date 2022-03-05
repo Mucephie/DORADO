@@ -42,6 +42,8 @@ class Target:
         '''
         calcmag converts the targets flux and associated uncertainty into an 
         instrumental magnitude and uncertainty.
+        WARNING:: This function is currently not complete and no garentee is given
+        on its compatability or reliability.
 
         Parameters
         ----------
@@ -50,6 +52,10 @@ class Target:
 
         Returns
         -------
+        None
+
+        Sets
+        ----
         self.ts[filter]['mag'], self.ts[filter]['mag_unc']
 
         '''
@@ -67,11 +73,8 @@ class Target:
 
         Parameters
         ----------
-        filer: Filer instance
-            The active instance of filer to handle writing the file
-
-        cr: Ceres instance
-            The relevent instance of Ceres for which the timeseries was derived. The save location 
+        cr: string
+            The relevent name string of Ceres instance for which the timeseries was derived. The save location 
             will be the working directory for this instance.
             
         saveType: str
@@ -101,9 +104,6 @@ class Target:
 
         Parameters
         ----------
-        filer: Filer instance
-            The active instance of filer to handle writing the target file
-
         objectClass: str
             Class of object to save the target under. 
 
@@ -309,7 +309,19 @@ class Fournax(Target):
         return y
 
     def analyze(self, filter, graphical = True):
-
+        '''
+        analyze is a wrapper function that runs a pipeline of analysis functions in the 
+        Fournax target class, self.superfit, self.tomlFind, self.OMinusC, and self.fourFind
+        Parameters
+        ----------
+        filter: string
+                filter string of filter to perform analysis on.
+        
+        graphical: boolean
+                default is True. Controls whether or not graphical results are output 
+                (NOTE:: parameter currently not in use)
+           
+        '''
         self.superfit(filter = filter, terms = len(self.flux)/3, s = len(self.flux))
         # Find times of max light
         self.tomlFind(filter = filter)
@@ -319,6 +331,17 @@ class Fournax(Target):
         self.fourFind(filter = filter)
     
     def fourFind(self, filter, fitted = True):
+        '''
+        fourFind locates distinct peak structures in a Fourier power spectra 
+        generated via a photometric timeseries stored within self.ts.
+        Parameters
+        ----------
+        filter: string
+            filter string of filter to perform analysis on.
+        fitted: boolean
+                default is True. Controls whether fitted timeseries or raw
+                timeseries is used for analysis.
+        '''
         if fitted and (self.ts[self.filters[filter]].fit_flux != []):
             Y = self.ts[self.filters[filter]].fit_flux
             X = self.ts[self.filters[filter]].fit_times 
@@ -342,6 +365,17 @@ class Fournax(Target):
         # Return frequency vector for plotting?
 
     def tomlFind(self, filter, fitted = True):
+        '''
+        tomlFind locates the distinct times of max light in a photometric timeseries
+        stored in self.ts
+        Parameters
+        ----------
+        filter: string
+            filter string of filter to perform analysis on.
+        fitted: boolean
+                default is True. Controls whether fitted timeseries or raw
+                timeseries is used for analysis.
+        '''
         if fitted and (self.ts[self.filters[filter]].fit_flux != []):
             Y = self.ts[self.filters[filter]].fit_flux
             X = self.ts[self.filters[filter]].fit_times 
@@ -355,9 +389,13 @@ class Fournax(Target):
 
         self.ts[self.filters[filter]].toml = toml
 
+
+
+
 class TESSeract(Fournax):
     '''
-    
+    This class is currently a work in progress. In the future it will handle targets
+    obtained from TESS(the Transiting Exoplanet Survey Satellite). Stay tuned!
     '''
     def __init__(self, tid = None, sector = None, type = None):
         self.tid = tid # find this if possible

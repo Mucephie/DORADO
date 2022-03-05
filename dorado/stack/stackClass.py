@@ -95,6 +95,10 @@ class Stack:
 
         Returns
         -------
+        None
+
+        Sets
+        ----
         self.times: array or list-like
             array of 'astropy.time' objects for each image timestamp.
 

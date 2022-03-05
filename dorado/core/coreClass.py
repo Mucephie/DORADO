@@ -43,14 +43,16 @@ def get_builtins():
 
 
 class Dorado_core:
-
+    '''
+    
+    '''
     def __init__(self):
         # open and use logger
         # make function to create data class from hardware, processed, or raw data folder
         # needs function to import data into raw
         # fix get_night()
         # add new calibration frames to folders
-        # find most recetn calibration frame if none
+        # find most recent calibration frame if none
         # -> figure out if none
         # clear cache function
         self.stardir = os.getcwd()
@@ -82,6 +84,16 @@ class Dorado_core:
         self.UTCoffset = -5
         
     def init_dir(self, tess = False):
+        """
+        
+        Parameters
+        ----------
+        tess: boolean
+            Whether to initialize a TESS data directory in './data/'
+        Returns
+        -------
+        
+        """
         self.enter_dordir()
         os.makedirs('./data/wrk', exist_ok = True)
         os.makedirs('./data/flats', exist_ok = True)
@@ -99,6 +111,15 @@ class Dorado_core:
         self.exit_dordir()
         
     def newdat(self):
+        """
+        
+        Parameters
+        ----------
+
+        Returns
+        -------
+        
+        """
         # find data that hasn't been processed yet
         print('searching for unprocessed data...')
 
@@ -131,12 +152,40 @@ class Dorado_core:
         return night
         
     def enter_dordir(self):
+        """
+        
+        Parameters
+        ----------
+
+        Returns
+        -------
+        
+        """
         os.chdir(self.dordir)
          
     def exit_dordir(self):
+        """
+        
+        Parameters
+        ----------
+
+        Returns
+        -------
+        
+        """
         os.chdir(self.stardir)
         
     def diread(self, dirarray):
+        """
+        
+        Parameters
+        ----------
+        dirarray: str array
+            array containing the path to the desired directory.
+        Returns
+        -------
+        
+        """
         if isiterable(dirarray):
             path = self.dordir
             for dir in dirarray:
@@ -156,30 +205,66 @@ class Dorado_core:
         return files, directories
     
     def mkceres(self, date, name = None, sub = 'raw', target = None, calibrated = False, aligned = False):
-            if target == None:
-                ctemp = self.reader.mkceres(date, sub = sub, target = target, calibrated = calibrated, aligned = aligned)
-            else:
-                ctemp = self.reader.mkceres(date, sub = sub, target = self.targets[self.target_keys[target]], calibrated = calibrated, aligned = aligned)
-
-            if name == None:
-                name = ctemp.datestr
-                # TODO handle if no date found either
-                print('No series nickname given, defaulting to date string: ', name)
-            else:
-                print('Call series as: ', name)
-            self.ceres_keys[name] = len(self.ceres)
-            self.ceres.append(ctemp)
+        """
         
+        Parameters
+        ----------
+
+        Returns
+        -------
+        
+        """
+        if target == None:
+            ctemp = self.reader.mkceres(date, sub = sub, target = target, calibrated = calibrated, aligned = aligned)
+        else:
+            ctemp = self.reader.mkceres(date, sub = sub, target = self.targets[self.target_keys[target]], calibrated = calibrated, aligned = aligned)
+
+        if name == None:
+            name = ctemp.datestr
+            # TODO handle if no date found either
+            print('No series nickname given, defaulting to date string: ', name)
+        else:
+            print('Call series as: ', name)
+        self.ceres_keys[name] = len(self.ceres)
+        self.ceres.append(ctemp)
+    
     def mktrgt(self, name):
+        """
+        
+        Parameters
+        ----------
+
+        Returns
+        -------
+        
+        """
         # add dictionary
         # , coordinates = None
         self.target_keys[name] = len(self.targets)
         self.targets.append(Target(name))
         
     def force16(self, hdu):
+        """
+        
+        Parameters
+        ----------
+
+        Returns
+        -------
+        
+        """
         print('This function is not implemented yet. See mkBias() for example functionality.')
         
     def mkcacheObj(self, object, subcache = False):
+        """
+        
+        Parameters
+        ----------
+
+        Returns
+        -------
+        
+        """
         if subcache:
             cachedir = self.dordir / 'cache' / subcache
             dirarray = ['cache', subcache]
@@ -203,6 +288,15 @@ class Dorado_core:
         return(fname, cachedir)
         
     def delcacheObj(self, fname, subcache = False):
+        """
+        
+        Parameters
+        ----------
+
+        Returns
+        -------
+        
+        """
         # TODO extend to clearing cache
         if subcache:
             cachedir = self.dordir / 'cache' / subcache
@@ -212,6 +306,15 @@ class Dorado_core:
         os.remove(cachedir / fname)
         
     def plate_solve(self, dirarray, data = None, writearray = False):
+        """
+        
+        Parameters
+        ----------
+
+        Returns
+        -------
+        
+        """
         path = self.dordir
         for dir in dirarray:
             path = path / dir
@@ -257,6 +360,15 @@ class Dorado_core:
             return 
          
     def getDateString(self, cr):
+        """
+        
+        Parameters
+        ----------
+
+        Returns
+        -------
+        
+        """
 
         ## TODO :: look into UTC wrecking stuff
         # if the hour is less than the utc offset of the site then the utc date is one ahead of local time
@@ -294,6 +406,15 @@ class Dorado_core:
         self.ceres[self.ceres_keys[cr]].datestr = datestr
         
     def mkwrk(self, cr):
+        """
+        
+        Parameters
+        ----------
+
+        Returns
+        -------
+        
+        """
         # TODO this should be a wrapper for reader
         if self.ceres[self.ceres_keys[cr]].datestr == None:
             self.getDateString(cr) 
@@ -307,9 +428,27 @@ class Dorado_core:
         # figures, targets, log, omitted images, observation metadata
         
     def savewrk(self, cr, filters = None):
+        """
+        
+        Parameters
+        ----------
+
+        Returns
+        -------
+        
+        """
         self.reader.savewrk(cr, filters)
         
     def saveWCS(self, cr, filters = None):
+        """
+        
+        Parameters
+        ----------
+
+        Returns
+        -------
+        
+        """
         wrkdir = self.dordir / 'data' / 'wrk'
         if self.ceres[self.ceres_keys[cr]].datestr == None:
             self.getDateString(cr)
@@ -327,6 +466,15 @@ class Dorado_core:
             solved.write(wrkdir / datestr / 'WCS' / fname, overwrite = True)
         # not done might be redundant atm also shouldnt this belong to reader?
     def saveBase(self, cr, filters = None):
+        """
+        
+        Parameters
+        ----------
+
+        Returns
+        -------
+        
+        """
         wrkdir = self.dordir / 'data' / 'wrk'
         if self.ceres[self.ceres_keys[cr]].datestr == None:
             self.getDateString(cr)

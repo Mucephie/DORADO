@@ -5,5 +5,6 @@ is just an example sub-package, so it doesn't actually do anything.
 """
 __all__ = []
 
-from .dorphotClass import *
-__all__ += dorphotClass.__all__
+# from .grafClass import *
+
+# __all__ += grafClass.__all__

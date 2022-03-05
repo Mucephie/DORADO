@@ -29,6 +29,20 @@ class aicoPhot:
 
     
     def calibrate(self, cr,  filter, use_med_cr_removal = False, rb = 0):
+        '''
+        
+        Parameters
+        ----------
+        cr: string
+            The relevent name string of Ceres instance to calibrate.
+        filter: str
+            String representation of the relevent filter.
+        use_med_cr_removal: boolean
+            controls whether to use cosmic ray removal in calibration, may affect runtime. Default is False.
+        rb: int
+            the rbox value for ccdprocx.cosmicray_median(). Default is 0.
+        
+        '''
         # for bla in series: add bias corrected = True to header
         stack = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
         flat = stack.flat
@@ -50,9 +64,21 @@ class aicoPhot:
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].calibrated = True
         
     def imarith(self, cr, filter, operator, operand):
+        '''
+        imarith is a basic replication of the IRAF image arithmatic tool imarith.
+        Parameters
+        ----------
+        cr: string
+            The relevent name string of Ceres instance to perform image arithmatic on.
+        filter: str
+            String representation of the relevent filter.
+        operator: string
+            String of operator to be used for arithmatic. Supported operations are '+', '-', '/', and '*'
+        '''
+        # TODO should this be in stack? like have a wrapper here?
         # mod to check datatype using type()
-        # mod to remove im_count and make possible to use single image
-        # mod to accomodate CCDdata object
+        # mod to remove im_count and make possible to use single image NOTE might already be done
+        # mod to accomodate CCDdata object NOTE might already be done
         series = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
         for i in range(len(series)):
             if (operator == '+'):
@@ -65,9 +91,24 @@ class aicoPhot:
                 series[i].data = series[i].data  * operand
         
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]] = series
-        # TODO should this be in stack? like have a wrapper here?
+        
 
-    def getWCS(self, cr, alignto = None, cache = True):
+    def getWCS(self, cr, filter, alignto = None, cache = True):
+        '''
+        
+        Parameters
+        ----------
+        cr: string
+            The relevent name string of Ceres instance to get WCS information for.
+        filter: str
+            String representation of the relevent filter.
+        alignto: int
+            Index of image to use as reference. Default is stack.alignto
+        cache: boolean
+            Controls whether to call astrometryNet for solve or use solved result stored in cache 
+            from previous run. Default is True.
+        '''
+        # TODO mod so cache results are target specific
         series = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
         if alignto == None:
             alignto = series.alignTo
@@ -87,7 +128,26 @@ class aicoPhot:
             Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].solved = solved
     
     def align(self, cr, filter, alignto = None, getWCS = True, cache = False, ds = 2, ma = 5):
+        '''
         
+        Parameters
+        ----------
+        cr: string
+            The relevent name string of Ceres instance to align.
+        filter: str
+            String representation of the relevent filter.
+        alignto: int
+            Index of image to use as reference. Default is stack.alignto
+        getWCS: boolean
+            Controls whether to obtain WCS information for stack.
+        cache: boolean
+            Controls whether to call astrometryNet for solve or use solved result stored in cache 
+            from previous run. Default is True.
+        ds: int or float
+            Sets the detection sigma value for astroalign.register. Default is 2.
+        ma: int or float
+            Sets the minimum area value for astroalign.register. Default is 5.
+        '''
         series = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
         
         if alignto == None:
@@ -137,6 +197,23 @@ class aicoPhot:
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].aligned = True
         
     def apPhot(self, cr, filter, toid, control_toid = None, shape = 21, unc = 0.1):
+        '''
+        
+        Parameters
+        ----------
+        cr: string
+            The relevent name string of Ceres instance to perform aperture photometry on.
+        filter: str
+            String representation of the relevent filter.
+        toid: string
+
+        control_toid: string
+
+        shape: int
+
+        unc: float
+
+        '''
         # TODO this needs a better name
         # TODO get seeing from PSF
         stack = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
@@ -212,6 +289,19 @@ class aicoPhot:
         # TODO the name for this function needs updating
         
     def mkBase(self, cr, filter, sigClip = False, minmax = False):
+        '''
+        
+        Parameters
+        ----------
+        cr: string
+            The relevent name string of Ceres instance to create a base stacked image for.
+        filter: str
+            String representation of the relevent filter.
+        sigClip: boolean
+
+        minmax: boolean
+
+        '''
         ## TODO :: add the option to change the combination method. Right now default is 
         # sigma clipped median combination.
         series = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
@@ -233,6 +323,15 @@ class aicoPhot:
 
         
     def calBase(self, cr, filter):
+        '''
+        
+        Parameters
+        ----------
+        cr: string
+            The relevent name string of Ceres instance to perform base image calibration on.
+        filter: str
+            String representation of the relevent filter.
+        '''
         # TODO this needs hella optimization and direction
         # I am 99% sure this is to remove the background gradient from the stacked base image
         img = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].base

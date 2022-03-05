@@ -113,6 +113,14 @@ class Ceres:
                 self.datestr = datestr
         
     def add_stack(self, stack):
+        '''
+
+        Parameters
+        ----------
+        stack: dorado.stack
+            Instance of dorado.stack class to add to self.
+        
+        '''
         # eventually stacks themelves should have some metadata 
         # to denote stuff like calibration status
         # TODO do I need to add times?
@@ -120,6 +128,14 @@ class Ceres:
         self.data.append(stack)
         
     def rem_stack(self, filter):
+        '''
+        
+        Parameters
+        ----------
+        filter: str
+            String representation of the relevent filter to remove from self.
+        
+        '''
         # TODO delete time strings
         del self.data[self.filters[filter]]
         

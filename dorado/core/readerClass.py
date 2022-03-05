@@ -20,10 +20,20 @@ __all__ = ['aico_reader'] #, 'tess_reader'
 
 # TODO Make it so that each class isnt loaded unless chosen (core class takes string and then imports correct class)
 class aico_reader:
+    '''
+    
+    '''
     def __init__(self):
         self.temp = None
 
     def dirscan(self, dirarray):
+        '''
+
+        Parameters
+        ----------
+        dirarray: str array
+            array containing the path to the desired directory.
+        '''
         # TODO handle multi filter searching 
         path = Dorado.dordir
         for dir in dirarray:
@@ -151,6 +161,27 @@ class aico_reader:
             return bias, flats, lights
         
     def mkceres(self,  date, sub = 'raw', target = None, calibrated = False, aligned = False):
+            '''
+
+            Parameters
+            ----------
+            date: date string
+                Instance of dorado.stack class to add to self.
+            sub: string
+                pointer string denoting subfolder to '$user/.dorado/data' (dorado directory/data/).
+                Default is 'raw'
+            target: dorado.target
+                dorado.target instance to use as the target for the created dorado.ceres
+                object. Default is None
+
+            calibrated: boolean
+                sets whether the imported images are calibrated and within an 'calibrated'
+                folder. Default is False.
+
+            aligned: boolean
+                sets whether the imported images are aligned and within an 'aligned'
+                folder. Default is False.
+            '''
             # TODO needs ability to handle multifilter directories
             if aligned:
                 dirarray = ['data', sub, date, 'aligned']
@@ -285,7 +316,19 @@ class aico_reader:
             return bias
     
     def savewrk(self, cr, filters = None):
+        """
         
+        Parameters
+        ----------
+        cr: string
+            The relevent name string of Ceres instance to save.
+        filter: str
+            String representation of the relevent filter. Default is all filters in ceres instance.
+
+        Returns
+        -------
+        
+        """
         # TODO mod fplate to accept cr name
         if Dorado.ceres[Dorado.ceres_keys[cr]].datestr == None:
             Dorado.getDateString(cr) 
@@ -341,6 +384,7 @@ class aico_reader:
                 image.data = image.data.astype('uint16') 
                 fname = fplate + str(p) + fsub + '.fits'
                 image.write(wrdir / fname, overwrite = True)
+
 
 
 # class tess_reader:

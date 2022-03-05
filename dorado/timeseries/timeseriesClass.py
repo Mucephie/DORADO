@@ -5,6 +5,8 @@ from astropy.time import Time
 from astropy.table import QTable, Table
 from astropy.io import fits
 
+
+
 __all__ = ['timeSeries']
 
 
@@ -20,13 +22,13 @@ class timeSeries:
             name of target in string format.
 
     '''
-    def __init__(self, times, flux, exptimes = [], x = [], y = [], ra = [], dec = [], flux_unc = [], 
-        apsum = [], apsum_unc = [], fit_times = [], fit_flux = [], toml = [], OmC = [], cycle = []): 
+    def __init__(self, times, flux, name = 'timeseries', exptimes = [], x = [], y = [], ra = [], dec = [], flux_unc = [], 
+        apsum = [], apsum_unc = [], fit_times = [], fit_flux = [], toml = [], OmC = [], cycle = [], table = None): 
 
         # TODO append info on time system
         self.times = times
         self.flux = flux
-
+        self.name = name
         self.exptimes = exptimes
 
         self.x = x
@@ -44,10 +46,21 @@ class timeSeries:
         self.toml = toml
         self.OmC = OmC
         self.cycle = cycle
+        self.table = table
 
         # self.symbo = None # make a symbolic expression to represent the curve analytically.
 
-    def toTable(self, name):
+    def toTable(self, name = None):
+        '''
+        toTable is a convinience function that produces an atropy.Table object from
+        the data stored within a dorado.timeseries instance.
+        Parameters
+        ----------
+        name: string
+            The name to be used for the table. If none is given, self.name (default is 'timeseries') is used.
+        '''
+        if (name == None):
+            name = self.name
         # name is table name
         # TODO verify the mjd part is exporting properly
         self.table = QTable([self.times.mjd, self.flux], names=('time','flux'), meta={'name': name}) 
@@ -61,3 +74,27 @@ class timeSeries:
                     self.table[colnom[col]] = cols[col]
                 except:
                     print('Error merging', colnom[col], ' with table.')
+    
+    def graph(self):
+        '''
+        The graph function produces a graph of the photometric timeseries data as
+        a lightcurve.
+        '''
+        # TODO will also need graph of frequencies
+        # TODO check if there is a fit involved
+        import matplotlib.pyplot as plt # NOTE where is the best place to put this
+        if self.table == None:
+            self.toTable()
+        
+        # set up plot
+        # TODO set up plotting style
+        fig, ax = plt.subplots(subplot_kw={'aspect': 'equal'})
+        ax.set_xlabel('Time')
+        ax.set_ylabel('Flux')
+        ax.set_title('Lightcurve') # TODO decide on title
+        z = self.flux - np.min(self.flux)
+        ax.errorbar(self.times.mjd, self.flux, xerr = self.exptimes / 2, yerr = self.flux_unc, c = z)
+        ax.grid()
+        plt.tight_layout()
+        plt.show()
+        

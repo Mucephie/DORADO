@@ -11,10 +11,10 @@ from .stack import *
 from .core import *
 from .timeseries import *
 from .dorphot import *
+# from .graf import * # TODO decide if this is needed
 
 # from .fournax import *
-# dorphot
-# reader
+
 # ----------------------------------------------------------------------------
 
 # __all__ = []

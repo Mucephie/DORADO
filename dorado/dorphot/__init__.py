@@ -5,5 +5,5 @@ is just an example sub-package, so it doesn't actually do anything.
 """
 __all__ = []
 
-from .ceresClass import *
-__all__ += ceresClass.__all__
+from .dorphotClass import *
+__all__ += dorphotClass.__all__

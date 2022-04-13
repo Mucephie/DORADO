@@ -15,6 +15,7 @@ from setuptools import setup
 # To push to PyPi:
 # python setup.py sdist bdist_wheel --universal
 # twine upload dist/*  
+# python -m twine upload dist/*  
 
 # First provide helpful messages if contributors try and run legacy commands
 # for tests or docs.
@@ -85,12 +86,12 @@ setup(
         'write_to': os.path.join('dorado', 'version.py'),
         'write_to_template': VERSION_TEMPLATE,
         "local_scheme": "no-local-version",
-        "version_scheme": "release-branch-semver"
+        "version_scheme": "python-simplified-semver"
                        }
         )
 # where is this file? os.path.dirname(__file__)
-import  astropy.config as acfg
-
+# import  astropy.config as acfg
+# import ./dorado/config
 
 
 

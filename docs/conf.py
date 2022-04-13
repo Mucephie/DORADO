@@ -106,9 +106,9 @@ release = package.__version__
 
 
 html_theme_options = {
-    'logotext1': 'dorado',  # white,  semi-bold
-    'logotext2': '',  # orange, light
-    'logotext3': ':docs'   # white,  light
+    'logotext1': 'Dorado',  # white,  semi-bold
+    'logotext2': 'Draco',  # orange, light
+    'logotext3': ':v2.0.x'   # white,  light
     }
 
 
@@ -159,7 +159,7 @@ if setup_cfg.get('edit_on_github').lower() == 'true':
     extensions += ['sphinx_astropy.ext.edit_on_github']
 
     edit_on_github_project = setup_cfg['github_project']
-    edit_on_github_branch = "master"
+    edit_on_github_branch = "main"
 
     edit_on_github_source_root = ""
     edit_on_github_doc_root = "docs"

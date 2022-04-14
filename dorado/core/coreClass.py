@@ -145,9 +145,29 @@ class Dorado_core:
         date = datetime.date.today()
         year = date.year
         month = date.month
-        date2 = date.day
-        date1 = date2 - 1
-        night = str(year) + '-' + str(month) + '-' + str(date1) + '+' + str(date2)
+        day = date.day
+        # date1 = date2 - 1
+        # night = str(year) + '-' + str(month) + '-' + str(date1) + '+' + str(date2)
+
+
+        if day < 10:
+            daystr = '0' + str(day)
+        else:
+            daystr = str(day)
+        if day < 9:
+            day2str = '0' + str(day + 1)
+        else:
+            day2str = str(day + 1)
+        if month < 10:
+            monthstr = '0' + str(month)
+        else:
+            monthstr = str(month)
+
+
+        night = str(year) + '-' + monthstr + '-' + daystr + '+' + day2str
+
+
+
 
         return night
         

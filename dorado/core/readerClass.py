@@ -62,7 +62,7 @@ class aico_reader:
                             biasl.append(s)
                 bias = []
                 for i in range(len(biasl)):
-                    hdu = CCDData.read(biasl[i].path) #, unit = Dorado.unit) ## NOTE edited
+                    hdu = CCDData.read(biasl[i].path, unit = Dorado.unit) ## NOTE edited
                     bias.append(hdu)
                 # print('Bias searched.')
                 flatsl = []
@@ -72,7 +72,7 @@ class aico_reader:
                             flatsl.append(s)
                 flats = []
                 for i in flatsl:
-                    hdu = CCDData.read(i.path) #, unit = Dorado.unit) ## NOTE edited
+                    hdu = CCDData.read(i.path, unit = Dorado.unit) ## NOTE edited
                     flats.append(hdu)
                 # print('flats searched.')
                 # strip into ceres (check if multi-filter)
@@ -90,7 +90,7 @@ class aico_reader:
                 # lightsl = [s for s in files if (s.name not in biasl) and (s.name not in flatsl)]
                 lights = []
                 for i in lightsl:
-                    hdu = CCDData.read(i.path) #, unit = Dorado.unit) ## NOTE edited
+                    hdu = CCDData.read(i.path, unit = Dorado.unit) ## NOTE edited
                     ## Trying to enforce 16bit data instead of 32 or 64
                     hdu.data = hdu.data.astype('uint16')
                     lights.append(hdu)
@@ -124,7 +124,7 @@ class aico_reader:
                         # print('Reading files.')
                         lights = []
                         for i in files:
-                            hdu = CCDData.read(i.path) #, unit = Dorado.unit) ## NOTE edited
+                            hdu = CCDData.read(i.path, unit = Dorado.unit) ## NOTE edited
                             ## Trying to enforce 16bit data instead of 32 or 64
                             hdu.data = hdu.data.astype('uint16')
                             lights.append(hdu)
@@ -149,7 +149,7 @@ class aico_reader:
                         # print('Reading files.')
                         flats = []
                         for i in files:
-                            hdu = CCDData.read(i.path) #, unit = Dorado.unit) ## NOTE edited
+                            hdu = CCDData.read(i.path, unit = Dorado.unit) ## NOTE edited
                             flats.append(hdu)
 
                 elif len(files) == 0:

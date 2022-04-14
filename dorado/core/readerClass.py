@@ -110,7 +110,7 @@ class aico_reader:
             biasl, _ = Dorado.diread(biasdir[0])
             bias = []
             for i in biasl:
-                hdu = CCDData.read(i.path) #, unit = Dorado.unit) ## NOTE edited
+                hdu = CCDData.read(i.path, unit = Dorado.unit) ## NOTE edited
                 bias.append(hdu)
 
 

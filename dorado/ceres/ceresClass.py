@@ -62,6 +62,7 @@ class Ceres:
 
         
     '''
+    
     def __init__(self, filters = {}, data = [], bias = None, time = None, datestr = None):
         # metadata
         self.filters = filters
@@ -114,13 +115,15 @@ class Ceres:
         
     def add_stack(self, stack):
         '''
-
+        Add a Dorado stack to the current Ceres instance (self).
+        
         Parameters
         ----------
         stack: dorado.stack
             Instance of dorado.stack class to add to self.
         
         '''
+        
         # eventually stacks themelves should have some metadata 
         # to denote stuff like calibration status
         # TODO do I need to add times?
@@ -129,6 +132,7 @@ class Ceres:
         
     def rem_stack(self, filter):
         '''
+        Remove a Dorado stack to the current Ceres instance (self).
         
         Parameters
         ----------

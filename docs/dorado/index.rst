@@ -64,6 +64,20 @@ Getting started with dorado:
 
 For help getting started see: :doc:`Getting Started</dorado/GettingStarted>`
 
+.. toctree::
+   :maxdepth: 1
+
+   dorado/GettingStarted
+   dorado/core
+   dorado/reader
+   dorado/ceres
+   dorado/target
+   dorado/dorphot
+   dorado/timeseries
+   dorado/graphing
+   dorado/puttingitTogether
+   
+
 
 Installation
 ------------

@@ -66,13 +66,19 @@ Currently DORADO relies on:
 
 3.  `astropy <https://www.astropy.org/index.html>`_
 
-4.  `CCDPROC <https://ccdproc.readthedocs.io/en/latest/index.html#>`_
+4.  `CCDPROC <https://ccdproc.readthedocs.io/en/latest/index.html#>`_ >> `CCDprocX <https://pypi.org/project/ccdprocx/>`_
 
 5.  `scipy <https://www.scipy.org/>`_
 
-6.  `scikit-image <https://scikit-image.org/>`_
+6.  `photutils <https://photutils.readthedocs.io/en/stable/index.html>`_
 
 7.  `astroquery <https://astroquery.readthedocs.io/en/latest/#>`_
+
+8.  `astroalign <https://astroalign.quatrope.org/en/latest/?badge=latest>`_
+
+9.  `tqdm <https://tqdm.github.io/>`_
+
+10. `lightkurve <http://docs.lightkurve.org/>`_
 
 
 License

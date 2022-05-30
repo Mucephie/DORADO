@@ -28,21 +28,26 @@ Currently DORADO relies on:
 
 2.  `matplotlib <https://matplotlib.org/>`_
 
-3.  `astropy <https://www.astropy.org/>`_
+3.  `astropy <https://www.astropy.org/index.html>`_
 
-4.  `CCDPROC <https://ccdproc.readthedocs.io/>`_
+4.  `CCDPROC <https://ccdproc.readthedocs.io/en/latest/index.html#>`_ >> `CCDprocX <https://pypi.org/project/ccdprocx/>`_
 
-5.  `photutils <https://photutils.readthedocs.io/>`_
+5.  `scipy <https://www.scipy.org/>`_
 
-6.  `astroalign <https://astroalign.readthedocs.io/>`_
+6.  `photutils <https://photutils.readthedocs.io/en/stable/index.html>`_
 
-7.  `astroquery <https://astroquery.readthedocs.io/>`_
+7.  `astroquery <https://astroquery.readthedocs.io/en/latest/#>`_
+
+8.  `astroalign <https://astroalign.quatrope.org/en/latest/?badge=latest>`_
+
+9.  `tqdm <https://tqdm.github.io/>`_
+
+10. `lightkurve <http://docs.lightkurve.org/>`_
+
 
     .. note:: CCDPROC requires the ``astroscrappy`` package for install. Currently, astroscrappy requires 
-                Visual C++ redistributable for build and function. This dependency is currently having issues 
-                with ``python 3.9``, compatability with python 3.9 is incoming. The install of astroscrappy may also 
-                require the ``wheel`` python package for some python environments. If you are having trouble 
-                installing DORADO, please contact us for assistance.
+                Visual C++ redistributable for build and function. This install step has a variety of potential issues
+                users can encounter so DORADO instead uses a fork of CCDPROC with astroscrappy removed known as ccdprocx.
 
 Babies first Dorado script
 ==========================
@@ -53,34 +58,32 @@ import, initialize, and call.
 .. code:: python
 
         ## import
-        # import dorado utilities
-        from dorado.filer import Filer
-        from dorado.target import Target
+        import dorado
 
         ## initialize
-        # make an instance of clippy
-        clippy = Filer()
         # create a target object 'target of interest' toi
-        toi = Target('target_name')
+        toi = 'target_name'
+        dorado.mktrgt(toi)
         # create a control target object
-        control = Target('control_target_name')
+        control = 'control_target_name'
+        dorado.mktrgt(control)
         # create a series object
-        ceres = clippy.mkceres('2021-01-01+02', target = toi)
+        dorado.mkceres('2021-01-01+02', name = 'ceres01', target = toi)
 
         ## call
         # calibrate the series red filter data
-        ceres.calibrate('R')
+        dorado.dorphot.calibrate('ceres01','R')
         # align the series red filter data
-        ceres.align('R', clippy, cache = True)
+        dorado.dorphot.align('ceres01', 'R')
         # perform differential photometry on the target in the red filter 
         # data using the control as a reference
-        ceres.dorphotc('R', toi, control)
+        dorado.dorphot.apPhot('ceres01', 'R', toi, control)
 
         ## finish by saving
-        # save the resulting data
-        clippy.savewrk(ceres)
-        # record the results
-        toi.record(clippy, ceres)
+        # save the resulting ceres data 
+        dorado.savewrk('ceres01')
+        # record the target results 
+        Dorado.targets[Dorado.target_keys[toi]].record('ceres01')
 
 
-Next: :doc:`Filer</dorado/filer>`
+Next: :doc:`Filer</dorado/core>`

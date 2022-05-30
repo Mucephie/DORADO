@@ -64,19 +64,17 @@ Getting started with dorado:
 
 For help getting started see: :doc:`Getting Started</dorado/GettingStarted>`
 
-.. toctree::
-   :maxdepth: 1
 
-   :doc:`Getting Started</dorado/GettingStarted>`
-   :doc:`Core</dorado/core>`
-   :doc:`Reader</dorado/reader>`
-   :doc:`Ceres</dorado/ceres>`
-   :doc:`Target</dorado/target>`
-   :doc:`Dorphot</dorado/dorphot>`
-   :doc:`Timeseries</dorado/timeseries>`
-   :doc:`Graphing</dorado/graphing>`
-   :doc:`Putting it Together</dorado/puttingitTogether>`
-   
+:doc:`Getting Started</dorado/GettingStarted>`
+:doc:`Core</dorado/core>`
+:doc:`Reader</dorado/reader>`
+:doc:`Ceres</dorado/ceres>`
+:doc:`Target</dorado/target>`
+:doc:`Dorphot</dorado/dorphot>`
+:doc:`Timeseries</dorado/timeseries>`
+:doc:`Graphing</dorado/graphing>`
+:doc:`Putting it Together</dorado/puttingitTogether>`
+
 
 
 Installation

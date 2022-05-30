@@ -30,6 +30,9 @@ class aicoPhot:
     
     def calibrate(self, cr,  filter, use_med_cr_removal = False, rb = 0):
         '''
+        calibrate performs 'pre-processing' CCDData calibration to a data stack within a ceres object. This 
+        involves Bias and Flatfield correction and optional median value based cosmic ray removal based on the
+        ccdprocx.cosmicray_median() method.
         
         Parameters
         ----------
@@ -95,6 +98,8 @@ class aicoPhot:
 
     def getWCS(self, cr, filter, alignto = None, cache = True):
         '''
+        getWCS obtains WCS information for an image either via previously solved data in the cache or
+        by passing the image to astrometryNet via dorado.plate_solve().
         
         Parameters
         ----------
@@ -129,6 +134,8 @@ class aicoPhot:
     
     def align(self, cr, filter, alignto = None, getWCS = True, cache = False, ds = 2, ma = 5):
         '''
+        align aligns a filter stack within a specified ceres object to a specified frame (default is first
+        frame). align can optionally retrieve the corresponding WCS data for the aligned stack.
         
         Parameters
         ----------
@@ -198,6 +205,9 @@ class aicoPhot:
         
     def apPhot(self, cr, filter, toid, control_toid = None, shape = 21, unc = 0.1):
         '''
+        apPhot performs basic aperture photometry based on photutils.aperture_photometry on a target
+        within stack. Target photometry can optionally be compared to a control target within the stack 
+        via the differential photometry method.
         
         Parameters
         ----------
@@ -290,6 +300,7 @@ class aicoPhot:
         
     def mkBase(self, cr, filter, sigClip = False, minmax = False):
         '''
+        mkBase stacks filter data within a ceres object to produce a base or 'average' stacked image.
         
         Parameters
         ----------
@@ -324,6 +335,8 @@ class aicoPhot:
         
     def calBase(self, cr, filter):
         '''
+        calBase calibrates a base image for a stack by computing a 2D background for the image
+        and removing it from the base image.
         
         Parameters
         ----------

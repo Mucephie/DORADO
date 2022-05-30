@@ -1,4 +1,8 @@
-Ceres
-=====
+Ceres and stack classes: Observational data handling
+====================================================
 
-Previous: :doc:`Clippy</dorado/clippy>` || Next: :doc:`Stack</dorado/stack>`
+To interface with an observational series, Dorado offers the Ceres class. The Ceres class contains a list 
+of Stack objects and the coresponding 
+
+
+Previous: :doc:`Reader</dorado/reader>` || Next: :doc:`Targets</dorado/target>`

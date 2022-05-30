@@ -18,8 +18,7 @@ utilities and then initialize Filer and construct our target objects.
 .. code:: python
 
         # import Dorado utilities
-        from dorado.filer import Filer
-        from dorado.target import Target
+        import dorado
 
         ## initialize
         # make an instance of Filer

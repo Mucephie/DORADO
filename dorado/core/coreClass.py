@@ -85,6 +85,7 @@ class Dorado_core:
         
     def init_dir(self, tess = False):
         """
+        init_dir initializes the dorado home directory '$user/.dorado/'.
         
         Parameters
         ----------
@@ -112,6 +113,8 @@ class Dorado_core:
         
     def newdat(self):
         """
+        newdat is an nfinished function that will scan the '$user/.dorado/data/raw' directory
+        for new data to be processed.
         
         Parameters
         ----------
@@ -173,6 +176,8 @@ class Dorado_core:
         
     def enter_dordir(self):
         """
+        enter_dordir changes the workin directory to self.dordir which by default is
+        '$user/.dorado/'.
         
         Parameters
         ----------
@@ -182,9 +187,10 @@ class Dorado_core:
         
         """
         os.chdir(self.dordir)
-         
+
     def exit_dordir(self):
         """
+        exit_dordir changes the workin directory to the starting directory at runtime.
         
         Parameters
         ----------
@@ -197,6 +203,8 @@ class Dorado_core:
         
     def diread(self, dirarray):
         """
+        diread intakes a filepath array and catalogues the contents by either 'is file' or 'is directory'
+        and returns the resulting lists.
         
         Parameters
         ----------
@@ -226,10 +234,16 @@ class Dorado_core:
     
     def mkceres(self, date, name = None, sub = 'raw', target = None, calibrated = False, aligned = False):
         """
+        mkceres is a wrapper function for self.reader.mkceres with an additional arguement for setting the keyname 
+        for the ceres instance in self.ceres_keys. The default keyname is the datestring for the ceres instance.
         
         Parameters
         ----------
-
+        name: string
+            keyname for the ceres instance. Default is the datestring for the ceres instance.
+        
+        self.reader.mkceres args** 
+        
         Returns
         -------
         
@@ -250,14 +264,17 @@ class Dorado_core:
     
     def mktrgt(self, name):
         """
+        mktrgt takes a target name and constructs a dorado.target object that is returned to self.targets.
         
         Parameters
         ----------
-
+        name: string
+            target name as found in SIMBAD
         Returns
         -------
         
         """
+        # TODO allow for nickname in keys
         # add dictionary
         # , coordinates = None
         self.target_keys[name] = len(self.targets)
@@ -265,10 +282,13 @@ class Dorado_core:
         
     def force16(self, hdu):
         """
+        An unfinished convinience function for forcing the datatype of CCDData to be 16-bit instead of 32-bit
+        for consistency and filesize optimization.
         
         Parameters
         ----------
-
+        hdu: CCDData
+            hdu to force 16-bit datatype.
         Returns
         -------
         
@@ -277,10 +297,15 @@ class Dorado_core:
         
     def mkcacheObj(self, object, subcache = False):
         """
+        mkcacheObj is a convenience function that creates a cache object for a .fits compatable
+        object in the self.dordir/cache directory.
         
         Parameters
         ----------
-
+        object: CCDData
+            object to be saved in the cache directory for access.
+        subcache: str
+            optional subcache file for cache organization. Optional
         Returns
         -------
         
@@ -309,10 +334,14 @@ class Dorado_core:
         
     def delcacheObj(self, fname, subcache = False):
         """
+        delcacheObj is a convenience method that deletes a selected cache object given is file name.
         
         Parameters
         ----------
-
+        fname: string
+            filestring of cache object to delete.
+        subcache: string
+            filestring of subcache containing the cache object to delete.
         Returns
         -------
         
@@ -327,10 +356,16 @@ class Dorado_core:
         
     def plate_solve(self, dirarray, data = None, writearray = False):
         """
+        plate_solve takes a dirarray pointing to a fits file to plate solve using astrometryNet. It returns
+        the solved image with the WCS header and the WCS header itself if the solve succeeded. If 'writearray'
+        is set with a filepath array, a copy of the solved image will be saved.
         
         Parameters
         ----------
-
+        dirarray: str array
+            filepath array to image to be solved.
+        data: CCDData
+            optional image data to combine with the WCS header on return.save. Default is data to be solved.
         Returns
         -------
         
@@ -378,12 +413,19 @@ class Dorado_core:
             # Code to execute when solve fails
             print('Solve failed! :(')
             return 
-         
-    def getDateString(self, cr):
+
+    def getDateString(self, cr, utc = None):
         """
+        getDateString computes the date string for the given ceres object. ceres time is represented
+        in UTC while datestring is represented in local time. A UTC offset must be provided either by self.UTCoffest
+        or by the utc arguement.
         
         Parameters
         ----------
+        cr : str
+            the ceres object key to get the date string for.
+        utc: float
+            utc offset to apply to the date string. Default is None.
 
         Returns
         -------
@@ -395,42 +437,73 @@ class Dorado_core:
         epoch = self.ceres[self.ceres_keys[cr]].date.ymdhms
 
         # epoch = date.ymdhms
+        if (utc):
+            
+            if (epoch['hour'] + utc) < 0:
+                day = str(epoch['day'] - 1)
+                day2 = str(epoch['day'])
+                month = str(epoch['month'])
 
-        if (epoch['hour'] + self.UTCoffset) < 0:
-            day = str(epoch['day'] - 1)
-            day2 = str(epoch['day'])
-            month = str(epoch['month'])
+                if (epoch['day'] - 1) < 10:
+                    day = '0' + str(epoch['day'] - 1)
+                if epoch['day'] < 10:
+                    day2 = '0' + str(epoch['day'])
 
-            if (epoch['day'] - 1) < 10:
-                day = '0' + str(epoch['day'] - 1)
-            if epoch['day'] < 10:
-                day2 = '0' + str(epoch['day'])
+                if epoch['month'] < 10:
+                    month = '0' + str(epoch['month'])
 
-            if epoch['month'] < 10:
-                month = '0' + str(epoch['month'])
+            else: 
+                day = str(epoch['day'])
+                day2 = str(epoch['day'] + 1)
+                month = str(epoch['month'])
 
-        else: 
-            day = str(epoch['day'])
-            day2 = str(epoch['day'] + 1)
-            month = str(epoch['month'])
+                if epoch['day'] < 10:
+                    day = '0' + str(epoch['day'])
+                    if epoch['day'] < 9:
+                        day2 = '0' + str(epoch['day'] + 1)
 
-            if epoch['day'] < 10:
-                day = '0' + str(epoch['day'])
-                if epoch['day'] < 9:
-                    day2 = '0' + str(epoch['day'] + 1)
+                if epoch['month'] < 10:
+                    month = '0' + str(epoch['month'])
+        else:
+            if (epoch['hour'] + self.UTCoffset) < 0:
+                day = str(epoch['day'] - 1)
+                day2 = str(epoch['day'])
+                month = str(epoch['month'])
 
-            if epoch['month'] < 10:
-                month = '0' + str(epoch['month'])
+                if (epoch['day'] - 1) < 10:
+                    day = '0' + str(epoch['day'] - 1)
+                if epoch['day'] < 10:
+                    day2 = '0' + str(epoch['day'])
+
+                if epoch['month'] < 10:
+                    month = '0' + str(epoch['month'])
+
+            else: 
+                day = str(epoch['day'])
+                day2 = str(epoch['day'] + 1)
+                month = str(epoch['month'])
+
+                if epoch['day'] < 10:
+                    day = '0' + str(epoch['day'])
+                    if epoch['day'] < 9:
+                        day2 = '0' + str(epoch['day'] + 1)
+
+                if epoch['month'] < 10:
+                    month = '0' + str(epoch['month'])
+
 
         datestr = str(epoch['year']) + '-' + month + '-' + day + '+' + day2
         self.ceres[self.ceres_keys[cr]].datestr = datestr
         
     def mkwrk(self, cr):
         """
+        mkwrk produces a working folder for saving a ceres object to the dorado data working directory
+        for later use.
         
         Parameters
         ----------
-
+        cr : str
+            ceres key for ceres instance to create working directory for.
         Returns
         -------
         
@@ -449,10 +522,11 @@ class Dorado_core:
         
     def savewrk(self, cr, filters = None):
         """
-        
+        savewrk is a wrapper function for self.reader.savewrk.
         Parameters
         ----------
 
+        self.reader.savewrk args**
         Returns
         -------
         
@@ -461,9 +535,15 @@ class Dorado_core:
         
     def saveWCS(self, cr, filters = None):
         """
+        saveWCS takes a ceres object and an optional filters argument and saves the contained WCS
+        data to the ceres objects working directory.
         
         Parameters
         ----------
+        cr : str
+            ceres object key string for the relevent ceres object.
+        filters : str or list of str
+            filters of WCS data to be saved.
 
         Returns
         -------
@@ -487,10 +567,13 @@ class Dorado_core:
         # not done might be redundant atm also shouldnt this belong to reader?
     def saveBase(self, cr, filters = None):
         """
-        
+        saveBase save the base frame of a ceres object if any.
         Parameters
         ----------
-
+        cr: string
+            ceres key string for relevent ceres object.
+        filters: str or list of str
+            filters to save base frame of a ceres object.
         Returns
         -------
         
@@ -513,8 +596,7 @@ class Dorado_core:
             base.write(fname, overwrite = True)
         # not done might be redundant atm also shouldnt this belong to reader?
         
-
-    # merge header
+        # merge header
 
 Dorado = Dorado_core()
 

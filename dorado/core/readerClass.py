@@ -28,7 +28,12 @@ class aico_reader:
 
     def dirscan(self, dirarray):
         '''
-
+        Dirscan takes a filepath array and scans the resulting directory for Bias, Flats, and Lights
+        based on a simple filename pattern. Data can be either all in this single directory or in appropriately 
+        named sub directories(i.e. '/bias', '/flats', and '/lights'). 
+        
+        **This currently only supports single filter data** 
+        
         Parameters
         ----------
         dirarray: str array
@@ -162,7 +167,10 @@ class aico_reader:
         
     def mkceres(self,  date, sub = 'raw', target = None, calibrated = False, aligned = False):
             '''
-
+            mkceres creates a ceres object from a given datestring for an observation and an optional 
+            dorado.target instance. mkceres can be pointed to calibrated or aligned data via the
+            calibrated and aligned boolean flags (Note, in this case 'sub' should be set to 'wrk').
+            
             Parameters
             ----------
             date: date string
@@ -182,7 +190,9 @@ class aico_reader:
                 sets whether the imported images are aligned and within an 'aligned'
                 folder. Default is False.
             '''
+            
             # TODO needs ability to handle multifilter directories
+            # TODO auto handle setting 'wrk' as subfolder
             if aligned:
                 dirarray = ['data', sub, date, 'aligned']
             elif calibrated:
@@ -280,6 +290,7 @@ class aico_reader:
             """
             mkBias takes a list of bias images to construct 
             a combined bias image. ------------> this needs to be corrected for the new image storage format
+            
             Parameters
             ----------
             biasIFC: array[CCDdata]
@@ -317,6 +328,8 @@ class aico_reader:
     
     def savewrk(self, cr, filters = None):
         """
+        savewrk takes a ceres key and a list of filters to save and saves the desired data
+        to the dorado working directory '$user/.dorado/data/wrk/'. 
         
         Parameters
         ----------

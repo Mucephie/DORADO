@@ -19,9 +19,4 @@ Previous: :doc:`Dorado Core</dorado/core>` || Next: :doc:`Ceres</dorado/ceres>`
 Reference/API
 =============
 
-.. automodapi:: dorado.reader 
-
-
-break
-
 .. automodapi:: dorado.core.reader

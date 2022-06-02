@@ -14,9 +14,3 @@ Further information on readers is coming as the reader system matures.
 
 Previous: :doc:`Dorado Core</dorado/core>` || Next: :doc:`Ceres</dorado/ceres>`
 
-=============
-
-Reference/API
-=============
-
-.. automodapi:: dorado.core.reader

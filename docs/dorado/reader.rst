@@ -8,9 +8,20 @@ operations involving the newly installed Planewave CDK-1000 1m telescope.
 
 Dorado at current epoch uses a 'modular' data reader to create, locate, navigate, read, and manage astronomical data within 
 the dorado directory. Users can create their own data reader specific to their data pipeline needs or use one of the prebuilt
-data readers provided in the dorado package such as aico_reader(). <-- link to the aico_reader docs 
+data readers provided in the dorado package such as aico_reader(). <-- **link to the aico_reader docs**
 
 Further information on readers is coming as the reader system matures.
 
 Previous: :doc:`Dorado Core</dorado/core>` || Next: :doc:`Ceres</dorado/ceres>`
 
+=============
+
+Reference/API
+=============
+
+.. automodapi:: dorado.reader 
+
+
+break
+
+.. automodapi:: dorado.core.reader

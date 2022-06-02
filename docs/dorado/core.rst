@@ -81,5 +81,12 @@ via cache cleaning commands.
 
 Previous: :doc:`Getting Started</dorado/GettingStarted>` || Next: :doc:`Reader</dorado/reader>`
 
+=============
+
+Reference/API
+=============
+
+.. automodapi:: dorado.core
+
 
 

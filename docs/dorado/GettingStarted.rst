@@ -86,4 +86,4 @@ import, initialize, and call.
         Dorado.targets[Dorado.target_keys[toi]].record('ceres01')
 
 
-Next: :doc:`Core</dorado/core>`
+Next: :doc:`Dorado Core</dorado/core>`

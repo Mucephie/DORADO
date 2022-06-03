@@ -14,7 +14,7 @@ dirscan
 --------
 
 dirscan is used to search and sort the data in a desired directory and return the results to possibly be used in functions
-like :method:`~dorado.aico_reader.mkceres`. In many cases dirscan will be called internally without the end user ever needing
+like :classmethod:`~dorado.aico_reader.mkceres`. In many cases dirscan will be called internally without the end user ever needing
 to directly inteface with the function itself.
 
 mkceres
@@ -22,9 +22,9 @@ mkceres
 
 Astronomical data is collected and stored in many different ways and formats and for dorado to truly be an open and community 
 friendly pipeline tool, dorado needs a modular and personalizable way to integrate data into the dorado system. One of the 
-universal data objects in dorado is the :class:`~dorado.ceres` class which handles data associated with a nights observation 
+universal data objects in dorado is the :class:`~dorado.Ceres` class which handles data associated with a nights observation 
 campaign, including individual stacks of data held in :class:`~dorado.stack` data objects. The reader class facilitates the 
-reading of the data into classes like :class:`~dorado.ceres` and :class:`~dorado.stack` where it can be operated on in a consistant
+reading of the data into classes like :class:`~dorado.Ceres` and :class:`~dorado.Stack` where it can be operated on in a consistant
 manor. 
 
 mkflat and mkbias
@@ -32,7 +32,7 @@ mkflat and mkbias
 
 mkflat and mkbias are other methods which may be present in a reader class depending on the desired pipeline. mkflat and mkbias
 utilize the results of dirscan to produce a base flat frame and base bias frame which can further be stored and used in a
-:class:`~dorado.ceres` or :class:`~dorado.stack` instance.
+:class:`~dorado.Ceres` or :class:`~dorado.Stack` instance.
 
 
 savewrk

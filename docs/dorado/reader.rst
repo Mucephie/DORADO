@@ -14,7 +14,7 @@ dirscan
 --------
 
 dirscan is used to search and sort the data in a desired directory and return the results to possibly be used in functions
-like :classmethod:`~dorado.aico_reader.mkceres`. In many cases dirscan will be called internally without the end user ever needing
+like :classmethod:`~dorado.mkceres`. In many cases dirscan will be called internally without the end user ever needing
 to directly inteface with the function itself.
 
 mkceres
@@ -23,7 +23,7 @@ mkceres
 Astronomical data is collected and stored in many different ways and formats and for dorado to truly be an open and community 
 friendly pipeline tool, dorado needs a modular and personalizable way to integrate data into the dorado system. One of the 
 universal data objects in dorado is the :class:`~dorado.Ceres` class which handles data associated with a nights observation 
-campaign, including individual stacks of data held in :class:`~dorado.stack` data objects. The reader class facilitates the 
+campaign, including individual stacks of data held in :class:`~dorado.Stack` data objects. The reader class facilitates the 
 reading of the data into classes like :class:`~dorado.Ceres` and :class:`~dorado.Stack` where it can be operated on in a consistant
 manor. 
 

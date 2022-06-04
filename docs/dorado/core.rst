@@ -78,15 +78,18 @@ frames to 'Astrometry.net' and downloading the results suring runtime. The cache
 or any other file objects that are temporary in nature and need a place to exist where it is easily acessible while also easy to remove
 via cache cleaning commands.
 
-
-Previous: :doc:`Getting Started</dorado/GettingStarted>` || Next: :doc:`Reader</dorado/reader>`
-
 =============
 
 Reference/API
 =============
 
 .. automodapi:: dorado.core
+
+-------
+
+Previous: :doc:`Getting Started</dorado/GettingStarted>` || Next: :doc:`Reader</dorado/reader>`
+
+
 
 
 

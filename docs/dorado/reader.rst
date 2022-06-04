@@ -14,8 +14,12 @@ dirscan
 --------
 
 dirscan is used to search and sort the data in a desired directory and return the results to possibly be used in functions
-like mkceres :method:`~dorado.core.aico_reader.mkceres`. In many cases dirscan will be called internally without the end user ever needing
+like mkceres :classmethod:`~dorado.core.aico_reader.mkceres`. In many cases dirscan will be called internally without the end user ever needing
 to directly inteface with the function itself.
+
+:method:`~dorado.Core.aico_reader.mkceres`
+
+:classmethod:`~dorado.Core.aico_reader.mkceres`
 
 mkceres
 -------

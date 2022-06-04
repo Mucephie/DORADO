@@ -14,7 +14,7 @@ dirscan
 --------
 
 dirscan is used to search and sort the data in a desired directory and return the results to possibly be used in functions
-like :classmethod:`~dorado.mkceres`. In many cases dirscan will be called internally without the end user ever needing
+like mkceres. In many cases dirscan will be called internally without the end user ever needing
 to directly inteface with the function itself.
 
 mkceres

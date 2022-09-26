@@ -35,8 +35,6 @@ class Target:
         # TODO also include size angular size and other info like magnitude and type
         self.x = None
         self.y = None
-
-
         
     def calcmag(self, filter):
         '''
@@ -183,8 +181,7 @@ class Fournax(Target):
             print('Unknown ephemeris error encountered. Please report via Dorado Github issues page.')
             print('Period given: ', period)
             print('Epoch given: ', epoch)
-
-        
+    
     def OMinusC(self, filter):
         '''
             OMinusC takes observed time(s) of max light for a repeating variable star and ephemeris data and returns O-C values as well as the corresponding cycle.

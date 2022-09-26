@@ -26,7 +26,7 @@ initialize one.
         ## initialize
         # create a target object 'target of interest' toi
         toi = 'target_name'
-        dorado.mktrgt(toi)
+        Dorado.mktrgt(toi)
 
 Next up comes initializing the ceres object into the core dorado instance. We will hand it an observation
 date of `2021-01-01+02` which points dorado to a date folder with the same name in the target data folder.
@@ -36,7 +36,7 @@ by its key string. Lastly, we will append our target object into the ceres insta
 
 .. code:: python
         # create a series object
-        dorado.mkceres('2021-01-01+02', name = 'ceres_name', target = toi)
+        Dorado.mkceres('2021-01-01+02', name = 'ceres_name', target = toi)
 
 lastly, we wish to work with our new ceres instance. To calibrate the red filter data within our ceres 
 instance we can use the following. 
@@ -44,7 +44,7 @@ instance we can use the following.
 .. code:: python
         ## call
         # calibrate the series red filter data
-        dorado.dorphot.calibrate('ceres_name','R')
+        Dorado.dorphot.calibrate('ceres_name','R')
 
 .. note:: The above syntax for calibration is assuming that :class:`~dorado.aicoPhot` is set as the 
     active `dorado.dorphot` instance.

@@ -26,6 +26,8 @@ class aicoPhot:
     def __init__(self):
         # TODO make observatory class
         self.temp = None
+        # list of calibration frames from disk
+        
 
     
     def calibrate(self, cr,  filter, use_med_cr_removal = False, rb = 0):

@@ -24,9 +24,9 @@ utilities and then initialize Filer and construct our target objects.
         # make an instance of Filer
         clippy = Filer()
         # create a target of interest object
-        toi = Target('McCool's star')
+        toi = dorado.Target('McCool's star')
         # create a control target object
-        control = Target('Boring star')
+        control = dorado.Target('Boring star')
 
 Our next step is to tell Filer that you want to find and read in last nightss data:
 

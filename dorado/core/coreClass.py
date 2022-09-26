@@ -262,7 +262,7 @@ class Dorado_core:
         self.ceres_keys[name] = len(self.ceres)
         self.ceres.append(ctemp)
     
-    def mktrgt(self, name):
+    def mktrgt(self, name, constructor = Target):
         """
         mktrgt takes a target name and constructs a dorado.target object that is returned to self.targets.
         
@@ -278,7 +278,7 @@ class Dorado_core:
         # add dictionary
         # , coordinates = None
         self.target_keys[name] = len(self.targets)
-        self.targets.append(Target(name))
+        self.targets.append(constructor(name))
         
     def force16(self, hdu):
         """

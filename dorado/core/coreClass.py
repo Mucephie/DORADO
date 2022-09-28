@@ -82,7 +82,13 @@ class Dorado_core:
 
         # site information (hardcoded atm)
         self.UTCoffset = -5
-        
+
+    def target(self, key):
+        return self.targets[self.target_keys[key]]
+    
+    def cere(self, key):
+        return self.ceres[self.ceres_keys[key]]
+    
     def init_dir(self, tess = False):
         """
         init_dir initializes the dorado home directory '$user/.dorado/'.

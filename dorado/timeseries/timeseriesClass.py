@@ -75,7 +75,7 @@ class timeSeries:
                 except:
                     print('Error merging', colnom[col], ' with table.')
     
-    def graph(self, c_scale = False):
+    def graph(self, c_scale = False, err = True):
         '''
         The graph function produces a graph of the photometric timeseries data as
         a lightcurve.

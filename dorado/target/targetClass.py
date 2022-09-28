@@ -5,7 +5,7 @@ from astroquery.simbad import Simbad
 from astropy.coordinates import SkyCoord as acoord
 import numpy as np
 import astropy.units as un
-from scipy.interpolate import InterpolatedUnivariateSpline
+from scipy.interpolate import InterpolatedUnivariateSpline, LSQUnivariateSpline
 
 __all__ = ['Target', 'Fournax']
 
@@ -233,7 +233,7 @@ class Fournax(Target):
         ## TODO:: Zero mean of signal.
 
         y = self.ts[self.filters[filter]].flux
-        x = self.ts[self.filters[filter]].times ## TODO:: convert to float friendly format like mjd
+        x = self.ts[self.filters[filter]].times.value ## TODO:: convert to float friendly format like mjd
 
         # Fourier fit the data to model curvature
         f = np.fft.rfft(y)

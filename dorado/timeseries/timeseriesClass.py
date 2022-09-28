@@ -75,7 +75,7 @@ class timeSeries:
                 except:
                     print('Error merging', colnom[col], ' with table.')
     
-    def graph(self):
+    def graph(self, c_scale = False):
         '''
         The graph function produces a graph of the photometric timeseries data as
         a lightcurve.
@@ -91,9 +91,19 @@ class timeSeries:
         fig, ax = plt.subplots(subplot_kw={'aspect': 'equal'})
         ax.set_xlabel('Time')
         ax.set_ylabel('Flux')
-        ax.set_title('Lightcurve') # TODO decide on title
-        z = self.flux - np.min(self.flux)
-        ax.errorbar(self.times.mjd, self.flux, xerr = self.exptimes / 2, yerr = self.flux_unc, c = z)
+        try:  
+            ax.set_title(str(self.name) + ' Lightcurve') # TODO decide on title
+        except:
+            ax.set_title('Lightcurve') # TODO decide on title
+        if c_scale:
+            print('colour scaling not implemented yet, sorry bud...')
+            z = 'yellow' # self.flux - np.min(self.flux)
+        else:
+            z = 'gold'
+        if err:
+            ax.errorbar(self.times.mjd, self.flux, xerr = self.exptimes / 2, yerr = self.flux_unc, c = z)
+        else:
+            ax.plot(self.times.mjd, self.flux, c = z)
         ax.grid()
         plt.tight_layout()
         plt.show()

@@ -5,6 +5,7 @@ from astroquery.simbad import Simbad
 from astropy.coordinates import SkyCoord as acoord
 import numpy as np
 import astropy.units as un
+from scipy.interpolate import InterpolatedUnivariateSpline
 
 __all__ = ['Target', 'Fournax']
 
@@ -320,7 +321,7 @@ class Fournax(Target):
            
         '''
         if terms == None:
-            terms = len(self.ts[self.filters[filter]].flux)/3
+            terms = int(np.floor(len(self.ts[self.filters[filter]].flux)/3))
         if s == None:
             s = len(self.ts[self.filters[filter]].flux)
             

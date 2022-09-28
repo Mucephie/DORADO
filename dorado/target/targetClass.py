@@ -357,7 +357,7 @@ class Fournax(Target):
         f = np.fft.fft(Y)
         p = np.square(np.abs(f))
         # timestep currently defaults to units of days, whereas exposure time is in seconds
-        timestep = (np.mean(self.ts[self.filters[filter]].exptimes) * un.sec).to(un.day).value
+        timestep = (np.mean(self.ts[self.filters[filter]].exptimes) * un.s).to(un.day).value
 
         # Build an array of frequencies to plot against
         freq_vec = np.fft.fftfreq(len(Y), d = timestep)

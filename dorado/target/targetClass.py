@@ -305,7 +305,7 @@ class Fournax(Target):
 
         return y
 
-    def analyze(self, filter, graphical = True):
+    def analyze(self, filter, graphical = True, terms = None, s = None):
         '''
         analyze is a wrapper function that runs a pipeline of analysis functions in the 
         Fournax target class, self.superfit, self.tomlFind, self.OMinusC, and self.fourFind
@@ -319,7 +319,12 @@ class Fournax(Target):
                 (NOTE:: parameter currently not in use)
            
         '''
-        self.superfit(filter = filter, terms = len(self.flux)/3, s = len(self.flux))
+        if terms == None:
+            terms = len(self.ts[self.filters[filter]].flux)/3
+        if s == None:
+            s = len(self.ts[self.filters[filter]].flux)
+            
+        self.superfit(filter = filter, terms = terms, s = s)
         # Find times of max light
         self.tomlFind(filter = filter)
         # calculate O-C
@@ -360,6 +365,9 @@ class Fournax(Target):
         peaks, _ = find_peaks(p, height = np.mean(p))
 
         # Return frequency vector for plotting?
+        self.freq = peaks
+        self.freq_vec = freq_vec
+        self.power_vec = p
 
     def tomlFind(self, filter, fitted = True):
         '''

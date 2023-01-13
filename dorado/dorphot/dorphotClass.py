@@ -291,7 +291,7 @@ class aicoPhot:
 
             fluxunc.append(1) ## TODO:: modify this to account for exposure time and control
             apsum_unc.append(1)
-        times = Times(timestr)
+        times = Time(timestr)
         ts = timeSeries(times = times, flux = flux, exptimes = exptimes, x = x, y = y, 
         ra = ray, dec = decx, flux_unc = fluxunc, apsum = apsum, apsum_unc = apsum_unc)
 

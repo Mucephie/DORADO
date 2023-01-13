@@ -250,7 +250,7 @@ class aicoPhot:
             apersc = [aperturec, annulus_aperturec]
 
 
-        times = []
+        timestr = []
         exptimes = []
         ray = []
         decx = []
@@ -270,7 +270,7 @@ class aicoPhot:
             bkg_sum = bkg_mean * aperture.area
             results['flux_fit'] = results['aperture_sum_0'] - bkg_sum
             
-            times.append(Time(image.header['DATE-OBS'])) # TODO This is most likely needed, but verify 
+            times.append(image.header['DATE-OBS']) # TODO This is most likely needed, but verify 
             exptimes.append(image.header['EXPTIME']) # TODO is this also needed
             ray.append(ra) # TODO is this really needed?
             decx.append(dec)
@@ -291,7 +291,7 @@ class aicoPhot:
 
             fluxunc.append(1) ## TODO:: modify this to account for exposure time and control
             apsum_unc.append(1)
-
+        times = Times(timestr)
         ts = timeSeries(times = times, flux = flux, exptimes = exptimes, x = x, y = y, 
         ra = ray, dec = decx, flux_unc = fluxunc, apsum = apsum, apsum_unc = apsum_unc)
 

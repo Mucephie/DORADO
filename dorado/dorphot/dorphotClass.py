@@ -270,7 +270,7 @@ class aicoPhot:
             bkg_sum = bkg_mean * aperture.area
             results['flux_fit'] = results['aperture_sum_0'] - bkg_sum
             
-            times.append(image.header['DATE-OBS']) # TODO This is most likely needed, but verify 
+            timestr.append(image.header['DATE-OBS']) # TODO This is most likely needed, but verify 
             exptimes.append(image.header['EXPTIME']) # TODO is this also needed
             ray.append(ra) # TODO is this really needed?
             decx.append(dec)

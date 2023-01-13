@@ -143,3 +143,45 @@ class Ceres:
         # TODO delete time strings
         del self.data[self.filters[filter]]
         
+
+class Bias_Ceres:
+    def __init__(self, file_list = [], data = [], datestr = ''):
+        self.time = time
+        try:
+            self.date = Time(int(self.time.mjd), format = 'mjd')
+        except:
+            self.date = None
+        if datestr == '':
+            try:
+                epoch = self.date.ymdhms
+                if (epoch['hour'] + Dorado.UTCoffset) < 0:
+                    day = str(epoch['day'] - 1)
+                    day2 = str(epoch['day'])
+                    month = str(epoch['month'])
+
+                    if (epoch['day'] - 1) < 10:
+                        day = '0' + str(epoch['day'] - 1)
+                    if epoch['day'] < 10:
+                        day2 = '0' + str(epoch['day'])
+
+                    if epoch['month'] < 10:
+                        month = '0' + str(epoch['month'])
+
+                else: 
+                    day = str(epoch['day'])
+                    day2 = str(epoch['day'] + 1)
+                    month = str(epoch['month'])
+
+                    if epoch['day'] < 10:
+                        day = '0' + str(epoch['day'])
+                        if epoch['day'] < 9:
+                            day2 = '0' + str(epoch['day'] + 1)
+
+                    if epoch['month'] < 10:
+                        month = '0' + str(epoch['month'])
+
+                self.datestr = str(epoch['year']) + '-' + month + '-' + day + '+' + day2
+            except:
+                self.datestr = datestr
+
+        # if np.any(file_list)

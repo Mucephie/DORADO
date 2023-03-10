@@ -74,6 +74,8 @@ class aicoPhot:
             im = ccdprocx.ccd_process(im, master_bias = bias, master_flat = flat)
             if scln:
                 im.data = im.data[scln_xy[0]:scln_xy[1], scln_xy[2]:scln_xy[3]]
+                im.mask = im.mask[scln_xy[0]:scln_xy[1], scln_xy[2]:scln_xy[3]]
+                im.uncertainty = im.uncertainty[scln_xy[0]:scln_xy[1], scln_xy[2]:scln_xy[3]]
             if use_med_cr_removal:
                 im = ccdprocx.cosmicray_median(im, rbox = rb)
             if use_lac_cr_removal:

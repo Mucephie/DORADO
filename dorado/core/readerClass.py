@@ -162,7 +162,6 @@ class aico_reader:
                     # print('Reading directories.')
                     flats = []
 
-           
             return bias, flats, lights
         
     def mkceres(self,  date, sub = 'raw', target = None, calibrated = False, aligned = False):
@@ -227,7 +226,7 @@ class aico_reader:
 
             ## TODO :: multifilter fun
             if len(flats) == 0:
-                 cere.add_stack(Stack(lights, calibrated = calibrated, aligned = aligned, target = target))
+                cere.add_stack(Stack(lights, calibrated = calibrated, aligned = aligned, target = target))
             else:
                 flat = self.mkFlat(flats)
                 cere.add_stack(Stack(lights, flat = flat, calibrated = calibrated, aligned = aligned, target = target))
@@ -313,7 +312,6 @@ class aico_reader:
                 if fname in entry.name:
                     save = False
                     bias = CCDData.read(biasdir / fname) #, unit = Dorado.unit) ## NOTE edited
-             
             if save:
                 bias = ccdprocx.combine(biasIFC, method = 'average') #, unit = Dorado.unit) ## NOTE edited
                 bias.meta['stacked'] = True

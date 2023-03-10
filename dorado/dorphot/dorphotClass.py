@@ -73,13 +73,14 @@ class aicoPhot:
             bias.data = bias.data.astype('uint16') 
             im = ccdprocx.ccd_process(im, master_bias = bias, master_flat = flat)
             if scln:
-                im = im[scln_xy[0]:scln_xy[1], scln_xy[2]:scln_xy[3]]
+                im.data = im.data[scln_xy[0]:scln_xy[1], scln_xy[2]:scln_xy[3]]
             if use_med_cr_removal:
                 im = ccdprocx.cosmicray_median(im, rbox = rb)
             if use_lac_cr_removal:
                 im == ccdproc.cosmicray_lacosmic(im)
             im.data = im.data.astype('uint16') 
             c_series.append(im)
+        # add more flags for header
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].data = c_series
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].calibrated = True
         

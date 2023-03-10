@@ -259,6 +259,7 @@ class Dorado_core:
             ctemp = self.reader.mkceres(date, sub = sub, target = target, calibrated = calibrated, aligned = aligned)
         else:
             ctemp = self.reader.mkceres(date, sub = sub, target = self.targets[self.target_keys[target]], calibrated = calibrated, aligned = aligned)
+        # add logic to print out a summary
 
         if name == None:
             name = ctemp.datestr

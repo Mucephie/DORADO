@@ -50,7 +50,7 @@ class Stack:
     ## TODO :: auto identify targets in stack
 
     def __init__(self, data, flat = None, filter = '', times = [], calibrated = None,
-     aligned = None, target = None, alignTo = 0):
+        aligned = None, target = None, alignTo = 0):
         self.data = data
         self.flat = flat
         self.filter = filter

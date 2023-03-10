@@ -301,8 +301,8 @@ class aicoPhot:
                 bkg_sumc = bkg_meanc * aperturec.area
                 resultsc['flux_fit'] = resultsc['aperture_sum_0'] - bkg_sumc
 
-                apsum.append(results['flux_fit'][0] - resultsc['flux_fit'][0])
-                flux.append((results['flux_fit'][0] - resultsc['flux_fit'][0])/image.header['EXPTIME'])
+                apsum.append(np.abs(results['flux_fit'][0] - resultsc['flux_fit'][0]))
+                flux.append(np.abs(results['flux_fit'][0] - resultsc['flux_fit'][0])/image.header['EXPTIME'])
             else:
                 apsum.append(results['flux_fit'][0])
                 flux.append(results['flux_fit'][0]/image.header['EXPTIME'])

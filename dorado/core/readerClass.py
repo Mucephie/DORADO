@@ -392,8 +392,9 @@ class aico_reader:
 
             for p in range(len(fildat.data)):
                 image = fildat.data[p]
+                tstr = str(Time(image.header['DATE-OBS'], format='fits', out_subfmt='date_hms').value)
                 image.data = image.data.astype('uint16') 
-                fname = fplate + str(p) + fsub + '.fits'
+                fname = fplate + str(p) + '_' + tstr + fsub + '.fits'
                 image.write(wrdir / fname, overwrite = True)
 
 

@@ -207,7 +207,7 @@ class Fournax(Target):
 
         self.ts[self.filters[fi]].OmC = OmC
         self.ts[self.filters[fi]].cycle = cycle
-   
+
     def superfit(self, fi, terms, s):
         '''
             superfit takes a raw timeseries and performs a multistep smoothed fit of the data
@@ -318,7 +318,6 @@ class Fournax(Target):
         graphical: boolean
                 default is True. Controls whether or not graphical results are output 
                 (NOTE:: parameter currently not in use)
-           
         '''
         if terms == None:
             terms = int(np.floor(len(self.ts[self.filters[fi]].flux)/3))
@@ -351,7 +350,6 @@ class Fournax(Target):
         else:
             Y = self.ts[self.filters[fi]].flux
             X = self.ts[self.filters[fi]].times 
-             
         # Set up a Fourier power spectra from photometric amplitude values
         # Compute real valued Fourier transform
         f = np.fft.fft(Y)

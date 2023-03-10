@@ -30,7 +30,7 @@ class aicoPhot:
         
 
     
-    def calibrate(self, cr,  filter, use_med_cr_removal = False, rb = 0):
+    def calibrate(self, cr,  filter, use_med_cr_removal = False, rb = 0, use_lac_cr_removal = False):
         '''
         calibrate performs 'pre-processing' CCDData calibration to a data stack within a ceres object. This 
         involves Bias and Flatfield correction and optional median value based cosmic ray removal based on the
@@ -46,7 +46,9 @@ class aicoPhot:
             controls whether to use cosmic ray removal in calibration, may affect runtime. Default is False.
         rb: int
             the rbox value for ccdprocx.cosmicray_median(). Default is 0.
-        
+        use_lac_cr_removal : boolean
+            controls whether to use lacosmic ray removal in calibration, may affect runtime. Default is False
+            ::NOTE:: the package ccdproc is required.
         '''
         # for bla in series: add bias corrected = True to header
         stack = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
@@ -55,6 +57,11 @@ class aicoPhot:
         c_series = []
 
         print('Calibrating')
+        if use_lac_cr_removal:
+                try:
+                    import ccdproc
+                except Exception:
+                    print('Failed to open ccdproc. Is it installed?')
         for im in tqdm(stack.data, colour = 'green'):
             # bar.update()
             im.data = im.data.astype('uint16') 
@@ -63,6 +70,8 @@ class aicoPhot:
             im = ccdprocx.ccd_process(im, master_bias = bias, master_flat = flat)
             if use_med_cr_removal:
                 im = ccdprocx.cosmicray_median(im, rbox = rb)
+            if use_lac_cr_removal:
+                im == ccdproc.cosmicray_lacosmic(im)
             im.data = im.data.astype('uint16') 
             c_series.append(im)
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].data = c_series

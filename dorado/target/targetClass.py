@@ -183,7 +183,7 @@ class Fournax(Target):
             print('Period given: ', period)
             print('Epoch given: ', epoch)
     
-    def OMinusC(self, filter):
+    def OMinusC(self, fi):
         '''
             OMinusC takes observed time(s) of max light for a repeating variable star and ephemeris data and returns O-C values as well as the corresponding cycle.
 
@@ -201,14 +201,14 @@ class Fournax(Target):
 
         ## TODO:: accomodate an array of toml values. This will shift this function from returning values to a wrapper function to setting values.
         
-        cycle_ref = (self.ts[self.filters[filter]].toml - self.epoch) / self.period
+        cycle_ref = (self.ts[self.filters[fi]].toml - self.epoch) / self.period
         cycle = np.round(cycle_ref)
-        OmC = self.ts[self.filters[filter]].toml - (self.epoch + cycle * self.period)
+        OmC = self.ts[self.filters[fi]].toml - (self.epoch + cycle * self.period)
 
-        self.ts[self.filters[filter]].OmC = OmC
-        self.ts[self.filters[filter]].cycle = cycle
+        self.ts[self.filters[fi]].OmC = OmC
+        self.ts[self.filters[fi]].cycle = cycle
    
-    def superfit(self, filter, terms, s):
+    def superfit(self, fi, terms, s):
         '''
             superfit takes a raw timeseries and performs a multistep smoothed fit of the data
             which includes a spline fit tailored with the curvature of knots from a spline
@@ -232,8 +232,8 @@ class Fournax(Target):
         ## TODO:: accomodate flux uncertainties
         ## TODO:: Zero mean of signal.
 
-        y = self.ts[self.filters[filter]].flux
-        x = self.ts[self.filters[filter]].times.value ## TODO:: convert to float friendly format like mjd
+        y = self.ts[self.filters[fi]].flux
+        x = self.ts[self.filters[fi]].times.value ## TODO:: convert to float friendly format like mjd
 
         # Fourier fit the data to model curvature
         f = np.fft.rfft(y)
@@ -250,8 +250,8 @@ class Fournax(Target):
         X = np.linspace(np.min(x), np.max(x), s)
         Y = self.smooth(LSQspl(X), window = 'blackman')[5:-5]
 
-        self.ts[self.filters[filter]].fit_flux = Y
-        self.ts[self.filters[filter]].fit_times = X
+        self.ts[self.filters[fi]].fit_flux = Y
+        self.ts[self.filters[fi]].fit_times = X
 
     def smooth(self, x, window_len=11, window='hanning'):
         """smooth the data using a window with requested size.
@@ -306,7 +306,7 @@ class Fournax(Target):
 
         return y
 
-    def analyze(self, filter, graphical = True, terms = None, s = None):
+    def analyze(self, fi, graphical = True, terms = None, s = None):
         '''
         analyze is a wrapper function that runs a pipeline of analysis functions in the 
         Fournax target class, self.superfit, self.tomlFind, self.OMinusC, and self.fourFind
@@ -321,19 +321,19 @@ class Fournax(Target):
            
         '''
         if terms == None:
-            terms = int(np.floor(len(self.ts[self.filters[filter]].flux)/3))
+            terms = int(np.floor(len(self.ts[self.filters[fi]].flux)/3))
         if s == None:
-            s = len(self.ts[self.filters[filter]].flux)
+            s = len(self.ts[self.filters[fi]].flux)
             
-        self.superfit(filter = filter, terms = terms, s = s)
+        self.superfit(filter = fi, terms = terms, s = s)
         # Find times of max light
-        self.tomlFind(filter = filter)
+        self.tomlFind(fi = fi)
         # calculate O-C
-        self.OMinusC(filter = filter)
+        self.OMinusC(fi = fi)
         # frequency analysis
-        self.fourFind(filter = filter)
+        self.fourFind(fi = fi)
     
-    def fourFind(self, filter, fitted = True):
+    def fourFind(self, fi, fitted = True):
         '''
         fourFind locates distinct peak structures in a Fourier power spectra 
         generated via a photometric timeseries stored within self.ts.
@@ -345,19 +345,19 @@ class Fournax(Target):
                 default is True. Controls whether fitted timeseries or raw
                 timeseries is used for analysis.
         '''
-        if fitted and (self.ts[self.filters[filter]].fit_flux != []):
-            Y = self.ts[self.filters[filter]].fit_flux
-            X = self.ts[self.filters[filter]].fit_times 
+        if fitted and (self.ts[self.filters[fi]].fit_flux != []):
+            Y = self.ts[self.filters[fi]].fit_flux
+            X = self.ts[self.filters[fi]].fit_times 
         else:
-            Y = self.ts[self.filters[filter]].flux
-            X = self.ts[self.filters[filter]].times 
+            Y = self.ts[self.filters[fi]].flux
+            X = self.ts[self.filters[fi]].times 
              
         # Set up a Fourier power spectra from photometric amplitude values
         # Compute real valued Fourier transform
         f = np.fft.fft(Y)
         p = np.square(np.abs(f))
         # timestep currently defaults to units of days, whereas exposure time is in seconds
-        timestep = (np.mean(self.ts[self.filters[filter]].exptimes) * un.s).to(un.day).value
+        timestep = (np.mean(self.ts[self.filters[fi]].exptimes) * un.s).to(un.day).value
 
         # Build an array of frequencies to plot against
         freq_vec = np.fft.fftfreq(len(Y), d = timestep)
@@ -370,7 +370,7 @@ class Fournax(Target):
         self.freq_vec = freq_vec
         self.power_vec = p
 
-    def tomlFind(self, filter, fitted = True):
+    def tomlFind(self, fi, fitted = True):
         '''
         tomlFind locates the distinct times of max light in a photometric timeseries
         stored in self.ts
@@ -382,18 +382,18 @@ class Fournax(Target):
                 default is True. Controls whether fitted timeseries or raw
                 timeseries is used for analysis.
         '''
-        if fitted and (self.ts[self.filters[filter]].fit_flux != []):
-            Y = self.ts[self.filters[filter]].fit_flux
-            X = self.ts[self.filters[filter]].fit_times 
+        if fitted and (self.ts[self.filters[fi]].fit_flux != []):
+            Y = self.ts[self.filters[fi]].fit_flux
+            X = self.ts[self.filters[fi]].fit_times 
         else:
-            Y = self.ts[self.filters[filter]].flux
-            X = self.ts[self.filters[filter]].times 
+            Y = self.ts[self.filters[fi]].flux
+            X = self.ts[self.filters[fi]].times 
         
         peaks, _ = find_peaks(Y, height = 1.1 * np.mean(Y))
 
         toml = X[peaks]
 
-        self.ts[self.filters[filter]].toml = toml
+        self.ts[self.filters[fi]].toml = toml
 
 
 

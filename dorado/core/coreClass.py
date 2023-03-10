@@ -80,6 +80,7 @@ class Dorado_core:
         # timeseries
         self.timeseries = [] # exclude this for the time being as 
 
+        ### read from config
         # site information (hardcoded atm)
         self.UTCoffset = -5
 

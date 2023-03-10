@@ -5,6 +5,6 @@ is just an example sub-package, so it doesn't actually do anything.
 """
 __all__ = []
 
-# from .grafClass import *
+from .grafClass import *
 
-# __all__ += grafClass.__all__
+__all__ += grafClass.__all__

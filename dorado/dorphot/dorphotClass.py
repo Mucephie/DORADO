@@ -265,7 +265,7 @@ class aicoPhot:
         print('Performing photometry')
         for image in tqdm(stack.data, colour = 'green'):
             error = unc * image.data
-            results = aperture_photometry(image, apers, error = error)
+            results = aperture_photometry(image, apers) #, error = error)
             bkg_mean = results['aperture_sum_1'] / annulus_aperture.area
             bkg_sum = bkg_mean * aperture.area
             results['flux_fit'] = results['aperture_sum_0'] - bkg_sum
@@ -278,7 +278,7 @@ class aicoPhot:
             y.append(results['ycenter'][0])
 
             if control_toid != None:
-                resultsc = aperture_photometry(image, apersc, error = error)
+                resultsc = aperture_photometry(image, apersc) # , error = error)
                 bkg_meanc = resultsc['aperture_sum_1'] / annulus_aperturec.area
                 bkg_sumc = bkg_meanc * aperturec.area
                 resultsc['flux_fit'] = resultsc['aperture_sum_0'] - bkg_sumc

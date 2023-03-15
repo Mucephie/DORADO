@@ -19,7 +19,7 @@ from photutils import Background2D, MedianBackground
 from photutils.aperture import CircularAperture, aperture_photometry, CircularAnnulus
 
 
-__all__ = ['aicoPhot']
+__all__ = ['aicoPhot', 'dracoPhot']
 
 class aicoPhot:
 
@@ -622,7 +622,6 @@ class dracoPhot:
 
 
 
-
 from photutils.aperture import CircularAperture, aperture_photometry
 def mag(flux, exp = 1, unc = None):
     mag_inst = -2.5 * np.log10(flux / exp)
@@ -661,6 +660,7 @@ class photo:
     
     def write(self, filename):
         self.stars.write(filename)
+
 
 
 

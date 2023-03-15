@@ -34,7 +34,7 @@ Filer is the handler of the Dorado system,
 
 __all__ = ['Dorado']
 
- 
+
 def get_builtins():
     """Due to the way Python works, ``__builtins__`` can strangely be either a module or a dictionary,
     depending on whether the file is executed directly or as an import. I couldn’t care less about this
@@ -573,6 +573,7 @@ class Dorado_core:
             solved = self.ceres[self.ceres_keys[cr]].data[self.ceres[self.ceres_keys[cr]].filters[filter]].solved
             solved.write(wrkdir / datestr / 'WCS' / fname, overwrite = True)
         # not done might be redundant atm also shouldnt this belong to reader?
+    
     def saveBase(self, cr, filters = None):
         """
         saveBase save the base frame of a ceres object if any.

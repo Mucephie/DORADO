@@ -619,7 +619,7 @@ class dracoPhot:
         separation = np.sqrt((sx - s3['x'])**2 + (sy - s3['y'])**2)
         candidate = s3[separation <= sr]
         sep = separation[separation <= sr]
-        if len(sep) != 1:
+        if len(sep) > 1:
             candidate = candidate[sep == np.min(sep)]
             sep = sep[sep == np.min(sep)]
         # eventually we will need to account for no matches

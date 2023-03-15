@@ -513,7 +513,7 @@ class dracoPhot:
             imPhot.get_zero_point()
             imPhot.mag_calibrate()
             outstr = out_filename_prefix + imname + '.fits'
-            imPhot.write(projectdir / outstr, overwrite = True)
+            imPhot.write(projectdir / outstr)
         print('Photometry completed.')
         # write out a summary table
 
@@ -702,7 +702,7 @@ class photo:
         self.stars['fit_mag'] = self.zero_point(self.stars['inst_mag'])
     
     def write(self, filename):
-        self.stars.write(filename)
+        self.stars.write(filename, overwrite = True)
 
 
 

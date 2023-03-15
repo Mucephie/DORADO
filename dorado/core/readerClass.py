@@ -16,6 +16,7 @@ import lightkurve as lk
 from lightkurve.lightcurve import TessLightCurve as tlc
 
 import os
+from tqdm import tqdm
 
 __all__ = ['aico_reader'] #, 'tess_reader'
 
@@ -95,7 +96,8 @@ class aico_reader:
 
                 # lightsl = [s for s in files if (s.name not in biasl) and (s.name not in flatsl)]
                 lights = []
-                for i in lightsl:
+                print('Reading lights...')
+                for i in tqdm(lightsl, colour = 'green'):
                     hdu = CCDData.read(i.path) #, unit = Dorado.unit) ## NOTE edited
                     ## Trying to enforce 16bit data instead of 32 or 64
                     hdu.data = hdu.data.astype('uint16')
@@ -129,7 +131,8 @@ class aico_reader:
                         print('Single directory lights organization format detected.')
                         # print('Reading files.')
                         lights = []
-                        for i in files:
+                        print('Reading lights...')
+                        for i in tqdm(files, colour = 'green'):
                             hdu = CCDData.read(i.path) #, unit = Dorado.unit) ## NOTE edited
                             ## Trying to enforce 16bit data instead of 32 or 64
                             hdu.data = hdu.data.astype('uint16')

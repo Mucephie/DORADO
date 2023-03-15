@@ -10,6 +10,7 @@ from ..target.targetClass import *
 import ccdprocx
 
 from astropy.nddata.ccddata import CCDData
+CCDData._config_ccd_requires_unit = False
 import numpy as np
 from astropy import config as _config
 from astropy.utils.misc import isiterable

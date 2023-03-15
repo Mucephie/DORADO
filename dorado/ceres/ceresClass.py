@@ -16,7 +16,7 @@ from tqdm import tqdm
 from astropy.io import fits
 
 from astropy.nddata.ccddata import CCDData
-
+CCDData._config_ccd_requires_unit = False
 # photometry imports
 # from photutils.psf import IntegratedGaussianPRF, DAOGroup
 # from photutils.background import MMMBackground, MADStdBackgroundRMS

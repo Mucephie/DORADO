@@ -7,6 +7,7 @@ import ccdprocx
 
 from astropy.time import Time
 from astropy.nddata.ccddata import CCDData
+CCDData._config_ccd_requires_unit = False
 import astroalign as aa
 from astropy.io import fits
 from astropy.wcs import WCS
@@ -185,7 +186,7 @@ class aicoPhot:
         ## TODO :: make this use ceres.getWCS()
         if getWCS:
             if cache:
-                toalign =  CCDData.read(Dorado.dordir / 'cache' / 'astrometryNet' / 'solved.fits', unit = Dorado.unit)
+                toalign =  CCDData.read(Dorado.dordir / 'cache' / 'astrometryNet' / 'solved.fits') #, unit = Dorado.unit)
                 hdulist = fits.open(Dorado.dordir / 'cache' / 'astrometryNet' / 'solved.fits') 
                 Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].wcs = WCS(hdulist[0].header, hdulist)
                 hdulist.close()
@@ -499,7 +500,8 @@ class dracoPhot:
         projectdir = Dorado.dordir / 'data' / 'projects' / 'toid' 
         os.makedirs(projectdir, exist_ok = True)
         out_filename_prefix  = toid + '_'
-        for i in range(len(stack.data)):
+        print('Performing Photometry...')
+        for i in tqdm(range(len(stack.data)), colour = 'green'):
             im = stack.data[i]
             tstr = Time(im.header['DATE-OBS'], format='fits').mjd
             imname = tstr + '_' + str(i)
@@ -508,6 +510,7 @@ class dracoPhot:
             imPhot.get_zero_point()
             imPhot.mag_calibrate()
             imPhot.write(projectdir + out_filename_prefix + imname + '.fits', overwrite = True)
+        print('Photometry completed.')
         # write out a summary table
 
     def inIm(self, tab, cr, filter, border = 0):
@@ -550,7 +553,7 @@ class dracoPhot:
         # Limit the results to a set magnitude
         r = r[r['rp_mag'] <= limit_Mag]
         # Get stellar object pixel position
-        r['x'], r['y'] = wcs.world_to_pixel(SkyCoord(r['ra'], r['dec']))
+        r['x'], r['y'] = w.world_to_pixel(SkyCoord(r['ra'], r['dec']))
         # This is a hardcoded scale size for plotting
         r['r'] = 28 - r['rp_mag'].value # Do we keep it?
         # Figure out which results are in the image
@@ -581,7 +584,7 @@ class dracoPhot:
         stars[:, 2] = stars[:, 2] * np.sqrt(2)
         y, x, r = stars[:, 0], stars[:, 1], stars[:, 2]
         results = Table((x, y, r), names = ('x', 'y', 'r'))
-        co = wcs.pixel_to_world(stars[:,1], s[:,0])
+        co = w.pixel_to_world(stars[:,1], s[:,0])
         results['ra']  = co.ra
         results['dec'] = co.dec
         results = self.inIm(results, cr, filter, 100)

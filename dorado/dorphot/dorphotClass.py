@@ -584,7 +584,7 @@ class dracoPhot:
         stars[:, 2] = stars[:, 2] * np.sqrt(2)
         y, x, r = stars[:, 0], stars[:, 1], stars[:, 2]
         results = Table((x, y, r), names = ('x', 'y', 'r'))
-        co = w.pixel_to_world(stars[:,1], s[:,0])
+        co = w.pixel_to_world(stars[:,1], stars[:,0])
         results['ra']  = co.ra
         results['dec'] = co.dec
         results = self.inIm(results, cr, filter, 100)

@@ -222,6 +222,13 @@ class aicoPhot:
 
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].data = aa_series
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].aligned = True
+    
+    def differential_magnitude(self, flux1, flux2, mag2):
+        '''
+        Probably could use target class inputs and uncertainties
+        '''
+        mag1 = -2.5 * np.log10(flux1/flux2) + mag2
+        return mag1
         
     def apPhot(self, cr, filter, toid, control_toid = None, shape = 21, unc = 0.1):
         '''

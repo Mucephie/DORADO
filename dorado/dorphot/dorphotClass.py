@@ -4,6 +4,7 @@ import os
 
 from ..core.coreClass import *
 from ..timeseries.timeseriesClass import timeSeries
+from ..graf.grafClass import star_chart
 import ccdprocx
 
 from astropy.time import Time
@@ -566,6 +567,7 @@ class dracoPhot:
         # output runtime
         executionTime = np.round((time.time() - startTime), 3)
         print('Execution time in seconds for Gaia lookup: ' + str(executionTime))
+        self.star_chart(r, im, 'Gaia', w)
         return r
 
     def starSeeker(self, cr, filter):
@@ -596,6 +598,7 @@ class dracoPhot:
         print('Execution time in seconds for starSeeker: ' + str(executionTime))
         img = im.copy()
         img.data = opt_img
+        self.star_chart(results, img, 'Starseeker', w)
         return results, img
     
     def get_stars(self, cr, filter, toid, limit_Mag = 16, search_bounds = [30, 20]):
@@ -649,6 +652,13 @@ class dracoPhot:
             star['detection_y'] = candidate['y']
             star['detection_r'] = candidate['r']
         return star
+
+    def star_chart(self, stars, im, toid, w):
+        sc = star_chart(im, title = toid, wcs = w)
+        sc.plt_stars(stars, label = 'Stars')
+        sc.add_compass()
+        sc.add_scale()
+        sc.plot()
 
 
 

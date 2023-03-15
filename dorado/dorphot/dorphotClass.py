@@ -401,7 +401,7 @@ class dracoPhot:
     def __init__(self):
         #TODO make observatory class
         self.temp = None
-        # list of calibration frames from disk
+        
     def getWCS(self, cr, filter, alignto = None, cache = True):
         '''
         getWCS obtains WCS information for an image either via previously solved data in the cache or
@@ -531,7 +531,7 @@ class dracoPhot:
         xy = w.wcs_world2pix(toi.coords.ra.deg, toi.coords.dec.deg, 1)
         width = u.Quantity(search_bounds[0], u.arcmin)
         height = u.Quantity(search_bounds[1], u.arcmin)
-        coords = SkyCoord.from_name(toi) 
+        coords = SkyCoord.from_name(toid) 
         # Make the Query
         # Columns we want to keep
         columnse = [ 'phot_g_mean_mag', 'phot_bp_mean_mag', 'phot_rp_mean_mag', 'teff_val', 'dist']

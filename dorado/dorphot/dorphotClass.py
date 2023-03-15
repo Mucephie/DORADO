@@ -309,8 +309,8 @@ class aicoPhot:
                 bkg_sumc = bkg_meanc * aperturec.area
                 resultsc['flux_fit'] = resultsc['aperture_sum_0'] - bkg_sumc
 
-                apsum.append(np.abs(results['flux_fit'][0] - resultsc['flux_fit'][0]))
-                flux.append(np.abs(results['flux_fit'][0] - resultsc['flux_fit'][0])/image.header['EXPTIME'])
+                apsum.append(results['flux_fit'][0] - resultsc['flux_fit'][0])
+                flux.append((results['flux_fit'][0] - resultsc['flux_fit'][0])/image.header['EXPTIME'])
             else:
                 apsum.append(results['flux_fit'][0])
                 flux.append(results['flux_fit'][0]/image.header['EXPTIME'])
@@ -506,7 +506,7 @@ class dracoPhot:
             tstr = Time(im.header['DATE-OBS'], format='fits').mjd
             imname = tstr + '_' + str(i)
             imPhot = photo(im, self.stars, w)
-            imPhot.apPhot()
+            imPhot.apPhot_step()
             imPhot.get_zero_point()
             imPhot.mag_calibrate()
             imPhot.write(projectdir + out_filename_prefix + imname + '.fits', overwrite = True)
@@ -598,7 +598,7 @@ class dracoPhot:
     def get_stars(self, cr, filter, toid, limit_Mag = 16, search_bounds = [30, 20]):
         # ask if stars should be saved with  flag
         gaia_stars = self.get_field(cr, filter, toid, limit_Mag, search_bounds)
-        s3 = self.starSeeker(cr, filter)
+        s3, opt_img = self.starSeeker(cr, filter)
         gaia_stars['detection_separation'] = np.zeros(len(gaia_stars))
         gaia_stars['detection_x'] = np.zeros(len(gaia_stars))
         gaia_stars['detection_y'] = np.zeros(len(gaia_stars))
@@ -650,7 +650,7 @@ class photo:
         self.stars = stars
         self.wcs = wcs
     
-    def apPhot(self):
+    def apPhot_step(self):
         self.stars['aperture_sum'] = np.zeros(len(self.stars))
         self.stars['inst_mag'] = np.zeros(len(self.stars))
         for i in range(len(self.stars)):

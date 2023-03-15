@@ -505,13 +505,14 @@ class dracoPhot:
         
         for i in tqdm(range(len(stack.data)), colour = 'green'):
             im = stack.data[i]
-            tstr = Time(im.header['DATE-OBS'], format='fits').mjd
+            tstr = str(Time(im.header['DATE-OBS'], format='fits').mjd)
             imname = tstr + '_' + str(i)
             imPhot = photo(im, self.stars, w)
             imPhot.apPhot_step()
             imPhot.get_zero_point()
             imPhot.mag_calibrate()
-            imPhot.write(projectdir / (out_filename_prefix + imname + '.fits'), overwrite = True)
+            outstr = out_filename_prefix + imname + '.fits'
+            imPhot.write(projectdir / outstr, overwrite = True)
         print('Photometry completed.')
         # write out a summary table
 
@@ -615,7 +616,7 @@ class dracoPhot:
             matched.add_row(sm)
         self.stars = matched # should this really be an internal list
         # Or should it belong to anoter class
-        projectdir = Dorado.dordir / 'data' / 'projects' / 'toid' 
+        projectdir = Dorado.dordir / 'data' / 'projects' / toid 
         os.makedirs(projectdir, exist_ok = True)
         self.stars.write(projectdir / 'stars.fits', overwrite = True)
         print(self.unmatched, ' stars were not matched.')

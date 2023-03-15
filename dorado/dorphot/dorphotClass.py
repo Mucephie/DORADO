@@ -511,7 +511,7 @@ class dracoPhot:
             imPhot.apPhot_step()
             imPhot.get_zero_point()
             imPhot.mag_calibrate()
-            imPhot.write(projectdir + out_filename_prefix + imname + '.fits', overwrite = True)
+            imPhot.write(projectdir / (out_filename_prefix + imname + '.fits'), overwrite = True)
         print('Photometry completed.')
         # write out a summary table
 
@@ -617,7 +617,7 @@ class dracoPhot:
         # Or should it belong to anoter class
         projectdir = Dorado.dordir / 'data' / 'projects' / 'toid' 
         os.makedirs(projectdir, exist_ok = True)
-        self.stars.write(projectdir + 'stars.fits', overwrite = True)
+        self.stars.write(projectdir / 'stars.fits', overwrite = True)
         print(self.unmatched, ' stars were not matched.')
         # crop out unmatched stars
 

@@ -496,7 +496,7 @@ class dracoPhot:
         # TODO if no wcs, complain alot
         w = stack.wcs
         self.get_stars(cr, filter, toid)
-        projectdir = Dorado.dordir / 'data' / 'projects' / 'toid' /
+        projectdir = Dorado.dordir / 'data' / 'projects' / 'toid' 
         os.makedirs(projectdir, exist_ok = True)
         out_filename_prefix  = toid + '_'
         for i in range(len(stack.data)):
@@ -606,7 +606,7 @@ class dracoPhot:
             matched.add_row(sm)
         self.stars = matched # should this really be an internal list
         # Or should it belong to anoter class
-        projectdir = Dorado.dordir / 'data' / 'projects' / 'toid' /
+        projectdir = Dorado.dordir / 'data' / 'projects' / 'toid' 
         os.makedirs(projectdir, exist_ok = True)
         self.stars.write(projectdir + 'stars.fits', overwrite = True)
 

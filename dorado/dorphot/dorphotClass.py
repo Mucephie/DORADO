@@ -606,6 +606,7 @@ class dracoPhot:
         gaia_stars['detection_r'] = np.zeros(len(gaia_stars))
         matched = Table(names = gaia_stars.colnames, dtype = gaia_stars.dtype)
         print('Matching stars..')
+        self.unmatched = 0
         for s in (pbar := tqdm(gaia_stars, colour = 'green')):
             pbar.set_description('Matching star : ' + str(s['DESIGNATION']))
             pbar.refresh()
@@ -616,6 +617,8 @@ class dracoPhot:
         projectdir = Dorado.dordir / 'data' / 'projects' / 'toid' 
         os.makedirs(projectdir, exist_ok = True)
         self.stars.write(projectdir + 'stars.fits', overwrite = True)
+        print(self.unmatched, ' stars were not matched.')
+        # crop out unmatched stars
 
     def match_star(self, star, s3):
         sx, sy = star['x'], star['y']
@@ -623,18 +626,26 @@ class dracoPhot:
         separation = np.sqrt((sx - s3['x'])**2 + (sy - s3['y'])**2)
         candidate = s3[separation <= sr]
         sep = separation[separation <= sr]
-        print(len(sep))
-        print(candidate)
         if len(sep) > 1:
-            # print(len(sep))
-            # print(candidate)
+            print(len(sep))
+            print(candidate)
             candidate = candidate[sep == np.min(sep)][0]
             sep = sep[sep == np.min(sep)][0]
-        # eventually we will need to account for no matches
-        star['detection_separation'] = sep
-        star['detection_x'] = candidate['x']
-        star['detection_y'] = candidate['y']
-        star['detection_r'] = candidate['r']
+            star['detection_separation'] = sep
+            star['detection_x'] = candidate['x']
+            star['detection_y'] = candidate['y']
+            star['detection_r'] = candidate['r']
+        elif len(sep) == 0:
+            self.unmatched += 1
+            star['detection_separation'] = None
+            star['detection_x'] = None
+            star['detection_y'] = None
+            star['detection_r'] = None
+        else:
+            star['detection_separation'] = sep
+            star['detection_x'] = candidate['x']
+            star['detection_y'] = candidate['y']
+            star['detection_r'] = candidate['r']
         return star
 
 

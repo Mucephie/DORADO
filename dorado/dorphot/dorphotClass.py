@@ -620,8 +620,8 @@ class dracoPhot:
         candidate = s3[separation <= sr]
         sep = separation[separation <= sr]
         if len(sep) > 1:
-            candidate = candidate[sep == np.min(sep)]
-            sep = sep[sep == np.min(sep)]
+            candidate = candidate[sep == np.min(sep)][0]
+            sep = sep[sep == np.min(sep)][0]
         # eventually we will need to account for no matches
         star['detection_separation'] = sep
         star['detection_x'] = candidate['x']

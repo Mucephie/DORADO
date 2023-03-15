@@ -529,13 +529,11 @@ class dracoPhot:
         print('Went from ', num , ' stars in input, to ', len(tab), ' stars in field area.')
         return tab
 
-    def get_field(self, cr, filter, toid, limit_Mag = 16, search_bounds = [30, 20]):
+    def get_field(self, cr, filter, toid, limit_Mag = 16, search_bounds = [30, 30]):
         startTime = time.time()
         stack = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
         w = stack.wcs
         im = stack.data[stack.alignTo]
-        toi = Dorado.targets[Dorado.target_keys[toid]]
-        xy = w.wcs_world2pix(toi.coords.ra.deg, toi.coords.dec.deg, 1)
         width = u.Quantity(search_bounds[0], u.arcmin)
         height = u.Quantity(search_bounds[1], u.arcmin)
         coords = SkyCoord.from_name(toid) 
@@ -545,7 +543,7 @@ class dracoPhot:
         # and what we want to name those columns
         columns = ['g_mag', 'bp_mag', 'rp_mag', 'teff', 'dist']
         # Result return limit, default was 50
-        Gaia.ROW_LIMIT = 4000
+        Gaia.ROW_LIMIT = 10000
         re = Gaia.query_object(coordinate=coords, width=width, height=height) 
         # Parse the results
         de = [str(d) for d in re['DESIGNATION']] # This fixes the bad return from Gaia

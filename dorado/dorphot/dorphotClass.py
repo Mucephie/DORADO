@@ -460,7 +460,7 @@ class dracoPhot:
         
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]] = series
     
-    def differential_magnitude(self, flux1, flux2, mag2);
+    def differential_magnitude(self, flux1, flux2, mag2):
         '''
         Probably could use target class inputs and uncertainties
         '''

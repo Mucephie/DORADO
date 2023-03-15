@@ -592,7 +592,7 @@ class dracoPhot:
         img.data = opt_img
         return results, img
     
-    def get_stars(self, cr, filter, toid, limit_Mag = 16, search_bounds = [30, 20])
+    def get_stars(self, cr, filter, toid, limit_Mag = 16, search_bounds = [30, 20]):
         # ask if stars should be saved with  flag
         gaia_stars = self.get_field(cr, filter, toid, limit_Mag, search_bounds)
         s3 = self.starSeeker(cr, filter)

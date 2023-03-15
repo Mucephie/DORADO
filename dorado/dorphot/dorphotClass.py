@@ -376,11 +376,244 @@ class aicoPhot:
         base.data = img.data / bkg.background.value
         base.data[np.isnan(base.data)] = 0
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].base = base
+
+
+from astroquery.gaia import Gaia
+import astropy.units as u
+from astropy.table import Table
+import time
+from astropy.coordinates import SkyCoord
+from scipy.ndimage import median_filter
+import skimage.exposure as skie
+from skimage.feature import blob_dog, blob_log, blob_doh
+# https://scikit-image.org/docs/stable/api/skimage.feature.html#skimage.feature.blob_log
+# https://scikit-image.org/docs/stable/auto_examples/features_detection/plot_blob.html
+# StarSeeker is a method inspired by the above links and developed
+# For the precursor to DORADO, DRACO circa 2019.
+class dracoPhot:
+    def __init__(self):
+        #TODO make observatory class
+        self.temp = None
+        # list of calibration frames from disk
+    def getWCS(self, cr, filter, alignto = None, cache = True):
+        '''
+        getWCS obtains WCS information for an image either via previously solved data in the cache or
+        by passing the image to astrometryNet via dorado.plate_solve().
         
+        Parameters
+        ----------
+        cr: string
+            The relevent name string of Ceres instance to get WCS information for.
+        filter: str
+            String representation of the relevent filter.
+        alignto: int
+            Index of image to use as reference. Default is stack.alignto
+        cache: boolean
+            Controls whether to call astrometryNet for solve or use solved result stored in cache 
+            from previous run. Default is True.
+        '''
+        # TODO mod so cache results are target specific
+        series = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
+        if alignto == None:
+            alignto = series.alignTo
+        if cache:
+            hdulist = fits.open(Dorado.dordir / 'cache' / 'astrometryNet' / 'solved.fits') 
+            Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].wcs = WCS(hdulist[0].header, hdulist)
+            Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].solved = CCDData.read(Dorado.dordir / 'cache' / 'astrometryNet' / 'solved.fits')
+            hdulist.close()
+        else:
+            toalign = series.data[alignto]
+            fname, cachedir = Dorado.mkcacheObj(toalign, 'astrometryNet')
+            path = [cachedir, fname]
+            writearray = [cachedir, 'solved.fits']
+            solved, wcs_header = Dorado.plate_solve(path, writearray = writearray)
+            Dorado.delcacheObj( fname, 'astrometryNet')
+            Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].wcs = WCS(wcs_header)
+            Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].solved = solved
+    
+    def imarith(self, cr, filter, operator, operand):
+        '''
+        imarith is a basic replication of the IRAF image arithmatic tool imarith.
+        Parameters
+        ----------
+        cr: string
+            The relevent name string of Ceres instance to perform image arithmatic on.
+        filter: str
+            String representation of the relevent filter.
+        operator: string
+            String of operator to be used for arithmatic. Supported operations are '+', '-', '/', and '*'
+        '''
+        # TODO should this be in stack? like have a wrapper here?
+        # mod to check datatype using type()
+        # mod to remove im_count and make possible to use single image NOTE might already be done
+        # mod to accomodate CCDdata object NOTE might already be done
+        series = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
+        for i in range(len(series)):
+            if (operator == '+'):
+                series[i].data = series[i].data  + operand
+            elif (operator == '-'):
+                series[i].data = series[i].data - operand
+            elif (operator == '/'):
+                series[i].data = series[i].data  / operand
+            elif (operator == '*'):
+                series[i].data = series[i].data  * operand
+        
+        Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]] = series
+    
+    def differential_magnitude(self, flux1, flux2, mag2);
+        '''
+        Probably could use target class inputs and uncertainties
+        '''
+        mag1 = -2.5 * np.log10(flux1/flux2) + mag2
+        return mag1
+        
+    def apPhot(self, cr, filter, toid):
+        '''
+        apPhot performs basic aperture photometry based on photutils.aperture_photometry on a target
+        within stack. Target photometry can optionally be compared to a control target within the stack 
+        via the differential photometry method.
+        
+        Parameters
+        ----------
+        cr: string
+            The relevent name string of Ceres instance to perform aperture photometry on.
+        filter: str
+            String representation of the relevent filter.
+        toid: string
 
 
+        '''
+        # TODO this needs a better name
+        # TODO get seeing from PSF
+        stack = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
+        # TODO if no wcs, complain alot
+        w = stack.wcs
+        self.get_stars(cr, filter, toid)
+        projectdir = Dorado.dordir / 'data' / 'projects' / 'toid' /
+        os.makedirs(projectdir, exist_ok = True)
+        out_filename_prefix  = toid + '_'
+        for i in range(len(stack.data)):
+            im = stack.data[i]
+            tstr = Time(im.header['DATE-OBS'], format='fits').mjd
+            imname = tstr + '_' + str(i)
+            imPhot = photo(im, self.stars, w)
+            imPhot.apPhot()
+            imPhot.get_zero_point()
+            imPhot.mag_calibrate()
+            imPhot.write(projectdir + out_filename_prefix + imname + '.fits', overwrite = True)
+        # write out a summary table
 
+    def inIm(self, tab, cr, filter, border = 0):
+        stack = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
+        height, width = stack.data[stack.alignTo].shape
+        num = len(tab)
+        tab  = tab[tab['y']     >=      0 + border]
+        tab  = tab[tab['y']     <= height - border]
+        tab  = tab[tab['x']     >=      0 + border]
+        tab  = tab[tab['x']     <=  width - border]
 
+        print('Went from ', num , ' stars in input, to ', len(tab), ' stars in field area.')
+        return tab
+
+    def get_field(self, cr, filter, toid, limit_Mag = 16, search_bounds = [30, 20]):
+        startTime = time.time()
+        stack = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
+        w = stack.wcs
+        im = stack.data[stack.alignTo]
+        toi = Dorado.targets[Dorado.target_keys[toid]]
+        xy = w.wcs_world2pix(toi.coords.ra.deg, toi.coords.dec.deg, 1)
+        width = u.Quantity(search_bounds[0], u.arcmin)
+        height = u.Quantity(search_bounds[1], u.arcmin)
+        coords = SkyCoord.from_name(toi) 
+        # Make the Query
+        # Columns we want to keep
+        columnse = [ 'phot_g_mean_mag', 'phot_bp_mean_mag', 'phot_rp_mean_mag', 'teff_val', 'dist']
+        # and what we want to name those columns
+        columns = ['g_mag', 'bp_mag', 'rp_mag', 'teff', 'dist']
+        # Result return limit, default was 50
+        Gaia.ROW_LIMIT = 4000
+        re = Gaia.query_object(coordinate=coords, width=width, height=height) 
+        # Parse the results
+        de = [str(d) for d in re['DESIGNATION']] # This fixes the bad return from Gaia
+        # Construct the star object table
+        r = Table((de, re['ra'], re['dec']), names = ('DESIGNATION', 'ra', 'dec'))
+        # Fill in rest of columns
+        for (s, se )in zip(columns, columnse):
+            r[s] = re[se]
+        # Limit the results to a set magnitude
+        r = r[r['rp_mag'] <= limit_Mag]
+        # Get stellar object pixel position
+        r['x'], r['y'] = wcs.world_to_pixel(SkyCoord(r['ra'], r['dec']))
+        # This is a hardcoded scale size for plotting
+        r['r'] = 28 - r['rp_mag'].value # Do we keep it?
+        # Figure out which results are in the image
+        r = self.inIm(r, cr, filter, 100)
+        # Round of the sig figs 
+        r.round(4)
+        # output runtime
+        executionTime = np.round((time.time() - startTime), 3)
+        print('Execution time in seconds for Gaia lookup: ' + str(executionTime))
+        return r
+
+    def starSeeker(self, cr, filter):
+        startTime = time.time()
+        stack = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
+        w = stack.wcs
+        im = stack.data[stack.alignTo]
+        data = im.data
+        mf = median_filter(data, size= 15)
+        datamf = data - mf
+        limg = np.arcsinh(datamf)
+        limg = limg / limg.max()
+        low = np.percentile(limg, 1)
+        high = np.percentile(limg, 99.5)
+        opt_img  = skie.exposure.rescale_intensity(limg, in_range=(low,high))
+        # Laplacian blob detection
+        stars =  blob_log(opt_img, max_sigma=25, min_sigma = 5, num_sigma=10, threshold=.2)
+        # Convert from sigma to radii in the 3rd column.
+        stars[:, 2] = stars[:, 2] * np.sqrt(2)
+        y, x, r = stars[:, 0], stars[:, 1], stars[:, 2]
+        results = Table((x, y, r), names = ('x', 'y', 'r'))
+        co = wcs.pixel_to_world(stars[:,1], s[:,0])
+        results['ra']  = co.ra
+        results['dec'] = co.dec
+        results = self.inIm(results, cr, filter, 100)
+        print('Found ', len(results), ' stars via starseeker.')
+        executionTime = np.round((time.time() - startTime), 3)
+        print('Execution time in seconds for starSeeker: ' + str(executionTime))
+        img = im.copy()
+        img.data = opt_img
+        return results, img
+    
+    def get_stars(self, cr, filter, toid, limit_Mag = 16, search_bounds = [30, 20])
+        # ask if stars should be saved with  flag
+        gaia_stars = self.get_field(cr, filter, toid, limit_Mag, search_bounds)
+        s3 = self.starSeeker(cr, filter)
+        gaia_stars['detection_separation'] = np.zeros(len(gaia_stars))
+        gaia_stars['detection_x'] = np.zeros(len(gaia_stars))
+        gaia_stars['detection_y'] = np.zeros(len(gaia_stars))
+        gaia_stars['detection_r'] = np.zeros(len(gaia_stars))
+        matched = Table(names = gaia_stars.colnames, dtype = gaia_stars.dtype)
+        for s in gaia_stars:
+            sm = self.match_star(s, s3)
+            matched.add_row(sm)
+        self.stars = matched # should this really be an internal list
+        # Or should it belong to anoter class
+        projectdir = Dorado.dordir / 'data' / 'projects' / 'toid' /
+        os.makedirs(projectdir, exist_ok = True)
+        self.stars.write(projectdir + 'stars.fits', overwrite = True)
+
+    def match_star(self, star, s3):
+        sx, sy = star['x'], star['y']
+        sr = star['r']
+        separation = np.sqrt((sx - s3['x'])**2 + (sy - s3['y'])**2)
+        candidate = s3[separation <= sr]
+        sep = separation[separation <= sr]
+        star['detection_separation'] = sep
+        star['detection_x'] = candidate['x']
+        star['detection_y'] = candidate['y']
+        star['detection_r'] = candidate['r']
+        return star
 
 
 
@@ -389,6 +622,45 @@ class aicoPhot:
 
 
 
+
+from photutils.aperture import CircularAperture, aperture_photometry
+def mag(flux, exp = 1, unc = None):
+    mag_inst = -2.5 * np.log10(flux / exp)
+    if unc:
+        mag_inst_unc = unc / (flux * 2.30258509)
+        return mag_inst, mag_inst_unc
+    else:
+        return mag_inst
+
+class photo:
+    '''
+    Modify this to account for annulus
+    '''
+    def __init__(self, image, stars, wcs):
+        self.image = image
+        self.stars = stars
+        self.wcs = wcs
+    
+    def apPhot(self):
+        self.stars['aperture_sum'] = np.zeros(len(self.stars))
+        self.stars['inst_mag'] = np.zeros(len(self.stars))
+        for i in range(len(self.stars)):
+            pos = (self.stars[i]['x'], self.stars[i]['y'])
+            aperture = CircularAperture(pos, r=self.stars[i]['detection_r'])
+            phot_table = aperture_photometry(self.image.data, aperture)
+            self.stars[i]['aperture_sum'] = phot_table['aperture_sum']
+            self.stars[i]['inst_mag'] = mag(phot_table['aperture_sum'], 20) # 20 second long exposures
+    
+    def get_zero_point(self):
+        stars = self.stars[self.stars['inst_mag'] <= -2.3]
+        self.zero_point_vals = np.polyfit(stars['inst_mag'], stars['rp_mag'], 1)
+        self.zero_point = np.poly1d(self.zero_point_vals)
+    
+    def mag_calibrate(self):
+        self.stars['fit_mag'] = self.zero_point(self.stars['inst_mag'])
+    
+    def write(self, filename):
+        self.stars.write(filename)
 
 
 

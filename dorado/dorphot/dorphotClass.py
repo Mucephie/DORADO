@@ -501,6 +501,7 @@ class dracoPhot:
         os.makedirs(projectdir, exist_ok = True)
         out_filename_prefix  = toid + '_'
         print('Performing Photometry...')
+        
         for i in tqdm(range(len(stack.data)), colour = 'green'):
             im = stack.data[i]
             tstr = Time(im.header['DATE-OBS'], format='fits').mjd
@@ -604,7 +605,10 @@ class dracoPhot:
         gaia_stars['detection_y'] = np.zeros(len(gaia_stars))
         gaia_stars['detection_r'] = np.zeros(len(gaia_stars))
         matched = Table(names = gaia_stars.colnames, dtype = gaia_stars.dtype)
-        for s in gaia_stars:
+        print('Matching stars..')
+        for s in (pbar := tqdm(gaia_stars, colour = 'green')):
+            pbar.set_description('Matching star : ' + str(s['DESIGNATION']))
+            pbar.refresh()
             sm = self.match_star(s, s3)
             matched.add_row(sm)
         self.stars = matched # should this really be an internal list
@@ -620,6 +624,8 @@ class dracoPhot:
         candidate = s3[separation <= sr]
         sep = separation[separation <= sr]
         if len(sep) > 1:
+            print(len(sep))
+            print(candidate)
             candidate = candidate[sep == np.min(sep)][0]
             sep = sep[sep == np.min(sep)][0]
         # eventually we will need to account for no matches

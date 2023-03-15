@@ -518,7 +518,7 @@ class dracoPhot:
 
     def inIm(self, tab, cr, filter, border = 0):
         stack = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
-        height, width = stack.data[stack.alignTo].shape
+        height, width = stack.data[stack.alignTo].data.shape
         num = len(tab)
         tab  = tab[tab['y']     >=      0 + border]
         tab  = tab[tab['y']     <= height - border]

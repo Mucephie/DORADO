@@ -1,5 +1,6 @@
 from tqdm import tqdm
 import numpy as np
+import os
 
 from ..core.coreClass import *
 from ..timeseries.timeseriesClass import timeSeries

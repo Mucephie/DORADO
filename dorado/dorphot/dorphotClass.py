@@ -499,7 +499,7 @@ class dracoPhot:
         # TODO if no wcs, complain alot
         w = stack.wcs
         self.get_stars(cr, filter, toid)
-        projectdir = Dorado.dordir / 'data' / 'projects' / 'toid' 
+        projectdir = Dorado.dordir / 'data' / 'projects' / toid / Dorado.ceres[Dorado.ceres_keys[cr]].datestr
         os.makedirs(projectdir, exist_ok = True)
         out_filename_prefix  = toid + '_'
         print('Performing Photometry...')
@@ -512,6 +512,7 @@ class dracoPhot:
             imPhot.apPhot_step()
             imPhot.get_zero_point()
             imPhot.mag_calibrate()
+            imPhot.set_time()
             outstr = out_filename_prefix + imname + '.fits'
             imPhot.write(projectdir / outstr)
         print('Photometry completed.')
@@ -678,10 +679,12 @@ class photo:
     '''
     Modify this to account for annulus
     '''
-    def __init__(self, image, stars, wcs):
+    def __init__(self, image, stars, wcs, time = None):
         self.image = image
         self.stars = stars
         self.wcs = wcs
+        # currently not in use, grabbing from im header
+        self.time = time
     
     def apPhot_step(self):
         self.stars['aperture_sum'] = np.zeros(len(self.stars))
@@ -700,6 +703,9 @@ class photo:
     
     def mag_calibrate(self):
         self.stars['fit_mag'] = self.zero_point(self.stars['inst_mag'])
+    
+    def set_time(self):
+        self.stars['time'] = [float(Time(self.image.header['DATE-OBS'], format='fits').mjd) for i in range(len(self.stars))]
     
     def write(self, filename):
         self.stars.write(filename, overwrite = True)

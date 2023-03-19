@@ -426,13 +426,17 @@ class dracoPhot:
         series = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
         if alignto == None:
             alignto = series.alignTo
+        
         if cache:
             hdulist = fits.open(Dorado.dordir / 'cache' / 'astrometryNet' / 'solved.fits') 
             Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].wcs = WCS(hdulist[0].header, hdulist)
             Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].solved = CCDData.read(Dorado.dordir / 'cache' / 'astrometryNet' / 'solved.fits')
             hdulist.close()
         else:
-            toalign = series.data[alignto]
+            if alignto == 'base':
+                toalign = series.base
+            else:
+                toalign = series.data[alignto]
             fname, cachedir = Dorado.mkcacheObj(toalign, 'astrometryNet')
             path = [cachedir, fname]
             writearray = [cachedir, 'solved.fits']
@@ -477,7 +481,7 @@ class dracoPhot:
         mag1 = -2.5 * np.log10(flux1/flux2) + mag2
         return mag1
         
-    def apPhot(self, cr, filter, toid):
+    def apPhot(self, cr, filter, toid, limit_Mag = 16, search_bounds = [30, 30]) :
         '''
         apPhot performs basic aperture photometry based on photutils.aperture_photometry on a target
         within stack. Target photometry can optionally be compared to a control target within the stack 
@@ -503,6 +507,7 @@ class dracoPhot:
         os.makedirs(projectdir, exist_ok = True)
         out_filename_prefix  = toid + '_'
         print('Performing Photometry...')
+        run = Table(names = ('time', '', 'sky',))
         
         for i in tqdm(range(len(stack.data)), colour = 'green'):
             im = stack.data[i]
@@ -510,7 +515,7 @@ class dracoPhot:
             imname = tstr + '_' + str(i)
             imPhot = photo(im, self.stars, w)
             imPhot.apPhot_step()
-            imPhot.get_zero_point()
+            zpv = imPhot.get_zero_point()
             imPhot.mag_calibrate()
             imPhot.set_time()
             outstr = out_filename_prefix + imname + '.fits'
@@ -700,6 +705,7 @@ class photo:
         stars = self.stars[self.stars['inst_mag'] <= -2.3]
         self.zero_point_vals = np.polyfit(stars['inst_mag'], stars['rp_mag'], 1)
         self.zero_point = np.poly1d(self.zero_point_vals)
+        return self.zero_point_vals
     
     def mag_calibrate(self):
         self.stars['fit_mag'] = self.zero_point(self.stars['inst_mag'])

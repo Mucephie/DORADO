@@ -747,8 +747,12 @@ class photo:
             # TODO :: why is there no annulus? seriously, this is basic photometry
             # and I haven't even made an annulus aperture. pathetic
             shape = float(1.2 * self.stars[i]['detection_r']) # its possible this was handing back a row instead of a float
+            if len(self.stars[i]['detection_r']) > 1:            
+                print('more than one value encountered', len(self.stars[i]['detection_r']))
+            if shape <= 0:
+                print('negative or zero shape encountered', shape)
             aperture = CircularAperture(pos, r=shape)
-            annulus_aperture = CircularAnnulus(pos, r_in = (shape + 2), r_out = (shape + 5))
+            annulus_aperture = CircularAnnulus(positions = pos, r_in = (shape + 2), r_out = (shape + 5))
             apers = [aperture, annulus_aperture]
             phot_table = aperture_photometry(self.image.data, apers)
             bkg_mean = phot_table['aperture_sum_1'] / annulus_aperture.area

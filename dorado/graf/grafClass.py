@@ -147,7 +147,7 @@ class TimeSeries_Plot:
             # This could be star markers ?? or saturn icons
             m.append(MarkerStyle('☺', transform=t)) # DATA_SYMBOLS[]
         self.ax[0].plot(time, flux, marker=m, color=self.cmap(flux), label = 'raw data')
-        self.ax[0].plot(time_fit, flux_fit, label = 'fit data')
+        self.ax[0].plot(time_fit, flux_fit, c = color_cycle[0], label = 'fit data')
         self.fig.colorbar(plt.cm.ScalarMappable(cmap=self.cmap), ax=self.ax[0], label="Amplitude")
         self.ax[0].grid() # will this really be needed with the new dorado style?
         # set axis limits
@@ -194,7 +194,10 @@ class star_chart:
         self.legend_patchs = []
 
     def plt_stars(self, stars, label = 'stars'):
-        c = color_cycle[len(color_cycle) % len(self.legend_labels)]
+        if len(self.legend_labels) != 0:
+            c = color_cycle[len(color_cycle) % len(self.legend_labels)]
+        else: 
+            c = color_cycle[0]
         apertures = [Circle((x, y), r, fill = False, facecolor = None, 
             edgecolor = c) for x, y, r in zip(stars['x'], stars['y'], stars['r'])]
         # Create patch collection with specified colour/alpha

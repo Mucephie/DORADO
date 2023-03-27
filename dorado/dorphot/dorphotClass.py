@@ -610,11 +610,11 @@ class dracoPhot:
         w = stack.wcs
         im = stack.data[stack.alignTo]
         data = im.data
-        mf = median_filter(data, size= 5)
-        datamf = data - mf
+        # mf = median_filter(data, size= 5)
+        # datamf = data - mf
         # limg = np.arcsinh(datamf)
-        norm = ImageNormalize(datamf, interval=interval, stretch=stretch)
-        limg = norm(datamf)
+        norm = ImageNormalize(data, interval=interval, stretch=stretch)
+        limg = norm(data)
         limg = limg / limg.max()
         low = np.percentile(limg, 1)
         high = np.percentile(limg, 99.5)

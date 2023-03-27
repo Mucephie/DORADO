@@ -85,10 +85,10 @@ color_cycle = np.flip([
     "#BDFD23",  # limish yellow green
     "#F8E604",  # lemon
     "#FDD023",  # bumble bee yellow
-    "#FF6700",  # tangerine
     "#FB9062",  # pink peach
     "#FF9248",  # peach
     "#FF4E50",  # watermelon red
+    "#FF6700",  # tangerine
     "#D41501",  # Red
     "#602320",  # burgandy
     "#280202"

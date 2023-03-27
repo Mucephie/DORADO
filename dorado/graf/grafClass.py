@@ -222,7 +222,7 @@ class star_chart:
             # of ax and the padding between cax and ax will be fixed at 0.05 inch.
             divider = make_axes_locatable(self.ax)
             cax = divider.append_axes("right", size="5%")
-            self.colbar = plt.colorbar(self.ax_im, cax=cax, label='Brightness', extend='both' extendfrac='auto', spacing='uniform')
+            self.colbar = plt.colorbar(self.ax_im, cax=cax, label='Brightness', extend='both', extendfrac='auto', spacing='uniform')
         plt.show()
     
     def add_compass(self, length = 0.7 * u.arcmin, loc = 'br'):

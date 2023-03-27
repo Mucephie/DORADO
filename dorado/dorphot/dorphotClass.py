@@ -397,7 +397,7 @@ from skimage.feature import blob_dog, blob_log, blob_doh
 # StarSeeker is a method inspired by the above links and developed
 # For the precursor to DORADO, DRACO circa 2019.
 class dracoPhot:
-    def __init__(self limit_Mag = 16, search_bounds = [30, 30]):
+    def __init__(self,  limit_Mag = 16, search_bounds = [30, 30]):
         #TODO make observatory class
         self.limit_Mag = limit_Mag
         self.search_bounds = search_bounds

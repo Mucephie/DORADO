@@ -522,7 +522,7 @@ class dracoPhot:
             imPhot.set_time()
             outstr = out_filename_prefix + imname + '.fits'
             self.log.add_row(imPhot.write(projectdir / outstr))
-        self.log.write(projectdir / out_filename_prefix + 'log.fits', overwrite = True)
+        self.log.write(projectdir / (out_filename_prefix + 'log.fits'), overwrite = True)
         print('Photometry completed.')
         # TODO:: write out a summary table to terminal??
 

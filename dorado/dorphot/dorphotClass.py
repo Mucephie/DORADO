@@ -724,6 +724,7 @@ class photo:
         self.wcs = wcs
         # currently not in use, grabbing from im header becaaus Im a degenerate
         self.time = time
+        self.set_time()
         try:
             self.exp = image.header['EXPTIME']
         except:
@@ -745,9 +746,9 @@ class photo:
             pos = (self.stars[i]['x'], self.stars[i]['y'])
             # TODO :: why is there no annulus? seriously, this is basic photometry
             # and I haven't even made an annulus aperture. pathetic
-            shape = 1.2 * self.stars[i]['detection_r'] 
+            shape = float(1.2 * self.stars[i]['detection_r']) # its possible this was handing back a row instead of a float
             aperture = CircularAperture(pos, r=shape)
-            annulus_aperture = CircularAnnulus(pos, r_in = shape + 2, r_out = shape + 5)
+            annulus_aperture = CircularAnnulus(pos, r_in = (shape + 2), r_out = (shape + 5))
             apers = [aperture, annulus_aperture]
             phot_table = aperture_photometry(self.image.data, apers)
             bkg_mean = phot_table['aperture_sum_1'] / annulus_aperture.area
@@ -777,7 +778,7 @@ class photo:
         # TODO:: add filename to log table :)
         mean_fwhm, std_fwhm = np.mean(self.stars['FWHM']), np.std(self.stars['FWHM'])
         self.fwhm = mean_fwhm
-        return [self.time,self.im_index, self.exp,  self.zero_point_vals[0], self.zero_point_vals[1], self.sky, self.fwhm, std_fwhm, self.seeing]
+        return [self.stars['time'], self.im_index, self.exp,  self.zero_point_vals[0], self.zero_point_vals[1], self.sky, self.fwhm, std_fwhm, self.seeing]
 
 
 

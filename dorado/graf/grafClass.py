@@ -110,7 +110,7 @@ dorado_mpl_style = dorado_mpl_style_1
 
 # map_colours : name MLTY comes from low mass spectral type M, L, T, and Y. 
 # it is pronounced 'melty'
-mlty_map = LinearSegmentedColormap(color_cycle, name="mlty")
+mlty_map = LinearSegmentedColormap.from_list("mlty", color_cycle)
 mpl.colormaps.register(cmap=mlty_map)
 
 # might not need font dict anymore since dorado_mpl_style

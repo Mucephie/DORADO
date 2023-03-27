@@ -216,7 +216,7 @@ class star_chart:
             self.fig.legend(self.legend_patchs, self.legend_labels, 
                 loc='center right')
         if colbar:
-            self.colbar = plt.colorbar()
+            self.colbar = plt.colorbar(self.ax)
         plt.show()
     
     def add_compass(self, length = 0.7 * u.arcmin, loc = 'br'):

@@ -245,7 +245,14 @@ class star_chart:
     def add_scale(self):
         add_scalebar(self.ax, 1 * u.arcmin, label="1\"", color="k")
 
-
+class PSF_Chart:
+    '''
+    Class to display selected stars and the PSF fit. maybe even a 3D view of the star (I can pull alot of this from the code I write for PHYS4030)
+    '''
+    def __iinit__(self):
+        self.temp = 0
+        
+        
 def plt_eye(data):
     mean = np.mean(data)
     std = np.std(data)

@@ -14,13 +14,28 @@ import astroalign as aa
 from astropy.io import fits
 from astropy.wcs import WCS
 
-from astropy.visualization import SqrtStretch
+
+from astropy.visualization import MinMaxInterval, ZScaleInterval, SquaredStretch, SqrtStretch, AsinhStretch, LinearStretch, LogStretch, HistEqStretch, PowerStretch, SinhStretch
+
 from astropy.visualization.mpl_normalize import ImageNormalize
-from astropy.stats import SigmaClip
+from astropy.stats import SigmaClip, gaussian_sigma_to_fwhm
 from photutils import Background2D, MedianBackground
 
 from photutils.aperture import CircularAperture, aperture_photometry, CircularAnnulus
 
+from astroquery.gaia import Gaia
+import astropy.units as u
+from astropy.table import Table
+import time
+from astropy.coordinates import SkyCoord
+from scipy.ndimage import median_filter
+
+import skimage.exposure as skie
+from skimage.feature import blob_dog, blob_log, blob_doh
+# https://scikit-image.org/docs/stable/api/skimage.feature.html#skimage.feature.blob_log
+# https://scikit-image.org/docs/stable/auto_examples/features_detection/plot_blob.html
+# StarSeeker is a method inspired by the above links and developed
+# For the precursor to DORADO, DRACO circa 2019.
 
 __all__ = ['aicoPhot', 'dracoPhot']
 
@@ -384,23 +399,14 @@ class aicoPhot:
         Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]].base = base
 
 
-from astroquery.gaia import Gaia
-import astropy.units as u
-from astropy.table import Table
-import time
-from astropy.coordinates import SkyCoord
-from scipy.ndimage import median_filter
-import skimage.exposure as skie
-from skimage.feature import blob_dog, blob_log, blob_doh
-# https://scikit-image.org/docs/stable/api/skimage.feature.html#skimage.feature.blob_log
-# https://scikit-image.org/docs/stable/auto_examples/features_detection/plot_blob.html
-# StarSeeker is a method inspired by the above links and developed
-# For the precursor to DORADO, DRACO circa 2019.
+
 class dracoPhot:
     def __init__(self,  limit_Mag = 16, search_bounds = [30, 30]):
         #TODO make observatory class
         self.limit_Mag = limit_Mag
         self.search_bounds = search_bounds
+        self.scale = 'mm'
+        self.transform = 'sqrt'
         
     def getWCS(self, cr, filter, alignto = None, cache = True):
         '''
@@ -509,7 +515,7 @@ class dracoPhot:
         # since it doesnt log the procedure, and instead contains results
         run = Table(names = ('time', '', 'sky',))
         # TODO:: Maybe add instrument temp, stuff like airmass, alt/az, airtemp, other params
-        self.log = Table(names = ('time', 'image', 'exptime', 'zp_m', 'zp_b', 'sky', 'FWHM', 'seeing'))
+        self.log = Table(names = ('time', 'image', 'exptime', 'zp_m', 'zp_b', 'sky', 'FWHM', 'FWHM_std', 'seeing'))
         
         for i in tqdm(range(len(stack.data)), colour = 'green'):
             im = stack.data[i]
@@ -517,6 +523,7 @@ class dracoPhot:
             imname = tstr + '_' + str(i)
             imPhot = photo(im, self.stars, w, im_index = i)
             imPhot.apPhot_step()
+            # Should the PSF photometry step go here?
             zpv = imPhot.get_zero_point()
             imPhot.mag_calibrate()
             imPhot.set_time()
@@ -578,6 +585,26 @@ class dracoPhot:
         return r
 
     def starSeeker(self, cr, filter):
+        if self.scale == 'mm':
+            interval = MinMaxInterval()
+        elif self.scale == 'z':
+            interval = ZScaleInterval()
+        if self.transform == 'sqrt':
+            stretch = SqrtStretch()
+        elif self.transform == 'squared':
+            stretch = SquaredStretch()
+        elif self.transform == 'asinh':
+            stretch = AsinhStretch()
+        elif self.transform == 'sinh':
+            stretch = SinhStretch()
+        elif self.transform == 'linear':
+            stretch = LinearStretch()
+        elif self.transform == 'log':
+            stretch = LogStretch()
+        elif self.transform == 'power':
+            stretch = PowerStretch()
+        elif self.transform == 'hist':
+            stretch = HistEqStretch()
         startTime = time.time()
         stack = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
         w = stack.wcs
@@ -585,17 +612,20 @@ class dracoPhot:
         data = im.data
         mf = median_filter(data, size= 15)
         datamf = data - mf
-        limg = np.arcsinh(datamf)
+        # limg = np.arcsinh(datamf)
+        norm = ImageNormalize(datamf, interval=interval, stretch=stretch)
+        limg = norm(datamf)
         limg = limg / limg.max()
         low = np.percentile(limg, 1)
         high = np.percentile(limg, 99.5)
         opt_img  = skie.exposure.rescale_intensity(limg, in_range=(low,high))
         # Laplacian blob detection
         stars =  blob_log(opt_img, max_sigma=25, min_sigma = 5, num_sigma=10, threshold=.2)
+        fwhm = gaussian_sigma_to_fwhm(stars[:,2])
         # Convert from sigma to radii in the 3rd column.
         stars[:, 2] = stars[:, 2] * np.sqrt(2)
-        y, x, r = stars[:, 0], stars[:, 1], stars[:, 2]
-        results = Table((x, y, r), names = ('x', 'y', 'r'))
+        y, x, r= stars[:, 0], stars[:, 1], stars[:, 2]
+        results = Table((x, y, r, fwhm), names = ('x', 'y', 'r', 'FWHM'))
         co = w.pixel_to_world(stars[:,1], stars[:,0])
         results['ra']  = co.ra
         results['dec'] = co.dec
@@ -675,7 +705,6 @@ class dracoPhot:
 
 
 
-from photutils.aperture import CircularAperture, aperture_photometry
 def mag(flux, exp = 1, unc = None):
     mag_inst = -2.5 * np.log10(flux / exp)
     if unc:
@@ -686,7 +715,7 @@ def mag(flux, exp = 1, unc = None):
 
 class photo:
     '''
-    Modify this to account for annulus
+    Modify this to add PSF stuff
     '''
     def __init__(self, image, stars, wcs, time = None, im_index = 0):
         self.image = image
@@ -746,7 +775,9 @@ class photo:
         # why am I doing this in the same action as writing the table? who knows really
         # I could pretend that it was to add the filename to the log table
         # TODO:: add filename to log table :)
-        return [self.time,self.im_index, self.exp,  self.zero_point_vals[0], self.zero_point_vals[1], self.sky, self.fwhm, self.seeing]
+        mean_fwhm, std_fwhm = np.mean(self.stars['FWHM']), np.std(self.stars['FWHM'])
+        self.fwhm = mean_fwhm
+        return [self.time,self.im_index, self.exp,  self.zero_point_vals[0], self.zero_point_vals[1], self.sky, self.fwhm, std_fwhm, self.seeing]
 
 
 

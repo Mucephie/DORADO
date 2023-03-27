@@ -193,7 +193,7 @@ class star_chart:
             self.ax = self.fig.add_subplot()
         plt.title(title + ' Star Chart', fontdict = font)
         up, down = plt_eye(self.im.data)
-        self.ax.imshow(self.im.data, cmap = cm, vmin = down, vmax = 3 * up)
+        self.ax_im = self.ax.imshow(self.im.data, cmap = cm, vmin = down, vmax = 3 * up)
         self.legend_labels = []
         self.legend_patchs = []
 
@@ -222,7 +222,7 @@ class star_chart:
             # of ax and the padding between cax and ax will be fixed at 0.05 inch.
             divider = make_axes_locatable(self.ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
-            self.colbar = plt.colorbar(self.im.data, cax=cax)
+            self.colbar = plt.colorbar(self.ax_im, cax=cax)
         plt.show()
     
     def add_compass(self, length = 0.7 * u.arcmin, loc = 'br'):

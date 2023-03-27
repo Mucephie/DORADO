@@ -79,6 +79,7 @@ dorado_mpl_style_1 = {
     "savefig.dpi": 72,
 }
 color_cycle = np.flip([
+    "#EEFC75",  # Cantelope
     "#BDFD23",  # limish yellow green
     "#F8E604",  # lemon
     "#FDD023",  # bumble bee yellow
@@ -86,9 +87,10 @@ color_cycle = np.flip([
     "#FB9062",  # pink peach
     "#FF9248",  # peach
     "#FF4E50",  # watermelon red
-    "#6A0D83",  # porple
-    "#602320",
-])  # burgandy
+    "#D41501",  # Red
+    "#602320",  # burgandy
+    "#280202"
+])  # Dark
 
 try:
     # This is a dependency of matplotlib, so should be present if matplotlib
@@ -209,10 +211,12 @@ class star_chart:
             facecolor = None, edgecolor = c))
         self.legend_labels.append(label + ' : ' + str(len(stars)))
 
-    def plot(self, legend = True):
+    def plot(self, legend = True, colbar = True):
         if legend:
             self.fig.legend(self.legend_patchs, self.legend_labels, 
                 loc='center right')
+        if colbar:
+            self.colbar = plt.colorbar()
         plt.show()
     
     def add_compass(self, length = 0.7 * u.arcmin, loc = 'br'):

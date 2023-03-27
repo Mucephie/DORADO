@@ -610,7 +610,7 @@ class dracoPhot:
         w = stack.wcs
         im = stack.data[stack.alignTo]
         data = im.data
-        mf = median_filter(data, size= 15)
+        mf = median_filter(data, size= 5)
         datamf = data - mf
         # limg = np.arcsinh(datamf)
         norm = ImageNormalize(datamf, interval=interval, stretch=stretch)

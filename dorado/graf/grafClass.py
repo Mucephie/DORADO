@@ -82,13 +82,13 @@ dorado_mpl_style_1 = {
 }
 color_cycle = np.flip([
     "#EEFC75",  # Cantelope
-    "#BDFD23",  # limish yellow green
     "#F8E604",  # lemon
     "#FDD023",  # bumble bee yellow
-    "#FB9062",  # pink peach
+    "#BDFD23",  # limish yellow green, seems out of place
     "#FF9248",  # peach
-    "#FF4E50",  # watermelon red
+    "#FB9062",  # pink peach
     "#FF6700",  # tangerine
+    "#FF4E50",  # watermelon red
     "#D41501",  # Red
     "#602320",  # burgandy
     "#280202"
@@ -194,14 +194,18 @@ class star_chart:
         plt.title(title + ' Star Chart', fontdict = font)
         up, down = plt_eye(self.im.data)
         self.ax_im = self.ax.imshow(self.im.data, cmap = cm, vmin = down, vmax = 3 * up)
+        self.ax_im.set_clim(vmin=0, vmax=1)
         self.legend_labels = []
         self.legend_patchs = []
+
+    def plt_hist(self):
+        plt.hist(self.im.data.ravel(), bins=range(256), fc='k', ec='k')
 
     def plt_stars(self, stars, label = 'stars'):
         if len(self.legend_labels) != 0:
             c = color_cycle[len(color_cycle) % len(self.legend_labels)]
         else: 
-            c = color_cycle[0]
+            c = color_cycle[-1]
         apertures = [Circle((x, y), r, fill = False, facecolor = None, 
             edgecolor = c) for x, y, r in zip(stars['x'], stars['y'], stars['r'])]
         # Create patch collection with specified colour/alpha
@@ -221,7 +225,7 @@ class star_chart:
             # of ax and the padding between cax and ax will be fixed at 0.05 inch.
             divider = make_axes_locatable(self.ax)
             cax = divider.append_axes("right", size="5%")
-            self.colbar = plt.colorbar(self.ax_im, cax=cax, label='Brightness', extend='both', extendfrac='auto', spacing='uniform')
+            self.colbar = plt.colorbar(self.ax_im, label='Brightness', extend='both', extendfrac='auto', spacing='uniform', boundaries = (0,1))
         plt.show()
     
     def add_compass(self, length = 0.7 * u.arcmin, loc = 'br'):

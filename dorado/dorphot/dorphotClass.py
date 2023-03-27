@@ -721,7 +721,7 @@ class photo:
             annulus_aperture = CircularAnnulus(pos, r_in = shape + 2, r_out = shape + 5)
             apers = [aperture, annulus_aperture]
             phot_table = aperture_photometry(self.image.data, apers)
-            bkg_mean = results['aperture_sum_1'] / annulus_aperture.area
+            bkg_mean = phot_table['aperture_sum_1'] / annulus_aperture.area
             bkg_sum = bkg_mean * aperture.area
             self.stars[i]['aperture_sum_raw'] = phot_table['aperture_sum_0']
             self.stars[i]['aperture_sum'] = phot_table['aperture_sum_0'] - bkg_sum

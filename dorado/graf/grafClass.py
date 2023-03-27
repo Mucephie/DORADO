@@ -79,16 +79,16 @@ dorado_mpl_style_1 = {
     "savefig.dpi": 72,
 }
 color_cycle = [
-    "#FB9062",  # pink peach
-    "#FF9248",  # peach
     "#BDFD23",  # limish yellow green
     "#F8E604",  # lemon
     "#FDD023",  # bumble bee yellow
     "#FF6700",  # tangerine
+    "#FB9062",  # pink peach
+    "#FF9248",  # peach
     "#FF4E50",  # watermelon red
     "#6A0D83",  # porple
     "#602320",
-]  # burgandy
+].reverse()  # burgandy
 
 try:
     # This is a dependency of matplotlib, so should be present if matplotlib

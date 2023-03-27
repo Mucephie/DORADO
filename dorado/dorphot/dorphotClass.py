@@ -750,6 +750,8 @@ class photo:
             try:
                 if len(self.stars[i]['detection_r']) > 1:            
                     print('more than one value encountered', len(self.stars[i]['detection_r']))
+            except:
+                a = 0
             if shape <= 0:
                 print('negative or zero shape encountered', shape)
             aperture = CircularAperture(pos, r=shape)

@@ -110,7 +110,7 @@ dorado_mpl_style = dorado_mpl_style_1
 
 # map_colours : name MLTY comes from low mass spectral type M, L, T, and Y. 
 # it is pronounced 'melty'
-mlty_map = ListedColormap(color_cycle, name="mlty", N = 10**3)
+mlty_map = LinearSegmentedColormap(color_cycle, name="mlty")
 mpl.colormaps.register(cmap=mlty_map)
 
 # might not need font dict anymore since dorado_mpl_style
@@ -215,8 +215,7 @@ class star_chart:
 
     def plot(self, legend = True, colbar = True):
         if legend:
-            self.fig.legend(self.legend_patchs, self.legend_labels, 
-                loc='center right')
+            self.fig.legend(self.legend_patchs, self.legend_labels) # loc='center right'
         if colbar:
             # create an Axes on the right side of ax. The width of cax will be 5%
             # of ax and the padding between cax and ax will be fixed at 0.05 inch.

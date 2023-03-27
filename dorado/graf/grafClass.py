@@ -6,6 +6,8 @@ from matplotlib.markers import MarkerStyle
 from matplotlib.transforms import Affine2D
 from matplotlib.textpath import TextPath
 
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+
 from astropy.time import Time
 
 DATA_SYMBOLS = [
@@ -216,7 +218,11 @@ class star_chart:
             self.fig.legend(self.legend_patchs, self.legend_labels, 
                 loc='center right')
         if colbar:
-            self.colbar = plt.colorbar(self.ax)
+            # create an Axes on the right side of ax. The width of cax will be 5%
+            # of ax and the padding between cax and ax will be fixed at 0.05 inch.
+            divider = make_axes_locatable(self.ax)
+            cax = divider.append_axes("right", size="5%", pad=0.05)
+            self.colbar = plt.colorbar(self.im, cax=cax)
         plt.show()
     
     def add_compass(self, length = 0.7 * u.arcmin, loc = 'br'):

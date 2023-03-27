@@ -621,7 +621,7 @@ class dracoPhot:
         opt_img  = skie.exposure.rescale_intensity(limg, in_range=(low,high))
         # Laplacian blob detection
         stars =  blob_log(opt_img, max_sigma=25, min_sigma = 5, num_sigma=10, threshold=.2)
-        fwhm = gaussian_sigma_to_fwhm(stars[:,2])
+        fwhm = gaussian_sigma_to_fwhm * stars[:,2]
         # Convert from sigma to radii in the 3rd column.
         stars[:, 2] = stars[:, 2] * np.sqrt(2)
         y, x, r= stars[:, 0], stars[:, 1], stars[:, 2]

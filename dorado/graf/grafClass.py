@@ -78,7 +78,7 @@ dorado_mpl_style_1 = {
     # Other
     "savefig.dpi": 72,
 }
-color_cycle = [
+color_cycle = np.flip([
     "#BDFD23",  # limish yellow green
     "#F8E604",  # lemon
     "#FDD023",  # bumble bee yellow
@@ -88,7 +88,7 @@ color_cycle = [
     "#FF4E50",  # watermelon red
     "#6A0D83",  # porple
     "#602320",
-].reverse()  # burgandy
+])  # burgandy
 
 try:
     # This is a dependency of matplotlib, so should be present if matplotlib

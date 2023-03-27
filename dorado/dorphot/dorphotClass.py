@@ -25,14 +25,10 @@ from photutils.aperture import CircularAperture, aperture_photometry, CircularAn
 __all__ = ['aicoPhot', 'dracoPhot']
 
 class aicoPhot:
-
     def __init__(self):
         # TODO make observatory class
         self.temp = None
         # list of calibration frames from disk
-        
-
-    
     def calibrate(self, cr,  filter, use_med_cr_removal = False, rb = 0, use_lac_cr_removal = False, scln = False, scln_xy = [1,-1, 1,-1]):
         '''
         calibrate performs 'pre-processing' CCDData calibration to a data stack within a ceres object. This 
@@ -401,9 +397,10 @@ from skimage.feature import blob_dog, blob_log, blob_doh
 # StarSeeker is a method inspired by the above links and developed
 # For the precursor to DORADO, DRACO circa 2019.
 class dracoPhot:
-    def __init__(self):
+    def __init__(self limit_Mag = 16, search_bounds = [30, 30]):
         #TODO make observatory class
-        self.temp = None
+        self.limit_Mag = limit_Mag
+        self.search_bounds = search_bounds
         
     def getWCS(self, cr, filter, alignto = None, cache = True):
         '''
@@ -481,7 +478,7 @@ class dracoPhot:
         mag1 = -2.5 * np.log10(flux1/flux2) + mag2
         return mag1
         
-    def apPhot(self, cr, filter, toid, limit_Mag = 16, search_bounds = [30, 30]) :
+    def apPhot(self, cr, filter, toid) :
         '''
         apPhot performs basic aperture photometry based on photutils.aperture_photometry on a target
         within stack. Target photometry can optionally be compared to a control target within the stack 
@@ -507,21 +504,27 @@ class dracoPhot:
         os.makedirs(projectdir, exist_ok = True)
         out_filename_prefix  = toid + '_'
         print('Performing Photometry...')
+        # The run table is most likely superseeded by the log table 
+        # side note, the log table is less of a log and more of results
+        # since it doesnt log the procedure, and instead contains results
         run = Table(names = ('time', '', 'sky',))
+        # TODO:: Maybe add instrument temp, stuff like airmass, alt/az, airtemp, other params
+        self.log = Table(names = ('time', 'image', 'exptime', 'zp_m', 'zp_b', 'sky', 'FWHM', 'seeing'))
         
         for i in tqdm(range(len(stack.data)), colour = 'green'):
             im = stack.data[i]
             tstr = str(Time(im.header['DATE-OBS'], format='fits').mjd)
             imname = tstr + '_' + str(i)
-            imPhot = photo(im, self.stars, w)
+            imPhot = photo(im, self.stars, w, im_index = i)
             imPhot.apPhot_step()
             zpv = imPhot.get_zero_point()
             imPhot.mag_calibrate()
             imPhot.set_time()
             outstr = out_filename_prefix + imname + '.fits'
-            imPhot.write(projectdir / outstr)
+            self.log.add_row(imPhot.write(projectdir / outstr))
+        self.log.write(projectdir / out_filename_prefix + 'log.fits', overwrite = True)
         print('Photometry completed.')
-        # write out a summary table
+        # TODO:: write out a summary table to terminal??
 
     def inIm(self, tab, cr, filter, border = 0):
         stack = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
@@ -535,13 +538,13 @@ class dracoPhot:
         print('Went from ', num , ' stars in input, to ', len(tab), ' stars in field area.')
         return tab
 
-    def get_field(self, cr, filter, toid, limit_Mag = 16, search_bounds = [30, 30]):
+    def get_field(self, cr, filter, toid):
         startTime = time.time()
         stack = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
         w = stack.wcs
         im = stack.data[stack.alignTo]
-        width = u.Quantity(search_bounds[0], u.arcmin)
-        height = u.Quantity(search_bounds[1], u.arcmin)
+        width = u.Quantity(self.search_bounds[0], u.arcmin)
+        height = u.Quantity(self.search_bounds[1], u.arcmin)
         coords = SkyCoord.from_name(toid) 
         # Make the Query
         # Columns we want to keep
@@ -559,7 +562,7 @@ class dracoPhot:
         for (s, se )in zip(columns, columnse):
             r[s] = re[se]
         # Limit the results to a set magnitude
-        r = r[r['rp_mag'] <= limit_Mag]
+        r = r[r['rp_mag'] <= self.limit_Mag]
         # Get stellar object pixel position
         r['x'], r['y'] = w.world_to_pixel(SkyCoord(r['ra'], r['dec']))
         # This is a hardcoded scale size for plotting
@@ -605,9 +608,10 @@ class dracoPhot:
         self.star_chart(results, img, 'Starseeker', w)
         return results, img
     
-    def get_stars(self, cr, filter, toid, limit_Mag = 16, search_bounds = [30, 20]):
+    def get_stars(self, cr, filter, toid):
+        # add these back if needed :: , limit_Mag = 16, search_bounds = [30, 20]
         # ask if stars should be saved with  flag
-        gaia_stars = self.get_field(cr, filter, toid, limit_Mag, search_bounds)
+        gaia_stars = self.get_field(cr, filter, toid)
         s3, opt_img = self.starSeeker(cr, filter)
         gaia_stars['detection_separation'] = np.zeros(len(gaia_stars))
         gaia_stars['detection_x'] = np.zeros(len(gaia_stars))
@@ -684,30 +688,54 @@ class photo:
     '''
     Modify this to account for annulus
     '''
-    def __init__(self, image, stars, wcs, time = None):
+    def __init__(self, image, stars, wcs, time = None, im_index = 0):
         self.image = image
+        self.im_index = im_index
         self.stars = stars
         self.wcs = wcs
-        # currently not in use, grabbing from im header
+        # currently not in use, grabbing from im header becaaus Im a degenerate
         self.time = time
+        try:
+            self.exp = image.header['EXPTIME']
+        except:
+            try:
+                self.exp = image.header['EXPOSURE']
+            except:
+                print('ERROR: No image exposure length info found in fits header using default keywords.')
+        # this needs a more rigorous treatment, but for now its a good aproximation.
+        self.sky = np.mean((np.mean(self.image.data), np.median(self.image.data)))
+        self.fwhm = 0
+        self.seeing = 0
     
     def apPhot_step(self):
         self.stars['aperture_sum'] = np.zeros(len(self.stars))
         self.stars['inst_mag'] = np.zeros(len(self.stars))
+        self.stars['aperture_sum_raw'] = np.zeros(len(self.stars))
+        self.stars['inst_mag_raw'] = np.zeros(len(self.stars))
         for i in range(len(self.stars)):
             pos = (self.stars[i]['x'], self.stars[i]['y'])
-            aperture = CircularAperture(pos, r=self.stars[i]['detection_r'])
-            phot_table = aperture_photometry(self.image.data, aperture)
-            self.stars[i]['aperture_sum'] = phot_table['aperture_sum']
-            self.stars[i]['inst_mag'] = mag(phot_table['aperture_sum'], 20) # 20 second long exposures
+            # TODO :: why is there no annulus? seriously, this is basic photometry
+            # and I haven't even made an annulus aperture. pathetic
+            shape = 1.2 * self.stars[i]['detection_r'] 
+            aperture = CircularAperture(pos, r=shape)
+            annulus_aperture = CircularAnnulus(pos, r_in = shape + 2, r_out = shape + 5)
+            apers = [aperture, annulus_aperture]
+            phot_table = aperture_photometry(self.image.data, apers)
+            bkg_mean = results['aperture_sum_1'] / annulus_aperture.area
+            bkg_sum = bkg_mean * aperture.area
+            self.stars[i]['aperture_sum_raw'] = phot_table['aperture_sum_0']
+            self.stars[i]['aperture_sum'] = phot_table['aperture_sum_0'] - bkg_sum
+            self.stars[i]['inst_mag_raw'] = mag(phot_table['aperture_sum_0'], self.exp)
+            self.stars[i]['inst_mag'] = mag(phot_table['aperture_sum_0'] - bkg_sum, self.exp)
     
     def get_zero_point(self):
-        stars = self.stars[self.stars['inst_mag'] <= -2.3]
-        self.zero_point_vals = np.polyfit(stars['inst_mag'], stars['rp_mag'], 1)
+        stars = self.stars[self.stars['inst_mag'] <= -2.3] # Heres a place to mod, this cutoff value
+        self.zero_point_vals = np.polyfit(stars['inst_mag'], stars['rp_mag'], 1) 
         self.zero_point = np.poly1d(self.zero_point_vals)
         return self.zero_point_vals
     
     def mag_calibrate(self):
+        # Well this is elegent, its a single line of code, well, it was, then I ruined it with this comment
         self.stars['fit_mag'] = self.zero_point(self.stars['inst_mag'])
     
     def set_time(self):
@@ -715,6 +743,10 @@ class photo:
     
     def write(self, filename):
         self.stars.write(filename, overwrite = True)
+        # why am I doing this in the same action as writing the table? who knows really
+        # I could pretend that it was to add the filename to the log table
+        # TODO:: add filename to log table :)
+        return [self.time,self.im_index, self.exp,  self.zero_point_vals[0], self.zero_point_vals[1], self.sky, self.fwhm, self.seeing]
 
 
 

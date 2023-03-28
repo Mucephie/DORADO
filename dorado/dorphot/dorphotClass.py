@@ -511,7 +511,7 @@ class dracoPhot:
         sxy = ppps(w)
         print(sxy)
         # print('Initial FWHM: ', np.mean(self.stars['FWHM']), '+/-', np.std(self.stars['FWHM']), 'px')
-        self.projectdir = Dorado.dordir / 'data' / 'projects' / toid / 
+        self.projectdir = Dorado.dordir / 'data' / 'projects' / toid 
         self.projectdatedir = Dorado.dordir / 'data' / 'projects' / toid / Dorado.ceres[Dorado.ceres_keys[cr]].datestr
         os.makedirs(self.projectdatedir, exist_ok = True)
         out_filename_prefix  = toid + '_'

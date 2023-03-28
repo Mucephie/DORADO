@@ -673,6 +673,8 @@ class dracoPhot:
             self.stars.write(self.projectdir / 'stars' / 'stars.fits', overwrite = True)
             print(self.unmatched, ' stars were not matched.')
             # crop out unmatched stars
+        else:
+            self.stars = Table.read(self.projectdir / 'stars' / 'stars.fits')
 
     def match_star(self, star, s3):
         sx, sy = star['x'], star['y']

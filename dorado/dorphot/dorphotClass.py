@@ -13,6 +13,7 @@ CCDData._config_ccd_requires_unit = False
 import astroalign as aa
 from astropy.io import fits
 from astropy.wcs import WCS
+from astropy.wcs.utils import proj_plane_pixel_scales as ppps
 
 
 from astropy.visualization import MinMaxInterval, ZScaleInterval, SquaredStretch, SqrtStretch, AsinhStretch, LinearStretch, LogStretch, HistEqStretch, PowerStretch, SinhStretch
@@ -484,7 +485,7 @@ class dracoPhot:
         mag1 = -2.5 * np.log10(flux1/flux2) + mag2
         return mag1
         
-    def apPhot(self, cr, filter, toid) :
+    def apPhot(self, cr, filter, toid, search = True) :
         '''
         apPhot performs basic aperture photometry based on photutils.aperture_photometry on a target
         within stack. Target photometry can optionally be compared to a control target within the stack 
@@ -505,10 +506,14 @@ class dracoPhot:
         stack = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
         # TODO if no wcs, complain alot
         w = stack.wcs
-        self.get_stars(cr, filter, toid)
-        print('Initial FWHM: ', np.mean(self.stars['FWHM']), '+/-', np.std(self.stars['FWHM']))
-        projectdir = Dorado.dordir / 'data' / 'projects' / toid / Dorado.ceres[Dorado.ceres_keys[cr]].datestr
-        os.makedirs(projectdir, exist_ok = True)
+        self.get_stars(cr, filter, toid, search)
+        print('Initial FWHM: ', np.mean(self.stars['FWHM']), '+/-', np.std(self.stars['FWHM']), 'px')
+        sxy = ppps(w)
+        print(sxy)
+        # print('Initial FWHM: ', np.mean(self.stars['FWHM']), '+/-', np.std(self.stars['FWHM']), 'px')
+        self.projectdir = Dorado.dordir / 'data' / 'projects' / toid / 
+        self.projectdatedir = Dorado.dordir / 'data' / 'projects' / toid / Dorado.ceres[Dorado.ceres_keys[cr]].datestr
+        os.makedirs(self.projectdatedir, exist_ok = True)
         out_filename_prefix  = toid + '_'
         print('Performing Photometry...')
         # The run table is most likely superseeded by the log table 
@@ -529,8 +534,8 @@ class dracoPhot:
             imPhot.mag_calibrate()
             imPhot.set_time()
             outstr = out_filename_prefix + imname + '.fits'
-            self.log.add_row(imPhot.write(projectdir / outstr))
-        self.log.write(projectdir / (out_filename_prefix + 'log.fits'), overwrite = True)
+            self.log.add_row(imPhot.write(self.projectdatedir / outstr))
+        self.log.write(self.projectdatedir / (out_filename_prefix + 'log.fits'), overwrite = True)
         print('Photometry completed.')
         # TODO:: write out a summary table to terminal??
 
@@ -641,32 +646,33 @@ class dracoPhot:
         self.star_chart(results, img, 'Starseeker', w)
         return results, img
     
-    def get_stars(self, cr, filter, toid):
+    def get_stars(self, cr, filter, toid, search):
         # add these back if needed :: , limit_Mag = 16, search_bounds = [30, 20]
         # ask if stars should be saved with  flag
-        gaia_stars = self.get_field(cr, filter, toid)
-        s3, opt_img = self.starSeeker(cr, filter)
-        gaia_stars['detection_separation'] = np.zeros(len(gaia_stars))
-        gaia_stars['detection_x'] = np.zeros(len(gaia_stars))
-        gaia_stars['detection_y'] = np.zeros(len(gaia_stars))
-        gaia_stars['detection_r'] = np.zeros(len(gaia_stars))
-        gaia_stars['FWHM'] = np.zeros(len(gaia_stars))
-        matched = Table(names = gaia_stars.colnames, dtype = gaia_stars.dtype)
-        print('Matching stars..')
-        self.unmatched = 0
-        for s in (pbar := tqdm(gaia_stars, colour = 'green')):
-            pbar.set_description('Matching star : ' + str(s['DESIGNATION']))
-            pbar.refresh()
-            sm = self.match_star(s, s3)
-            if sm != False:
-                matched.add_row(sm)
-        self.stars = matched # should this really be an internal list
-        # Or should it belong to anoter class
-        projectdir = Dorado.dordir / 'data' / 'projects' / toid 
-        os.makedirs(projectdir, exist_ok = True)
-        self.stars.write(projectdir / 'stars.fits', overwrite = True)
-        print(self.unmatched, ' stars were not matched.')
-        # crop out unmatched stars
+        if search:
+            gaia_stars = self.get_field(cr, filter, toid)
+            s3, opt_img = self.starSeeker(cr, filter)
+            gaia_stars['detection_separation'] = np.zeros(len(gaia_stars))
+            gaia_stars['detection_x'] = np.zeros(len(gaia_stars))
+            gaia_stars['detection_y'] = np.zeros(len(gaia_stars))
+            gaia_stars['detection_r'] = np.zeros(len(gaia_stars))
+            gaia_stars['FWHM'] = np.zeros(len(gaia_stars))
+            matched = Table(names = gaia_stars.colnames, dtype = gaia_stars.dtype)
+            print('Matching stars..')
+            self.unmatched = 0
+            for s in (pbar := tqdm(gaia_stars, colour = 'green')):
+                pbar.set_description('Matching star : ' + str(s['DESIGNATION']))
+                pbar.refresh()
+                sm = self.match_star(s, s3)
+                if sm != False:
+                    matched.add_row(sm)
+            self.stars = matched # should this really be an internal list
+            # Or should it belong to anoter class
+            # projectdir = Dorado.dordir / 'data' / 'projects' / toid 
+            os.makedirs(self.projectdir / 'stars', exist_ok = True)
+            self.stars.write(self.projectdir / 'stars' / 'stars.fits', overwrite = True)
+            print(self.unmatched, ' stars were not matched.')
+            # crop out unmatched stars
 
     def match_star(self, star, s3):
         sx, sy = star['x'], star['y']

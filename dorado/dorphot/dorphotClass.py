@@ -654,7 +654,8 @@ class dracoPhot:
             pbar.set_description('Matching star : ' + str(s['DESIGNATION']))
             pbar.refresh()
             sm = self.match_star(s, s3)
-            matched.add_row(sm)
+            if sm != False:
+                matched.add_row(sm)
         self.stars = matched # should this really be an internal list
         # Or should it belong to anoter class
         projectdir = Dorado.dordir / 'data' / 'projects' / toid 
@@ -678,18 +679,20 @@ class dracoPhot:
             star['detection_x'] = candidate['x']
             star['detection_y'] = candidate['y']
             star['detection_r'] = candidate['r']
+            return star
         elif len(sep) == 0:
             self.unmatched += 1
             star['detection_separation'] = None
             star['detection_x'] = None
             star['detection_y'] = None
             star['detection_r'] = None
+            return False
         else:
             star['detection_separation'] = sep
             star['detection_x'] = candidate['x']
             star['detection_y'] = candidate['y']
             star['detection_r'] = candidate['r']
-        return star
+            return star
 
     def star_chart(self, stars, im, toid, w):
         sc = star_chart(im, title = toid, wcs = w)
@@ -747,11 +750,6 @@ class photo:
             # TODO :: why is there no annulus? seriously, this is basic photometry
             # and I haven't even made an annulus aperture. pathetic
             shape = float(1.2 * self.stars[i]['detection_r']) # its possible this was handing back a row instead of a float
-            try:
-                if len(self.stars[i]['detection_r']) > 1:            
-                    print('more than one value encountered', len(self.stars[i]['detection_r']))
-            except:
-                a = 0
             if shape <= 0:
                 print('negative or zero shape encountered', shape)
             aperture = CircularAperture(pos, r=shape)

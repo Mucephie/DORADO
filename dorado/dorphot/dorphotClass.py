@@ -650,6 +650,7 @@ class dracoPhot:
         gaia_stars['detection_x'] = np.zeros(len(gaia_stars))
         gaia_stars['detection_y'] = np.zeros(len(gaia_stars))
         gaia_stars['detection_r'] = np.zeros(len(gaia_stars))
+        gaia_stars['FWHM'] = np.zeros(len(gaia_stars))
         matched = Table(names = gaia_stars.colnames, dtype = gaia_stars.dtype)
         print('Matching stars..')
         self.unmatched = 0

@@ -785,7 +785,7 @@ class photo:
         # TODO:: add filename to log table :)
         mean_fwhm, std_fwhm = np.mean(self.stars['FWHM']), np.std(self.stars['FWHM'])
         self.fwhm = mean_fwhm
-        return [self.stars['time'], self.im_index, self.exp,  self.zero_point_vals[0], self.zero_point_vals[1], self.sky, self.fwhm, std_fwhm, self.seeing]
+        return [float(self.stars['time'][0]), self.im_index, self.exp,  self.zero_point_vals[0], self.zero_point_vals[1], self.sky, self.fwhm, std_fwhm, self.seeing]
 
 
 

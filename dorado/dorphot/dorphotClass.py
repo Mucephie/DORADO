@@ -506,6 +506,7 @@ class dracoPhot:
         # TODO if no wcs, complain alot
         w = stack.wcs
         self.get_stars(cr, filter, toid)
+        print('Initial FWHM: ', np.mean(self.stars['FWHM']), '+/-', np.std(self.stars['FWHM']))
         projectdir = Dorado.dordir / 'data' / 'projects' / toid / Dorado.ceres[Dorado.ceres_keys[cr]].datestr
         os.makedirs(projectdir, exist_ok = True)
         out_filename_prefix  = toid + '_'
@@ -621,6 +622,8 @@ class dracoPhot:
         opt_img  = skie.exposure.rescale_intensity(limg, in_range=(low,high))
         # Laplacian blob detection
         stars =  blob_log(opt_img, max_sigma=25, min_sigma = 5, num_sigma=10, threshold=.2)
+        # full width at half max should be calculated from original unscaled image
+        # how can we do this per image?
         fwhm = gaussian_sigma_to_fwhm * stars[:,2]
         # Convert from sigma to radii in the 3rd column.
         stars[:, 2] = stars[:, 2] * np.sqrt(2)
@@ -679,19 +682,17 @@ class dracoPhot:
             star['detection_x'] = candidate['x']
             star['detection_y'] = candidate['y']
             star['detection_r'] = candidate['r']
+            star['FWHM']        = candidate['FWHM']
             return star
         elif len(sep) == 0:
             self.unmatched += 1
-            star['detection_separation'] = None
-            star['detection_x'] = None
-            star['detection_y'] = None
-            star['detection_r'] = None
             return False
         else:
             star['detection_separation'] = sep
             star['detection_x'] = candidate['x']
             star['detection_y'] = candidate['y']
             star['detection_r'] = candidate['r']
+            star['FWHM']        = candidate['FWHM']
             return star
 
     def star_chart(self, stars, im, toid, w):

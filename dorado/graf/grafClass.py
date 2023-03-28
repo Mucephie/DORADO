@@ -221,11 +221,7 @@ class star_chart:
         if legend:
             self.fig.legend(self.legend_patchs, self.legend_labels) # loc='center right'
         if colbar:
-            # create an Axes on the right side of ax. The width of cax will be 5%
-            # of ax and the padding between cax and ax will be fixed at 0.05 inch.
-            divider = make_axes_locatable(self.ax)
-            cax = divider.append_axes("right", size="5%")
-            self.colbar = plt.colorbar(self.ax_im, label='Brightness', extend='both', extendfrac='auto', spacing='uniform', boundaries = (0,1))
+            self.colbar = plt.colorbar(self.ax_im,  extend='both', extendfrac='auto', spacing='uniform')
         plt.show()
     
     def add_compass(self, length = 0.7 * u.arcmin, loc = 'br'):

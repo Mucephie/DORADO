@@ -221,14 +221,14 @@ class star_chart:
         if legend:
             self.fig.legend(self.legend_patchs, self.legend_labels) # loc='center right'
         if colbar:
-            self.colbar = plt.colorbar(self.ax_im,  extend='both', extendfrac='auto', spacing='uniform')
+            self.colbar = plt.colorbar(self.ax_im,  extend='both', extendfrac='auto', spacing='proportional')
         plt.show()
     
-    def add_compass(self, length = 0.7 * u.arcmin, loc = 'br'):
+    def add_compass(self, length = 0.7 * u.arcmin, loc = 'br', colour = 'w'):
         y, x = self.im.data.shape
         co = self.wcs.pixel_to_world(x- 200, y - 300)
-        self.barH = Quadrangle((co.ra, co.dec), 1.25 * u.arcmin, 0.09 * u.arcmin , transform=self.ax.get_transform('fk5'), color = 'k')
-        self.barW = Quadrangle((co.ra, co.dec), 0.2 * u.arcmin, 0.55 * u.arcmin , transform=self.ax.get_transform('fk5'), color = 'k')
+        self.barH = Quadrangle((co.ra, co.dec), 1.25 * u.arcmin, 0.09 * u.arcmin , transform=self.ax.get_transform('fk5'), color = colour)
+        self.barW = Quadrangle((co.ra, co.dec), 0.2 * u.arcmin, 0.55 * u.arcmin , transform=self.ax.get_transform('fk5'), color = colour)
         self.ax.add_patch(self.barH)
         self.ax.add_patch(self.barW)
         # self.ax.arrow(co.ra.value, co.dec.value, 0, 0.01, 
@@ -245,20 +245,20 @@ class star_chart:
             'size': 10,
         }
         plt.text(co.ra.value - 0.003, co.dec.value + 0.012, 'N', 
-            color='k', rotation=67, 
+            color=colour, rotation=67, 
             transform=self.ax.get_transform('icrs'), fontdict = fontComp)
         plt.text(co.ra.value + 0.022, co.dec.value + 0.002, 'E', 
-            color='k', rotation=67, 
+            color=colour, rotation=67, 
             transform=self.ax.get_transform('icrs'), fontdict = fontComp)
 
-    def add_scale(self):
-        add_scalebar(self.ax, 1 * u.arcmin, label="1\"", color="k")
+    def add_scale(self, colour = 'w'):
+        add_scalebar(self.ax, 1 * u.arcmin, label="1\"", color=colour)
 
 class PSF_Chart:
     '''
     Class to display selected stars and the PSF fit. maybe even a 3D view of the star (I can pull alot of this from the code I write for PHYS4030)
     '''
-    def __iinit__(self):
+    def __init__(self):
         self.temp = 0
         
         

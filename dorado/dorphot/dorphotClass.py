@@ -514,6 +514,7 @@ class dracoPhot:
         print('Initial FWHM: ', np.mean(self.stars['FWHM']), '+/-', np.std(self.stars['FWHM']), 'px')
         sxy =  w.proj_plane_pixel_scales() #ppps(w)
         print('Pixel scales: ', sxy)
+        print('Initial FWHM: ', sxy * np.mean(self.stars['FWHM']), '+/-', sxy * np.std(self.stars['FWHM']), 'px')
         print('Performing Photometry...')
         # The run table is most likely superseeded by the log table 
         # side note, the log table is less of a log and more of results

@@ -674,7 +674,8 @@ class dracoPhot:
             # crop out unmatched stars
         else:
             if read_date != None:
-                self.stars = Table.read(self.projectdir / 'stars' / 'stars_' + str(read_date) + '.fits')
+                fname = 'stars_' + str(read_date) + '.fits'
+                self.stars = Table.read(self.projectdir / 'stars' / fname)
             else:
                 print('No read date given for saved star catalogue.')
 

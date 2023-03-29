@@ -506,15 +506,14 @@ class dracoPhot:
         stack = Dorado.ceres[Dorado.ceres_keys[cr]].data[Dorado.ceres[Dorado.ceres_keys[cr]].filters[filter]]
         # TODO if no wcs, complain alot
         w = stack.wcs
-        self.get_stars(cr, filter, toid, search)
-        print('Initial FWHM: ', np.mean(self.stars['FWHM']), '+/-', np.std(self.stars['FWHM']), 'px')
-        sxy = ppps(w)
-        print(sxy)
-        # print('Initial FWHM: ', np.mean(self.stars['FWHM']), '+/-', np.std(self.stars['FWHM']), 'px')
         self.projectdir = Dorado.dordir / 'data' / 'projects' / toid 
         self.projectdatedir = Dorado.dordir / 'data' / 'projects' / toid / Dorado.ceres[Dorado.ceres_keys[cr]].datestr
         os.makedirs(self.projectdatedir, exist_ok = True)
         out_filename_prefix  = toid + '_'
+        self.get_stars(cr, filter, toid, search)
+        print('Initial FWHM: ', np.mean(self.stars['FWHM']), '+/-', np.std(self.stars['FWHM']), 'px')
+        sxy = ppps(w)
+        print(sxy)
         print('Performing Photometry...')
         # The run table is most likely superseeded by the log table 
         # side note, the log table is less of a log and more of results

@@ -485,7 +485,7 @@ class dracoPhot:
         mag1 = -2.5 * np.log10(flux1/flux2) + mag2
         return mag1
         
-    def apPhot(self, cr, filter, toid, search = True) :
+    def apPhot(self, cr, filter, toid, search = True, read_date = None) :
         '''
         apPhot performs basic aperture photometry based on photutils.aperture_photometry on a target
         within stack. Target photometry can optionally be compared to a control target within the stack 
@@ -510,7 +510,7 @@ class dracoPhot:
         self.projectdatedir = Dorado.dordir / 'data' / 'projects' / toid / Dorado.ceres[Dorado.ceres_keys[cr]].datestr
         os.makedirs(self.projectdatedir, exist_ok = True)
         out_filename_prefix  = toid + '_'
-        self.get_stars(cr, filter, toid, search)
+        self.get_stars(cr, filter, toid, search, read_date)
         print('Initial FWHM: ', np.mean(self.stars['FWHM']), '+/-', np.std(self.stars['FWHM']), 'px')
         sxy = ppps(w)
         print(sxy)
@@ -645,7 +645,7 @@ class dracoPhot:
         self.star_chart(results, img, 'Starseeker', w)
         return results, img
     
-    def get_stars(self, cr, filter, toid, search):
+    def get_stars(self, cr, filter, toid, search, read_date):
         # add these back if needed :: , limit_Mag = 16, search_bounds = [30, 20]
         # ask if stars should be saved with  flag
         if search:
@@ -673,7 +673,10 @@ class dracoPhot:
             print(self.unmatched, ' stars were not matched.')
             # crop out unmatched stars
         else:
-            self.stars = Table.read(self.projectdir / 'stars' / 'stars.fits')
+            if read_date != None:
+                self.stars = Table.read(self.projectdir / 'stars' / 'stars_' + str(read_date) + '.fits')
+            else:
+                print('No read date given for saved star catalogue.')
 
     def match_star(self, star, s3):
         sx, sy = star['x'], star['y']
